@@ -57,10 +57,10 @@ module.exports = controller => {
 
                 for (let index = 0, len = teams.length; index < len; index++) {
                     const isTeamMigrating = await checkTeamMigration(teams[index].id, controller);
-
+                    console.log('isTeamMigrating', isTeamMigrating);
                     if (!isTeamMigrating) {
                         const bot = await controller.spawn(teams[index].id);
-
+                        console.log('useremail', msg.userEmail);
                         if (msg.userEmail) {
                             const userData = await bot.api.users.lookupByEmail({
                                 token: teams[index].bot.token,
@@ -68,14 +68,15 @@ module.exports = controller => {
                             });
 
                             if (!userData || !userData.user) {
-                                    return logger.log('user not found in team ' + teams[index].id + ' for email:', msg.userEmail);
-                                }
+                                return logger.log('user not found in team ' + teams[index].id + ' for email:', msg.userEmail);
+                            }
                             await bot.startPrivateConversation(userData.user.id);
                             await bot.say(msg.text);
-                                    } else {
+                        } else {
                             const channels = await controller.plugins.database.channels.find({ team_id: teams[index].id });
-
+                            console.log('channels', channels);
                             if (channels && channels.length > 0) {
+                                console.log('posting message in channel');
                                 await bot.startConversationInChannel(channels[0].id);
                                 await bot.say(msg.text);
                             }
