@@ -44,13 +44,13 @@ module.exports = controller => {
     });
 
     controller.on('post-message', reqBody => {
-        console.log('posting message----');
+        console.log('posting message----', reqBody);
         reqBody.messages.forEach(async msg => {
 
             try {
                 let teamIdsArray = reqBody.teamId.split(',');
                 const teams = await controller.plugins.database.teams.find({ id: { $in: teamIdsArray } });
-
+                console.log('teams', teams);
                 if (!teams) {
                     return logger.log('team not found for id:', reqBody.teamId);
                 }
