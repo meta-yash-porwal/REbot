@@ -44,7 +44,7 @@ module.exports = controller => {
     });
 
     controller.on('post-message', reqBody => {
-
+        console.log('posting message----');
         reqBody.messages.forEach(async msg => {
 
             try {

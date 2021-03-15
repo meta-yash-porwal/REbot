@@ -4,7 +4,7 @@ const logger = require('../common/logger');
 
 module.exports = {
     saveTeamId: async (conn, teamData) => {
-        await conn.apex.post('/refedge/rebot/saveTeamId', teamData, (err, res) => {
+        await conn.apex.post('/rebot/saveTeamId', teamData, (err, res) => {
 
             if (err) {
                 logger.log(err);
@@ -14,7 +14,7 @@ module.exports = {
     submitRequest: async (conn, teamData) => {
         let returnVal = '';
         try {
-            await conn.apex.post('/refedge/rebot/submitRequest', teamData, (err, res) => {
+            await conn.apex.post('/rebot/submitRequest', teamData, (err, res) => {
                 returnVal = res;
                 if (err) {
                     logger.log(err);
