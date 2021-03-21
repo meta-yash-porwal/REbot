@@ -1,10 +1,10 @@
 
 const connFactory = require('../util/connection-factory');
 const logger = require('../common/logger');
-
+//replace /PORDEV with /refedge
 module.exports = {
     saveTeamId: async (conn, teamData) => {
-        await conn.apex.post('/rebot/saveTeamId', teamData, (err, res) => {
+        await conn.apex.post('/PORDEV/rebot/saveTeamId', teamData, (err, res) => {
 
             if (err) {
                 logger.log(err);
@@ -14,7 +14,7 @@ module.exports = {
     submitRequest: async (conn, teamData) => {
         let returnVal = '';
         try {
-            await conn.apex.post('/rebot/submitRequest', teamData, (err, res) => {
+            await conn.apex.post('/PORDEV/rebot/submitRequest', teamData, (err, res) => {
                 returnVal = res;
                 if (err) {
                     logger.log(err);
@@ -27,7 +27,7 @@ module.exports = {
     },
     getRefTypes: async (conn,action) => {
         let ref = [];
-        let url = action == null || action == '' ? '/refedge/rebot/REF_TYPE' : '/refedge/rebot/REF_TYPE::' + action;
+        let url = action == null || action == '' ? '/PORDEV/refedge/rebot/REF_TYPE' : '/PORDEV/refedge/rebot/REF_TYPE::' + action;
         await conn.apex.get(url, (err, response) => {
             if (err) {
                 logger.log(err);
@@ -66,7 +66,7 @@ module.exports = {
     getOpp: async (conn,email,action) => {
         let opp = [];
         let returnVal = {};
-        let url = action == null || action == '' ? '/refedge/rebot/OPP_TYPE' + '::' + email : '/refedge/rebot/OPP_TYPE::' + email + '::' + action;
+        let url = action == null || action == '' ? '/PORDEV/refedge/rebot/OPP_TYPE' + '::' + email : '/PORDEV/refedge/rebot/OPP_TYPE::' + email + '::' + action;
         await conn.apex.get(url, (err, response) => {
             if (err) {
                 logger.log(err);
@@ -95,7 +95,7 @@ module.exports = {
     getOppfromName: async (conn,email,name) => {
         let opp = [];
         name = encodeURIComponent(name);
-        let url = '/refedge/rebot/OPP_TYPE_NAME' + '::' + email + '::' + name;
+        let url = '/PORDEV/refedge/rebot/OPP_TYPE_NAME' + '::' + email + '::' + name;
         await conn.apex.get(url, (err, response) => {
             if (err) {
                 logger.log(err);
@@ -120,7 +120,7 @@ module.exports = {
     getOppfromAcc: async (conn,email,name) => {
         let opp = [];
         name = encodeURIComponent(name);
-        let url = '/refedge/rebot/OPP_TYPE_ACCNAME' + '::' + email + '::' + name;
+        let url = '/PORDEV/refedge/rebot/OPP_TYPE_ACCNAME' + '::' + email + '::' + name;
         console.log(url);
         await conn.apex.get(url, (err, response) => {
             if (err) {
@@ -148,7 +148,7 @@ module.exports = {
             return 'false';
         } else {
             let val = [];
-            await conn.apex.get('/refedge/rebot/' + accName , accName, (err, response) => {
+            await conn.apex.get('/PORDEV/refedge/rebot/' + accName , accName, (err, response) => {
                 if (err) {
                     logger.log(err);
                 } else  if (response) {
@@ -175,7 +175,7 @@ module.exports = {
             return 'false';
         } else {
             let val = '';
-            await conn.apex.get('/refedge/rebot/' + 'LINK_URL' ,'LINK_URL', (err, response) => {
+            await conn.apex.get('/PORDEV/refedge/rebot/' + 'LINK_URL' ,'LINK_URL', (err, response) => {
                 if (err) {
                     logger.log(err);
                 } else  if (response) {
@@ -187,5 +187,16 @@ module.exports = {
             });
             return val;
         }
+    },
+
+    checkOrgSettingAndGetData : async(conn) => {
+
+        await conn.apex.get('/PORDEV/refedge/rebot/', (err, response) => {
+            if (err) {
+                logger.log(err);
+            } else  if (response) {
+                console.log('response', response);
+            }
+        });
     }
 };

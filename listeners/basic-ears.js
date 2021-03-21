@@ -1,7 +1,7 @@
 const connFactory = require('../util/connection-factory');
 const logger = require('../common/logger');
 
-const { getRefTypes, getOpp, getOppfromName, getOppfromAcc, saveTeamId} = require('../util/refedge');
+const { getRefTypes, getOpp, getOppfromName, getOppfromAcc, saveTeamId, checkOrgSettingAndGetData} = require('../util/refedge');
 
 const { checkTeamMigration } = require('../listeners/middleware/migration-filter');
 
@@ -246,7 +246,7 @@ module.exports = controller => {
                             user : message.user
                         });
                         console.log('.......userprofile ....');
-                        
+                        await checkOrgSettingAndGetData(existingConn);
                         const result = await bot.api.views.open({
                             trigger_id: message.trigger_id,
                             view: {
@@ -332,6 +332,73 @@ module.exports = controller => {
             });
             
     });
+
+    async function accountsAndContentsBothScreen(bot, message, userProfile) {
+        const result = await bot.api.views.open({
+            trigger_id: message.trigger_id,
+            view: {
+                "type": "modal",
+                "notify_on_close" : true,
+                "callback_id" : "actionSelectionView",
+                "private_metadata" : userProfile.user.profile.email,
+                "title": {
+                    "type": "plain_text",
+                    "text": "Reference Assistant",
+                    "emoji": true
+                },
+                "submit": {
+                    "type": "plain_text",
+                    "text": "Next",
+                    "emoji": true
+                },
+                "close": {
+                    "type": "plain_text",
+                    "text": "Cancel",
+                    "emoji": true
+                },
+                
+                "blocks": [
+                    {
+                        "type": "input",
+                        "block_id": "accblock",
+                        "element": {
+                            "type": "radio_buttons",
+                            "action_id": "searchid",
+                            "options": [
+                                {
+                                    "value": "account_search",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "Reference Account(s)"
+                                    }
+                                },
+                                {
+                                    "value": "content_search",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "Reference Content"
+                                    }
+                                },
+                                {
+                                    "value": "both",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "Both"
+                                    }
+                                }
+                            ]
+                        },
+                        "label": {
+                            "type": "plain_text",
+                            "text": "What do you need?",
+                            "emoji": true
+                        }
+                    }
+                ]
+            }
+            
+        });
+    }
 
     async function opportunityFlow (bot, message, existingConn, actionName, email) {
         let refselected = message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_option != null ? message.view.state.values.blkref.reftype_select.selected_option : 'NONE';
