@@ -246,7 +246,7 @@ module.exports = controller => {
                             user : message.user
                         });
                         console.log('.......userprofile ....');
-                        //await checkOrgSettingAndGetData(existingConn);
+                        await checkOrgSettingAndGetData(existingConn);
                         const result = await bot.api.views.open({
                             trigger_id: message.trigger_id,
                             view: {
