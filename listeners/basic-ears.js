@@ -248,6 +248,7 @@ module.exports = controller => {
                         console.log('.......userprofile ....');
                         let response = await checkOrgSettingAndGetData(existingConn);
                         if (response != 'false' && response != 'both') {
+                            console.log('response@@@###', response);
                             response = JSON.parse(response);
                             console.log(response);
                             if(response.hasOwnProperty('content_search')) {
