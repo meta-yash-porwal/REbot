@@ -196,33 +196,7 @@ module.exports = {
                 logger.log(err);
             } else  if (response) {
                 console.log('response', response);
-                if (response != 'false' && response != 'both') {
-                    response = JSON.parse(response);
-                    console.log(response);
-                    /* if (action == 'content_search') {
-                        Object.keys(response).forEach(function(k){
-                            var entry = {
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": response[k]
-                                },
-                                "value": k
-                            }
-                            ref.push(entry);
-                        });
-                    } else {
-                        Object.keys(response).forEach(function(k){
-                            let entry = {
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": k
-                                },
-                                "value": response[k]
-                            }
-                            ref.push(entry);
-                        });
-                    } */
-                }
+                return response;
             }
         });
     }

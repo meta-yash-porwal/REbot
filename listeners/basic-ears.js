@@ -246,71 +246,165 @@ module.exports = controller => {
                             user : message.user
                         });
                         console.log('.......userprofile ....');
-                        await checkOrgSettingAndGetData(existingConn);
-                        const result = await bot.api.views.open({
-                            trigger_id: message.trigger_id,
-                            view: {
-                                "type": "modal",
-                                "notify_on_close" : true,
-                                "callback_id" : "actionSelectionView",
-                                "private_metadata" : userProfile.user.profile.email,
-                                "title": {
-                                    "type": "plain_text",
-                                    "text": "Reference Assistant",
-                                    "emoji": true
-                                },
-                                "submit": {
-                                    "type": "plain_text",
-                                    "text": "Next",
-                                    "emoji": true
-                                },
-                                "close": {
-                                    "type": "plain_text",
-                                    "text": "Cancel",
-                                    "emoji": true
-                                },
-                                
-                                "blocks": [
-                                    {
-                                        "type": "input",
-                                        "block_id": "accblock",
-                                        "element": {
-                                            "type": "radio_buttons",
-                                            "action_id": "searchid",
-                                            "options": [
-                                                {
-                                                    "value": "account_search",
-                                                    "text": {
-                                                        "type": "plain_text",
-                                                        "text": "Reference Account(s)"
-                                                    }
-                                                },
-                                                {
-                                                    "value": "content_search",
-                                                    "text": {
-                                                        "type": "plain_text",
-                                                        "text": "Reference Content"
-                                                    }
-                                                },
-                                                {
-                                                    "value": "both",
-                                                    "text": {
-                                                        "type": "plain_text",
-                                                        "text": "Both"
-                                                    }
-                                                }
-                                            ]
-                                        },
-                                        "label": {
+                        let response = await checkOrgSettingAndGetData(existingConn);
+                        if (response != 'false' && response != 'both') {
+                            response = JSON.parse(response);
+                            console.log(response);
+                            if(response.hasOwnProperty('content_search')) {
+                                let contentData = processContentResponse(response.content_search);
+                                bot.httpBody({
+                                    response_action: 'update',
+                                    view: {
+                                        "type": "modal",
+                                        "notify_on_close" : true,
+                                        "callback_id": "oppselect",
+                                        "private_metadata" : userProfile.user.profile.email,
+                                        "submit": {
                                             "type": "plain_text",
-                                            "text": "What do you need?",
+                                            "text": "Next",
                                             "emoji": true
-                                        }
+                                        },
+                                        "title": {
+                                            "type": "plain_text",
+                                            "text": "Content Type",
+                                            "emoji": true
+                                        },
+                                        "blocks": [
+                                            {
+                                                "type": "input",
+                                                "optional" : true,
+                                                "block_id": "blkref",
+                                                "element": {
+                                                    "type": "static_select",
+                                                    "action_id": "reftype_select",
+                                                    "placeholder": {
+                                                        "type": "plain_text",
+                                                        "text": "Select a type",
+                                                        "emoji": true
+                                                    },
+                                                    "options": contentData
+                                                },
+                                                "label": {
+                                                    "type": "plain_text",
+                                                    "text": "What type of content do you need?",
+                                                    "emoji": true
+                                                }
+                                            }
+                                        ]
                                     }
-                                ]
+                                });
+                            } else {
+                                let refTypeData = processRefTypeResponse(response.account_search);
+                                bot.httpBody({
+                                    response_action: 'update',
+                                    view: {
+                                        "type": "modal",
+                                        "notify_on_close" : true,
+                                        "callback_id": "oppselect",
+                                        "private_metadata" : userProfile.user.profile.email,
+                                        "submit": {
+                                            "type": "plain_text",
+                                            "text": "Next",
+                                            "emoji": true
+                                        },
+                                        "title": {
+                                            "type": "plain_text",
+                                            "text": "Referenceability Type",
+                                            "emoji": true
+                                        },
+                                        "blocks": [
+                                            {
+                                                "type": "input",
+                                                "block_id": "blkref",
+                                                "element": {
+                                                    "type": "static_select",
+                                                    "action_id": "reftype_select",
+                                                    "placeholder": {
+                                                        "type": "plain_text",
+                                                        "text": "Select a type",
+                                                        "emoji": true
+                                                    },
+                                                    "options": refTypeData
+                                                },
+                                                "label": {
+                                                    "type": "plain_text",
+                                                    "text": "What type of reference do you need?",
+                                                    "emoji": true
+                                                }
+                                            }
+                                        ]
+                                    }
+                                });
+
                             }
-                            
-                        });
+                        }
+                        if(response == 'both') {
+                            const result = await bot.api.views.open({
+                                trigger_id: message.trigger_id,
+                                view: {
+                                    "type": "modal",
+                                    "notify_on_close" : true,
+                                    "callback_id" : "actionSelectionView",
+                                    "private_metadata" : userProfile.user.profile.email,
+                                    "title": {
+                                        "type": "plain_text",
+                                        "text": "Reference Assistant",
+                                        "emoji": true
+                                    },
+                                    "submit": {
+                                        "type": "plain_text",
+                                        "text": "Next",
+                                        "emoji": true
+                                    },
+                                    "close": {
+                                        "type": "plain_text",
+                                        "text": "Cancel",
+                                        "emoji": true
+                                    },
+                                    
+                                    "blocks": [
+                                        {
+                                            "type": "input",
+                                            "block_id": "accblock",
+                                            "element": {
+                                                "type": "radio_buttons",
+                                                "action_id": "searchid",
+                                                "options": [
+                                                    {
+                                                        "value": "account_search",
+                                                        "text": {
+                                                            "type": "plain_text",
+                                                            "text": "Reference Account(s)"
+                                                        }
+                                                    },
+                                                    {
+                                                        "value": "content_search",
+                                                        "text": {
+                                                            "type": "plain_text",
+                                                            "text": "Reference Content"
+                                                        }
+                                                    },
+                                                    {
+                                                        "value": "both",
+                                                        "text": {
+                                                            "type": "plain_text",
+                                                            "text": "Both"
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            "label": {
+                                                "type": "plain_text",
+                                                "text": "What do you need?",
+                                                "emoji": true
+                                            }
+                                        }
+                                    ]
+                                }
+                                
+                            });
+                        }
+                        
                         console.log('open view');
                         
                     } else if (!existingConn) {
@@ -584,6 +678,36 @@ module.exports = controller => {
         }
     } 
 
+    function processContentResponse(response) {
+        let ref = [];
+        Object.keys(response).forEach(function(k){
+            var entry = {
+                "text": {
+                    "type": "plain_text",
+                    "text": response[k]
+                },
+                "value": k
+            }
+            ref.push(entry);
+        });
+        return ref;
+    }
+
+    function processRefTypeResponse(response) {
+        let ref = [];
+        Object.keys(response).forEach(function(k){
+            let entry = {
+                "text": {
+                    "type": "plain_text",
+                    "text": k
+                },
+                "value": response[k]
+            }
+            ref.push(entry);
+        });
+        return ref;
+    }
+    
     controller.on(
         'view_submission',
         async (bot, message) => {
