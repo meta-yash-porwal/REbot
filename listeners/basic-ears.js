@@ -253,8 +253,8 @@ module.exports = controller => {
                             console.log(response);
                             if(response.hasOwnProperty('content_search')) {
                                 let contentData = processContentResponse(response.content_search);
-                                bot.httpBody({
-                                    response_action: 'update',
+                                await bot.api.views.open({
+                                    trigger_id: message.trigger_id,
                                     view: {
                                         "type": "modal",
                                         "notify_on_close" : true,
@@ -296,8 +296,8 @@ module.exports = controller => {
                                 });
                             } else {
                                 let refTypeData = processRefTypeResponse(response.account_search);
-                                bot.httpBody({
-                                    response_action: 'update',
+                                await bot.api.views.open({
+                                    trigger_id: message.trigger_id,
                                     view: {
                                         "type": "modal",
                                         "notify_on_close" : true,
