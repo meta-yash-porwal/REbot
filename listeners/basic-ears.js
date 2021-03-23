@@ -259,7 +259,7 @@ module.exports = controller => {
                                         "type": "modal",
                                         "notify_on_close" : true,
                                         "callback_id": "oppselect",
-                                        "private_metadata" : userProfile.user.profile.email + ':::content_search',
+                                        "private_metadata" : userProfile.user.profile.email + '::content_search',
                                         "submit": {
                                             "type": "plain_text",
                                             "text": "Next",
@@ -302,7 +302,7 @@ module.exports = controller => {
                                         "type": "modal",
                                         "notify_on_close" : true,
                                         "callback_id": "oppselect",
-                                        "private_metadata" : userProfile.user.profile.email + ':::account_search',
+                                        "private_metadata" : userProfile.user.profile.email + '::account_search',
                                         "submit": {
                                             "type": "plain_text",
                                             "text": "Next",
