@@ -726,12 +726,11 @@ module.exports = controller => {
                         let actionName = 'account_search';
                         actionName = message.view.state.values.accblock.searchid.selected_option.value;
                         let email = message.view.private_metadata + '::' + actionName;
-                        //let mapval = await getRefTypes(existingConn,actionName);
+                        let mapval = await getRefTypes(existingConn,actionName);
                         if (actionName == 'content_search') {
-                            await opportunityFlow(bot, message, existingConn, actionName, email);
+                            //await opportunityFlow(bot, message, existingConn, actionName, email);
                             
-                            /** commented ::: will be used in next version.. */
-                            /* bot.httpBody({
+                            bot.httpBody({
                                 response_action: 'update',
                                 view: {
                                     "type": "modal",
@@ -771,9 +770,9 @@ module.exports = controller => {
                                         }
                                     ]
                                 }
-                            }); */
+                            }); 
                         } else {
-                            let mapval = await getRefTypes(existingConn,actionName);
+                            //let mapval = await getRefTypes(existingConn,actionName);
                             bot.httpBody({
                                 response_action: 'update',
                                 view: {
