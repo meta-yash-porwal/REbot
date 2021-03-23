@@ -35,25 +35,25 @@ module.exports = {
                 if (response != 'false') {
                     response = JSON.parse(response);
                     console.log(response)
-                    if (action == 'content_search') {
-                        Object.keys(response).forEach(function(k){
+                    if (action == 'content_search' && response.hasOwnProperty('content_search')) {
+                        Object.keys(response.content_search).forEach(function(k){
                             var entry = {
                                 "text": {
                                     "type": "plain_text",
-                                    "text": response[k]
+                                    "text": response.content_search[k]
                                 },
                                 "value": k
                             }
                             ref.push(entry);
                         });
-                    } else {
-                        Object.keys(response).forEach(function(k){
+                    } else if(response.hasOwnProperty('account_search')){
+                        Object.keys(response.account_search).forEach(function(k){
                             let entry = {
                                 "text": {
                                     "type": "plain_text",
                                     "text": k
                                 },
-                                "value": response[k]
+                                "value": response.account_search[k]
                             }
                             ref.push(entry);
                         });
