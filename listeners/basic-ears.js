@@ -725,9 +725,8 @@ module.exports = controller => {
                     if (message.view.callback_id == 'actionSelectionView') {
                         let actionName = 'account_search';
                         actionName = message.view.state.values.accblock.searchid.selected_option.value;
-                        console.log('@@@actionName', actionName);
-                        console.log('@@@metadata', message.view.private_metadata);
-                        let metadata = message.view.private_metadata;
+                        
+                        /* let metadata = message.view.private_metadata;
                         if(!actionName && message.view.private_metadata 
                             && (message.view.private_metadata.includes('content_search') 
                                 || message.view.private_metadata.includes('account_search'))) {
@@ -737,8 +736,8 @@ module.exports = controller => {
                                 actionName = actionNameArr[1];
                                 metadata = actionNameArr[0];
                             }
-                        }
-                        let email = metadata + '::' + actionName;
+                        } */
+                        let email = message.view.private_metadata + '::' + actionName;//metadata + '::' + actionName;
                         let mapval = await getRefTypes(existingConn,actionName);
                         if (actionName == 'content_search') {
                             //await opportunityFlow(bot, message, existingConn, actionName, email);
