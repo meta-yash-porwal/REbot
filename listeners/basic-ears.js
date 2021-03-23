@@ -720,7 +720,7 @@ module.exports = controller => {
                     const authUrl = connFactory.getAuthUrl(message.team);
                     await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
                 } else {
-                    
+                    console.log('@@@callbackid', message.view.callback_id);
                     // When Account Name entered
                     if (message.view.callback_id == 'actionSelectionView') {
                         let actionName = 'account_search';
@@ -828,12 +828,14 @@ module.exports = controller => {
                             });
                         }
                     } else if (message.view.callback_id == 'oppselect') {
+                        console.log('@@@metadata_2', message.view.private_metadata);
                         let metdata = message.view.private_metadata;
                         const email = metdata.split('::')[0];
                         const actionName = metdata.split('::')[1];
                         await opportunityFlow(bot, message, existingConn, actionName, email);
                         
                     } else if (message.view.callback_id == 'searchselectopplarge') {
+                        console.log('@@@metadata_3', message.view.private_metadata);
                         let metadata = message.view.private_metadata;
                         let searchURL = metadata.split('::')[0];
                         const refselected = metadata.split('::')[1];
@@ -953,6 +955,7 @@ module.exports = controller => {
                             });
                         } 
                     } else if (message.view.callback_id == 'searchselect') {
+                        console.log('@@@metadata_4', message.view.private_metadata);
                         let metadata = message.view.private_metadata;
                         const refselected = metadata.split('::')[1];
                         let oppSelected = message.view.state.values.blkselectopp != null ? message.view.state.values.blkselectopp.opp_select.selected_option.value :
