@@ -259,7 +259,7 @@ module.exports = controller => {
                                         "type": "modal",
                                         "notify_on_close" : true,
                                         "callback_id": "oppselect",
-                                        "private_metadata" : userProfile.user.profile.email,
+                                        "private_metadata" : userProfile.user.profile.email + ':::content_search',
                                         "submit": {
                                             "type": "plain_text",
                                             "text": "Next",
@@ -302,7 +302,7 @@ module.exports = controller => {
                                         "type": "modal",
                                         "notify_on_close" : true,
                                         "callback_id": "oppselect",
-                                        "private_metadata" : userProfile.user.profile.email,
+                                        "private_metadata" : userProfile.user.profile.email + ':::account_search',
                                         "submit": {
                                             "type": "plain_text",
                                             "text": "Next",
@@ -725,7 +725,20 @@ module.exports = controller => {
                     if (message.view.callback_id == 'actionSelectionView') {
                         let actionName = 'account_search';
                         actionName = message.view.state.values.accblock.searchid.selected_option.value;
-                        let email = message.view.private_metadata + '::' + actionName;
+                        console.log('@@@actionName', actionName);
+                        console.log('@@@metadata', message.view.private_metadata);
+                        let metadata = message.view.private_metadata;
+                        if(!actionName && message.view.private_metadata 
+                            && (message.view.private_metadata.includes('content_search') 
+                                || message.view.private_metadata.includes('account_search'))) {
+                            
+                            let actionNameArr = message.view.private_metadata.split(':::');
+                            if(actionNameArr.length > 1) {
+                                actionName = actionNameArr[1];
+                                metadata = actionNameArr[0];
+                            }
+                        }
+                        let email = metadata + '::' + actionName;
                         let mapval = await getRefTypes(existingConn,actionName);
                         if (actionName == 'content_search') {
                             //await opportunityFlow(bot, message, existingConn, actionName, email);
