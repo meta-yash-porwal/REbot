@@ -251,7 +251,7 @@ module.exports = controller => {
                             console.log('response@@@###', response);
                             response = JSON.parse(response);
                             console.log(response);
-                            if(response.hasOwnProperty('content_search')) {
+                            if(!response.hasOwnProperty('account_search')) {
                                 let contentData = processContentResponse(response);
                                 await opportunityFlow(bot, message, existingConn, 'content_search', email, contentData);
                                 /* await bot.api.views.open({
