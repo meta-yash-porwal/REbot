@@ -515,7 +515,7 @@ module.exports = controller => {
         let opps = mapval['opp'];
         if (opps != null && opps.length > 0 && opps.length < 10) {
             viewObject = {
-                response_action: 'update',
+                //response_action: 'update',
                 view: {
                     "type": "modal",
                     "notify_on_close" : true,
@@ -556,7 +556,7 @@ module.exports = controller => {
             };
         } else if (opps != null && opps.length >= 10) {
             viewObject = {
-                response_action: 'update',
+                //response_action: 'update',
                 view: {
                     "type": "modal",
                     "notify_on_close" : true,
@@ -661,7 +661,7 @@ module.exports = controller => {
             }
             searchURL = 'Thanks! Please <' + searchURL + '|click to complete your request in Salesforce.>';
             viewObject = {
-                response_action: 'update',
+                //response_action: 'update',
                 view: {
                     "type": "modal",
                     "notify_on_close" : true,
@@ -696,6 +696,7 @@ module.exports = controller => {
             });
         } else {
             console.log('in else of open view.');
+            viewObject.response_action = 'update';
             bot.httpBody(viewObject);
         }
     } 
