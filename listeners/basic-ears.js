@@ -502,9 +502,11 @@ module.exports = controller => {
         console.log('----------actionName----------', actionName);
         let openView = false;
         let viewObject = {};
+        
         if(!mapval){
-            console.log('map val exists.');
             mapval = await getOpp(existingConn,email,actionName);
+        } else{
+            console.log('map val exists.');
             openView = true;
         }
         
