@@ -189,9 +189,9 @@ module.exports = {
         }
     },
 
-    checkOrgSettingAndGetData : async(conn) => {
+    checkOrgSettingAndGetData : async(conn, email) => {
         let result;
-        await conn.apex.get('/PORDEV/rebot/check_setting', (err, response) => {
+        await conn.apex.get('/PORDEV/rebot/check_setting::' + email , (err, response) => {
             if (err) {
                 logger.log(err);
             } else  if (response) {

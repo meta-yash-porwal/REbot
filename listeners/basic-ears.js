@@ -246,14 +246,15 @@ module.exports = controller => {
                             user : message.user
                         });
                         console.log('.......userprofile ....');
-                        let response = await checkOrgSettingAndGetData(existingConn);
+                        let response = await checkOrgSettingAndGetData(existingConn, userProfile.user.profile.email);
                         if (response != 'false' && response != 'both') {
                             console.log('response@@@###', response);
                             response = JSON.parse(response);
                             console.log(response);
                             if(response.hasOwnProperty('content_search')) {
-                                let contentData = processContentResponse(response.content_search);
-                                await bot.api.views.open({
+                                let contentData = processContentResponse(response);
+                                await opportunityFlow(bot, message, existingConn, 'content_search', email, contentData);
+                                /* await bot.api.views.open({
                                     trigger_id: message.trigger_id,
                                     view: {
                                         "type": "modal",
@@ -293,7 +294,7 @@ module.exports = controller => {
                                             }
                                         ]
                                     }
-                                });
+                                }); */
                             } else {
                                 let refTypeData = processRefTypeResponse(response.account_search);
                                 await bot.api.views.open({
@@ -495,11 +496,14 @@ module.exports = controller => {
         });
     }
 
-    async function opportunityFlow (bot, message, existingConn, actionName, email) {
+    async function opportunityFlow (bot, message, existingConn, actionName, email, mapval) {
         let refselected = message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_option != null ? message.view.state.values.blkref.reftype_select.selected_option : 'NONE';
         refselected = refselected && refselected != 'NONE' && refselected != '' && refselected != null ? (refselected.value.indexOf('::') > -1 ? refselected.value.split('::')[1] : refselected.value) : '';
         console.log('----------actionName----------', actionName);
-        let mapval = await getOpp(existingConn,email,actionName);
+        if(!mapval){
+            mapval = await getOpp(existingConn,email,actionName);
+        }
+        
         let searchURL = mapval['searchURL'];
         console.log('------------searchURL----------', searchURL);
         let opps = mapval['opp'];
@@ -680,7 +684,27 @@ module.exports = controller => {
     } 
 
     function processContentResponse(response) {
-        let ref = [];
+        let opp = [];
+        let returnVal = {};
+        if (response != 'false') {
+            console.log(response);
+            //response = JSON.parse(response);
+            let oppList = response['opp'];
+            returnVal['searchURL'] = response['searchURL'];
+            oppList.forEach(function(oppWrapper){
+                let entry = {
+                    "text": {
+                        "type": "plain_text",
+                        "text": oppWrapper['oppName'] + ' (' + oppWrapper['accName'] + ')'
+                    },
+                    "value": oppWrapper['id']
+                }
+                opp.push(entry);
+            });
+            returnVal['opp'] = opp;
+        }
+        return returnVal;
+        /* let ref = [];
         Object.keys(response).forEach(function(k){
             var entry = {
                 "text": {
@@ -691,7 +715,7 @@ module.exports = controller => {
             }
             ref.push(entry);
         });
-        return ref;
+        return ref; */
     }
 
     function processRefTypeResponse(response) {
@@ -725,24 +749,12 @@ module.exports = controller => {
                     if (message.view.callback_id == 'actionSelectionView') {
                         let actionName = 'account_search';
                         actionName = message.view.state.values.accblock.searchid.selected_option.value;
-                        
-                        /* let metadata = message.view.private_metadata;
-                        if(!actionName && message.view.private_metadata 
-                            && (message.view.private_metadata.includes('content_search') 
-                                || message.view.private_metadata.includes('account_search'))) {
-                            
-                            let actionNameArr = message.view.private_metadata.split(':::');
-                            if(actionNameArr.length > 1) {
-                                actionName = actionNameArr[1];
-                                metadata = actionNameArr[0];
-                            }
-                        } */
                         let email = message.view.private_metadata + '::' + actionName;//metadata + '::' + actionName;
-                        let mapval = await getRefTypes(existingConn,actionName);
+                        //let mapval = await getRefTypes(existingConn,actionName);
                         if (actionName == 'content_search') {
-                            //await opportunityFlow(bot, message, existingConn, actionName, email);
+                            await opportunityFlow(bot, message, existingConn, actionName, email, null);
                             
-                            bot.httpBody({
+                            /* bot.httpBody({
                                 response_action: 'update',
                                 view: {
                                     "type": "modal",
@@ -782,9 +794,9 @@ module.exports = controller => {
                                         }
                                     ]
                                 }
-                            }); 
+                            });  */
                         } else {
-                            //let mapval = await getRefTypes(existingConn,actionName);
+                            let mapval = await getRefTypes(existingConn,actionName);
                             bot.httpBody({
                                 response_action: 'update',
                                 view: {
@@ -831,7 +843,7 @@ module.exports = controller => {
                         let metdata = message.view.private_metadata;
                         const email = metdata.split('::')[0];
                         const actionName = metdata.split('::')[1];
-                        await opportunityFlow(bot, message, existingConn, actionName, email);
+                        await opportunityFlow(bot, message, existingConn, actionName, email, null);
                         
                     } else if (message.view.callback_id == 'searchselectopplarge') {
                         console.log('@@@metadata_3', message.view.private_metadata);
