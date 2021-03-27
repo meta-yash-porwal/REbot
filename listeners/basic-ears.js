@@ -501,7 +501,9 @@ module.exports = controller => {
         refselected = refselected && refselected != 'NONE' && refselected != '' && refselected != null ? (refselected.value.indexOf('::') > -1 ? refselected.value.split('::')[1] : refselected.value) : '';
         console.log('----------actionName----------', actionName);
         let openView = false;
+        let viewObject = {};
         if(!mapval){
+            console.log('map val exists.');
             mapval = await getOpp(existingConn,email,actionName);
             openView = true;
         }
@@ -684,8 +686,10 @@ module.exports = controller => {
             };
         }
         if(openView) {
+            console.log('in open view.');
             await bot.api.views.open(viewObject);
         } else {
+            console.log('in else of open view.');
             bot.httpBody(viewObject);
         }
     } 
