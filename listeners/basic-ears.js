@@ -689,11 +689,8 @@ module.exports = controller => {
         }
         if(openView) {
             console.log('in open view.');
-            await bot.api.views.open({
-
-                trigger_id: message.trigger_id,
-                view: viewObject
-            });
+            viewObject.trigger_id = message.trigger_id;
+            await bot.api.views.open(viewObject);
         } else {
             console.log('in else of open view.');
             viewObject.response_action = 'update';
