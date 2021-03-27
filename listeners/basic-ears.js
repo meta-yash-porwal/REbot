@@ -500,15 +500,17 @@ module.exports = controller => {
         let refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_option != null ? message.view.state.values.blkref.reftype_select.selected_option : 'NONE';
         refselected = refselected && refselected != 'NONE' && refselected != '' && refselected != null ? (refselected.value.indexOf('::') > -1 ? refselected.value.split('::')[1] : refselected.value) : '';
         console.log('----------actionName----------', actionName);
+        let openView = false;
         if(!mapval){
             mapval = await getOpp(existingConn,email,actionName);
+            openView = true;
         }
         
         let searchURL = mapval['searchURL'];
         console.log('------------searchURL----------', searchURL);
         let opps = mapval['opp'];
         if (opps != null && opps.length > 0 && opps.length < 10) {
-            bot.httpBody({
+            viewObject = {
                 response_action: 'update',
                 view: {
                     "type": "modal",
@@ -547,9 +549,9 @@ module.exports = controller => {
                         }
                     ]
                 }
-            });
+            };
         } else if (opps != null && opps.length >= 10) {
-            bot.httpBody({
+            viewObject = {
                 response_action: 'update',
                 view: {
                     "type": "modal",
@@ -648,13 +650,13 @@ module.exports = controller => {
                         }
                     ]
                 }
-            });
+            };
         } else {
             if (refselected && refselected != 'NONE' && refselected != '' && refselected != null) {
                 searchURL += '&type=' + refselected;
             }
             searchURL = 'Thanks! Please <' + searchURL + '|click to complete your request in Salesforce.>';
-            bot.httpBody({
+            viewObject = {
                 response_action: 'update',
                 view: {
                     "type": "modal",
@@ -679,7 +681,12 @@ module.exports = controller => {
                         }
                     ]
                 }
-            });
+            };
+        }
+        if(openView) {
+            await bot.api.views.open(viewObject);
+        } else {
+            bot.httpBody(viewObject);
         }
     } 
 
