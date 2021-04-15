@@ -197,7 +197,7 @@ module.exports = {
             } else  if (response) {
                 console.log('response check org', response);
                 if(response === '{}') {
-                    response = JSON.stringify('both');
+                    response = 'both';
                 }
                 result = response;
             }
