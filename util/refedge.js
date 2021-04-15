@@ -195,7 +195,10 @@ module.exports = {
             if (err) {
                 logger.log(err);
             } else  if (response) {
-                console.log('response', response);
+                console.log('response check org', response);
+                if(Object.keys(response).length === 0) {
+                    response = JSON.stringify('both');
+                }
                 result = response;
             }
         });
