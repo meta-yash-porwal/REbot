@@ -196,7 +196,7 @@ module.exports = {
                 logger.log(err);
             } else  if (response) {
                 console.log('response check org', response);
-                if(Object.keys(response).length === 0) {
+                if(response === '{}') {
                     response = JSON.stringify('both');
                 }
                 result = response;
