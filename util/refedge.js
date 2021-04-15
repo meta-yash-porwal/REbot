@@ -190,6 +190,7 @@ module.exports = {
     },
 
     checkOrgSettingAndGetData : async(conn, email) => {
+        console.log('namespace@@', process.env.NAMESPACE);
         let result;
         await conn.apex.get('/PORDEV/rebot/check_setting::' + email , (err, response) => {
             if (err) {
