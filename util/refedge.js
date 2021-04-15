@@ -4,7 +4,7 @@ const logger = require('../common/logger');
 //replace /PORDEV with /refedge
 module.exports = {
     saveTeamId: async (conn, teamData) => {
-        await conn.apex.post('/PORDEV/rebot/saveTeamId', teamData, (err, res) => {
+        await conn.apex.post(process.env.NAMESPACE +'/rebot/saveTeamId', teamData, (err, res) => {
 
             if (err) {
                 logger.log(err);
@@ -14,7 +14,7 @@ module.exports = {
     submitRequest: async (conn, teamData) => {
         let returnVal = '';
         try {
-            await conn.apex.post('/PORDEV/rebot/submitRequest', teamData, (err, res) => {
+            await conn.apex.post(process.env.NAMESPACE +'/rebot/submitRequest', teamData, (err, res) => {
                 returnVal = res;
                 if (err) {
                     logger.log(err);
@@ -27,7 +27,7 @@ module.exports = {
     },
     getRefTypes: async (conn,action) => {
         let ref = [];
-        let url = action == null || action == '' ? '/PORDEV/rebot/REF_TYPE' : '/PORDEV/rebot/REF_TYPE::' + action;
+        let url = action == null || action == '' ? process.env.NAMESPACE +'/rebot/REF_TYPE' : process.env.NAMESPACE +'/rebot/REF_TYPE::' + action;
         await conn.apex.get(url, (err, response) => {
             if (err) {
                 logger.log(err);
@@ -66,7 +66,7 @@ module.exports = {
     getOpp: async (conn,email,action) => {
         let opp = [];
         let returnVal = {};
-        let url = action == null || action == '' ? '/PORDEV/rebot/OPP_TYPE' + '::' + email : '/PORDEV/rebot/OPP_TYPE::' + email + '::' + action;
+        let url = action == null || action == '' ? process.env.NAMESPACE +'/rebot/OPP_TYPE' + '::' + email : process.env.NAMESPACE +'/rebot/OPP_TYPE::' + email + '::' + action;
         await conn.apex.get(url, (err, response) => {
             if (err) {
                 logger.log(err);
@@ -95,7 +95,7 @@ module.exports = {
     getOppfromName: async (conn,email,name) => {
         let opp = [];
         name = encodeURIComponent(name);
-        let url = '/PORDEV/rebot/OPP_TYPE_NAME' + '::' + email + '::' + name;
+        let url = process.env.NAMESPACE +'/rebot/OPP_TYPE_NAME' + '::' + email + '::' + name;
         await conn.apex.get(url, (err, response) => {
             if (err) {
                 logger.log(err);
@@ -120,7 +120,7 @@ module.exports = {
     getOppfromAcc: async (conn,email,name) => {
         let opp = [];
         name = encodeURIComponent(name);
-        let url = '/PORDEV/rebot/OPP_TYPE_ACCNAME' + '::' + email + '::' + name;
+        let url = process.env.NAMESPACE +'/rebot/OPP_TYPE_ACCNAME' + '::' + email + '::' + name;
         console.log(url);
         await conn.apex.get(url, (err, response) => {
             if (err) {
@@ -148,7 +148,7 @@ module.exports = {
             return 'false';
         } else {
             let val = [];
-            await conn.apex.get('/PORDEV/rebot/' + accName , accName, (err, response) => {
+            await conn.apex.get(process.env.NAMESPACE +'/rebot/' + accName , accName, (err, response) => {
                 if (err) {
                     logger.log(err);
                 } else  if (response) {
@@ -175,7 +175,7 @@ module.exports = {
             return 'false';
         } else {
             let val = '';
-            await conn.apex.get('/PORDEV/rebot/' + 'LINK_URL' ,'LINK_URL', (err, response) => {
+            await conn.apex.get(process.env.NAMESPACE +'/rebot/' + 'LINK_URL' ,'LINK_URL', (err, response) => {
                 if (err) {
                     logger.log(err);
                 } else  if (response) {
@@ -192,7 +192,7 @@ module.exports = {
     checkOrgSettingAndGetData : async(conn, email) => {
         console.log('namespace@@', process.env.NAMESPACE);
         let result;
-        await conn.apex.get('/PORDEV/rebot/check_setting::' + email , (err, response) => {
+        await conn.apex.get(process.env.NAMESPACE +'/rebot/check_setting::' + email , (err, response) => {
             if (err) {
                 logger.log(err);
             } else  if (response) {
