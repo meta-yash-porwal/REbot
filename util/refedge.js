@@ -194,6 +194,7 @@ module.exports = {
         await conn.apex.get(process.env.NAMESPACE +'/rebot/check_setting::' + email , (err, response) => {
             if (err) {
                 logger.log(err);
+                result = 'both';
             } else  if (response) {
                 if(response === '{}') {
                     response = 'both';
