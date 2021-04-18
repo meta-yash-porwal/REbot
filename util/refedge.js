@@ -1,7 +1,7 @@
 
 const connFactory = require('../util/connection-factory');
 const logger = require('../common/logger');
-//replace /PORDEV with /refedge
+
 module.exports = {
     saveTeamId: async (conn, teamData) => {
         await conn.apex.post(process.env.NAMESPACE +'/rebot/saveTeamId', teamData, (err, res) => {
@@ -190,13 +190,11 @@ module.exports = {
     },
 
     checkOrgSettingAndGetData : async(conn, email) => {
-        console.log('namespace@@', process.env.NAMESPACE);
         let result;
         await conn.apex.get(process.env.NAMESPACE +'/rebot/check_setting::' + email , (err, response) => {
             if (err) {
                 logger.log(err);
             } else  if (response) {
-                console.log('response check org', response);
                 if(response === '{}') {
                     response = 'both';
                 }
