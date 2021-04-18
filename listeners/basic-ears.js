@@ -1,7 +1,7 @@
 const connFactory = require('../util/connection-factory');
 const logger = require('../common/logger');
 
-const { getRefTypes, getOpp, getOppfromName, getOppfromAcc, saveTeamId} = require('../util/refedge');
+const { getRefTypes, getOpp, getOppfromName, getOppfromAcc, saveTeamId, checkOrgSettingAndGetData} = require('../util/refedge');
 
 const { checkTeamMigration } = require('../listeners/middleware/migration-filter');
 
@@ -44,38 +44,42 @@ module.exports = controller => {
     });
 
     controller.on('post-message', reqBody => {
-
+        console.log('posting message----');
         reqBody.messages.forEach(async msg => {
 
             try {
                 let teamIdsArray = reqBody.teamId.split(',');
                 const teams = await controller.plugins.database.teams.find({ id: { $in: teamIdsArray } });
-
+                
                 if (!teams) {
                     return logger.log('team not found for id:', reqBody.teamId);
                 }
 
                 for (let index = 0, len = teams.length; index < len; index++) {
+                    console.log('...checking migration...');
                     const isTeamMigrating = await checkTeamMigration(teams[index].id, controller);
-
                     if (!isTeamMigrating) {
+                        console.log('...spawning bot...');
                         const bot = await controller.spawn(teams[index].id);
-
+                        console.log('...spawning bot2...');
                         if (msg.userEmail) {
+                            console.log('...getting userData...');
                             const userData = await bot.api.users.lookupByEmail({
                                 token: teams[index].bot.token,
                                 email: msg.userEmail
                             });
 
                             if (!userData || !userData.user) {
-                                    return logger.log('user not found in team ' + teams[index].id + ' for email:', msg.userEmail);
-                                }
+                                return logger.log('user not found in team ' + teams[index].id + ' for email:', msg.userEmail);
+                            }
+                            console.log('...starting conversation...');
                             await bot.startPrivateConversation(userData.user.id);
                             await bot.say(msg.text);
-                                    } else {
+                        } else {
+                            console.log('....getting channels...');
                             const channels = await controller.plugins.database.channels.find({ team_id: teams[index].id });
-
                             if (channels && channels.length > 0) {
+                                console.log('posting message in channel');
                                 await bot.startConversationInChannel(channels[0].id);
                                 await bot.say(msg.text);
                             }
@@ -104,12 +108,14 @@ module.exports = controller => {
             console.log('----------messages----------------');
             
             if (conversationHistory.length <= 0) {
+                console.log('....posting first msg for new user......');
                 const support_page = 'https://www.point-of-reference.com/contact/';
                 await bot.say(`Hello, I'm Referencebot. I'm here to assist you with finding customer references, and to help deliver messages related to your reference requests from ReferenceEdge to you. \n`
                 + `Use the /references command to request reference accounts or reference content. \n` 
                 + `Are you an administrator? I can connect you to a Salesforce instance. Just type 'connect to a Salesforce instance' to get started.\n`
                 +`Please visit the <${support_page}|support page> if you have any further questions.`
                 );
+                console.log('.....message posted.....');
             }
         }catch (error) {
             console.log('--error in app home opened event--');
@@ -157,6 +163,7 @@ module.exports = controller => {
             let isNew = false;
 
             if (!existingTeam) {
+                console.log('....creating new team....');
                 isNew = true;
                 existingTeam = {
                     id: authData.team.id,
@@ -171,10 +178,12 @@ module.exports = controller => {
                 user_id : authData.bot_user_id,
                 created_by: authData.authed_user.id
             };
+            console.log('....saving team....');
             const savedTeam = await controller.plugins.database.teams.save(existingTeam);
             console.log('saved team');
             console.dir(savedTeam);
 			if (isNew) {
+                console.log('....creation of crp channel.....');
                 let bot = await controller.spawn(authData.team.id);
                 controller.trigger('create_channel', bot, authData);
             }
@@ -185,6 +194,7 @@ module.exports = controller => {
     });
 
     controller.on('onboard', async (bot, params) => {
+        console.log('....onboarding message.....');
         const internal_url = 'slack://channel?team='+ params.teamId +'&id='+ params.channelId;
         const support_page = 'https://www.point-of-reference.com/contact/';
         
@@ -204,13 +214,13 @@ module.exports = controller => {
                 token: authData.access_token,
                 name: 'crp_team'
             });
-
+            console.log('....channel created....');
             const crpTeamChannel = {
                 id: result.channel.id,
                 name: result.channel.name,
                 team_id: authData.team.id
             };
-            console.log('-----/crpTeamChannel/-----');
+            console.log('-----/ saving crpTeamChannel/-----');
             const savedData = await controller.plugins.database.channels.save(crpTeamChannel);
             console.log('savedData', savedData);
             
@@ -244,72 +254,170 @@ module.exports = controller => {
                             token : bot.api.token,
                             user : message.user
                         });
-                        console.log('.......userprofile ....');
-                        
-                        const result = await bot.api.views.open({
-                            trigger_id: message.trigger_id,
-                            view: {
-                                "type": "modal",
-                                "notify_on_close" : true,
-                                "callback_id" : "actionSelectionView",
-                                "private_metadata" : userProfile.user.profile.email,
-                                "title": {
-                                    "type": "plain_text",
-                                    "text": "Reference Assistant",
-                                    "emoji": true
-                                },
-                                "submit": {
-                                    "type": "plain_text",
-                                    "text": "Next",
-                                    "emoji": true
-                                },
-                                "close": {
-                                    "type": "plain_text",
-                                    "text": "Cancel",
-                                    "emoji": true
-                                },
-                                
-                                "blocks": [
-                                    {
-                                        "type": "input",
-                                        "block_id": "accblock",
-                                        "element": {
-                                            "type": "radio_buttons",
-                                            "action_id": "searchid",
-                                            "options": [
-                                                {
-                                                    "value": "account_search",
-                                                    "text": {
-                                                        "type": "plain_text",
-                                                        "text": "Reference Account(s)"
-                                                    }
-                                                },
-                                                {
-                                                    "value": "content_search",
-                                                    "text": {
-                                                        "type": "plain_text",
-                                                        "text": "Reference Content"
-                                                    }
-                                                },
-                                                {
-                                                    "value": "both",
-                                                    "text": {
-                                                        "type": "plain_text",
-                                                        "text": "Both"
-                                                    }
-                                                }
-                                            ]
-                                        },
-                                        "label": {
+                        console.log('.......checking org settings ....');
+                        let response = await checkOrgSettingAndGetData(existingConn, userProfile.user.profile.email);
+                        if (response != 'false' && response != 'both') {
+                            console.log('response', response);
+                            response = JSON.parse(response);
+                            if(!response.hasOwnProperty('account_search')) {
+                                let contentData = processContentResponse(response);
+                                console.log('...content opp flow...');
+                                await opportunityFlow(bot, message, existingConn, 'content_search', userProfile.user.profile.email, contentData);
+                                /* await bot.api.views.open({
+                                    trigger_id: message.trigger_id,
+                                    view: {
+                                        "type": "modal",
+                                        "notify_on_close" : true,
+                                        "callback_id": "oppselect",
+                                        "private_metadata" : userProfile.user.profile.email + '::content_search',
+                                        "submit": {
                                             "type": "plain_text",
-                                            "text": "What do you need?",
+                                            "text": "Next",
                                             "emoji": true
-                                        }
+                                        },
+                                        "title": {
+                                            "type": "plain_text",
+                                            "text": "Content Type",
+                                            "emoji": true
+                                        },
+                                        "blocks": [
+                                            {
+                                                "type": "input",
+                                                "optional" : true,
+                                                "block_id": "blkref",
+                                                "element": {
+                                                    "type": "static_select",
+                                                    "action_id": "reftype_select",
+                                                    "placeholder": {
+                                                        "type": "plain_text",
+                                                        "text": "Select a type",
+                                                        "emoji": true
+                                                    },
+                                                    "options": contentData
+                                                },
+                                                "label": {
+                                                    "type": "plain_text",
+                                                    "text": "What type of content do you need?",
+                                                    "emoji": true
+                                                }
+                                            }
+                                        ]
                                     }
-                                ]
+                                }); */
+                            } else {
+                                console.log('...Reftype flow...');
+                                let refTypeData = processRefTypeResponse(response.account_search);
+                                await bot.api.views.open({
+                                    trigger_id: message.trigger_id,
+                                    view: {
+                                        "type": "modal",
+                                        "notify_on_close" : true,
+                                        "callback_id": "oppselect",
+                                        "private_metadata" : userProfile.user.profile.email + '::account_search',
+                                        "submit": {
+                                            "type": "plain_text",
+                                            "text": "Next",
+                                            "emoji": true
+                                        },
+                                        "title": {
+                                            "type": "plain_text",
+                                            "text": "Referenceability Type",
+                                            "emoji": true
+                                        },
+                                        "blocks": [
+                                            {
+                                                "type": "input",
+                                                "block_id": "blkref",
+                                                "element": {
+                                                    "type": "static_select",
+                                                    "action_id": "reftype_select",
+                                                    "placeholder": {
+                                                        "type": "plain_text",
+                                                        "text": "Select a type",
+                                                        "emoji": true
+                                                    },
+                                                    "options": refTypeData
+                                                },
+                                                "label": {
+                                                    "type": "plain_text",
+                                                    "text": "What type of reference do you need?",
+                                                    "emoji": true
+                                                }
+                                            }
+                                        ]
+                                    }
+                                });
+
                             }
-                            
-                        });
+                        }
+                        if(response == 'both') {
+                            console.log('...opening both view...');
+                            const result = await bot.api.views.open({
+                                trigger_id: message.trigger_id,
+                                view: {
+                                    "type": "modal",
+                                    "notify_on_close" : true,
+                                    "callback_id" : "actionSelectionView",
+                                    "private_metadata" : userProfile.user.profile.email,
+                                    "title": {
+                                        "type": "plain_text",
+                                        "text": "Reference Assistant",
+                                        "emoji": true
+                                    },
+                                    "submit": {
+                                        "type": "plain_text",
+                                        "text": "Next",
+                                        "emoji": true
+                                    },
+                                    "close": {
+                                        "type": "plain_text",
+                                        "text": "Cancel",
+                                        "emoji": true
+                                    },
+                                    
+                                    "blocks": [
+                                        {
+                                            "type": "input",
+                                            "block_id": "accblock",
+                                            "element": {
+                                                "type": "radio_buttons",
+                                                "action_id": "searchid",
+                                                "options": [
+                                                    {
+                                                        "value": "account_search",
+                                                        "text": {
+                                                            "type": "plain_text",
+                                                            "text": "Reference Account(s)"
+                                                        }
+                                                    },
+                                                    {
+                                                        "value": "content_search",
+                                                        "text": {
+                                                            "type": "plain_text",
+                                                            "text": "Reference Content"
+                                                        }
+                                                    },
+                                                    {
+                                                        "value": "both",
+                                                        "text": {
+                                                            "type": "plain_text",
+                                                            "text": "Both"
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            "label": {
+                                                "type": "plain_text",
+                                                "text": "What do you need?",
+                                                "emoji": true
+                                            }
+                                        }
+                                    ]
+                                }
+                                
+                            });
+                        }
+                        
                         console.log('open view');
                         
                     } else if (!existingConn) {
@@ -318,6 +426,7 @@ module.exports = controller => {
                     }
                 }
             } catch (err) {
+                console.log('...exception in opening view 1 ....');
                 logger.log(err);
             }
         }
@@ -332,17 +441,25 @@ module.exports = controller => {
             
     });
 
-    async function opportunityFlow (bot, message, existingConn, actionName, email) {
-        let refselected = message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_option != null ? message.view.state.values.blkref.reftype_select.selected_option : 'NONE';
+    async function opportunityFlow (bot, message, existingConn, actionName, email, mapval) {
+        let refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_option != null ? message.view.state.values.blkref.reftype_select.selected_option : 'NONE';
         refselected = refselected && refselected != 'NONE' && refselected != '' && refselected != null ? (refselected.value.indexOf('::') > -1 ? refselected.value.split('::')[1] : refselected.value) : '';
         console.log('----------actionName----------', actionName);
-        let mapval = await getOpp(existingConn,email,actionName);
+        let openView = false;
+        let viewObject = {};
+        
+        if(!mapval){
+            mapval = await getOpp(existingConn,email,actionName);
+        } else{
+            console.log('map val exists.');
+            openView = true;
+        }
+        
         let searchURL = mapval['searchURL'];
         console.log('------------searchURL----------', searchURL);
         let opps = mapval['opp'];
         if (opps != null && opps.length > 0 && opps.length < 10) {
-            bot.httpBody({
-                response_action: 'update',
+            viewObject = {
                 view: {
                     "type": "modal",
                     "notify_on_close" : true,
@@ -380,10 +497,9 @@ module.exports = controller => {
                         }
                     ]
                 }
-            });
+            };
         } else if (opps != null && opps.length >= 10) {
-            bot.httpBody({
-                response_action: 'update',
+            viewObject = {
                 view: {
                     "type": "modal",
                     "notify_on_close" : true,
@@ -481,14 +597,13 @@ module.exports = controller => {
                         }
                     ]
                 }
-            });
+            };
         } else {
             if (refselected && refselected != 'NONE' && refselected != '' && refselected != null) {
                 searchURL += '&type=' + refselected;
             }
             searchURL = 'Thanks! Please <' + searchURL + '|click to complete your request in Salesforce.>';
-            bot.httpBody({
-                response_action: 'update',
+            viewObject = {
                 view: {
                     "type": "modal",
                     "notify_on_close" : true,
@@ -512,10 +627,56 @@ module.exports = controller => {
                         }
                     ]
                 }
-            });
+            };
+        }
+        if(openView) {
+            console.log('in open view.');
+            viewObject.trigger_id = message.trigger_id;
+            await bot.api.views.open(viewObject);
+        } else {
+            console.log('in else of open view.');
+            viewObject.response_action = 'update';
+            bot.httpBody(viewObject);
         }
     } 
 
+    function processContentResponse(response) {
+        let opp = [];
+        let returnVal = {};
+        if (response != 'false') {
+            console.log(response);
+            let oppList = response['opp'];
+            returnVal['searchURL'] = response['searchURL'];
+            oppList.forEach(function(oppWrapper){
+                let entry = {
+                    "text": {
+                        "type": "plain_text",
+                        "text": oppWrapper['oppName'] + ' (' + oppWrapper['accName'] + ')'
+                    },
+                    "value": oppWrapper['id']
+                }
+                opp.push(entry);
+            });
+            returnVal['opp'] = opp;
+        }
+        return returnVal;
+    }
+
+    function processRefTypeResponse(response) {
+        let ref = [];
+        Object.keys(response).forEach(function(k){
+            let entry = {
+                "text": {
+                    "type": "plain_text",
+                    "text": k
+                },
+                "value": response[k]
+            }
+            ref.push(entry);
+        });
+        return ref;
+    }
+    
     controller.on(
         'view_submission',
         async (bot, message) => {
@@ -527,17 +688,17 @@ module.exports = controller => {
                     const authUrl = connFactory.getAuthUrl(message.team);
                     await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
                 } else {
-                    
+                    console.log('callbackid', message.view.callback_id);
                     // When Account Name entered
                     if (message.view.callback_id == 'actionSelectionView') {
                         let actionName = 'account_search';
                         actionName = message.view.state.values.accblock.searchid.selected_option.value;
-                        let email = message.view.private_metadata + '::' + actionName;
+                        let email = message.view.private_metadata + '::' + actionName;//metadata + '::' + actionName;
                         //let mapval = await getRefTypes(existingConn,actionName);
                         if (actionName == 'content_search') {
-                            await opportunityFlow(bot, message, existingConn, actionName, email);
+                            console.log('...view submission content opp flow....');
+                            await opportunityFlow(bot, message, existingConn, actionName, email, null);
                             
-                            /** commented ::: will be used in next version.. */
                             /* bot.httpBody({
                                 response_action: 'update',
                                 view: {
@@ -578,8 +739,9 @@ module.exports = controller => {
                                         }
                                     ]
                                 }
-                            }); */
+                            });  */
                         } else {
+                            console.log('...view submission ref type flow....');
                             let mapval = await getRefTypes(existingConn,actionName);
                             bot.httpBody({
                                 response_action: 'update',
@@ -623,12 +785,14 @@ module.exports = controller => {
                             });
                         }
                     } else if (message.view.callback_id == 'oppselect') {
+                        console.log('@@@metadata_2');
                         let metdata = message.view.private_metadata;
                         const email = metdata.split('::')[0];
                         const actionName = metdata.split('::')[1];
-                        await opportunityFlow(bot, message, existingConn, actionName, email);
+                        await opportunityFlow(bot, message, existingConn, actionName, email, null);
                         
                     } else if (message.view.callback_id == 'searchselectopplarge') {
+                        console.log('@@@metadata_3');
                         let metadata = message.view.private_metadata;
                         let searchURL = metadata.split('::')[0];
                         const refselected = metadata.split('::')[1];
@@ -748,6 +912,7 @@ module.exports = controller => {
                             });
                         } 
                     } else if (message.view.callback_id == 'searchselect') {
+                        console.log('@@@metadata_4');
                         let metadata = message.view.private_metadata;
                         const refselected = metadata.split('::')[1];
                         let oppSelected = message.view.state.values.blkselectopp != null ? message.view.state.values.blkselectopp.opp_select.selected_option.value :

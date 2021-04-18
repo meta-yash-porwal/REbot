@@ -1,10 +1,10 @@
 
 module.exports = {
     log: (...messages) => {
-        console.log('-----');
+        console.log('-----@@@@');
         messages.forEach(m => {
             console.log(m);
         });
-        console.log('-----');
+        console.log('-----@@@@');
     }
 };
