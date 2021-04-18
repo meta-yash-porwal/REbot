@@ -255,7 +255,15 @@ module.exports = controller => {
                             user : message.user
                         });
                         console.log('.......checking org settings ....');
-                        let response = await checkOrgSettingAndGetData(existingConn, userProfile.user.profile.email);
+                        let response = null;
+                        try {
+                            response = await checkOrgSettingAndGetData(existingConn, userProfile.user.profile.email);
+                        }catch(err) {
+                            response = 'both';
+                            console.log('...exception in checking org...');
+                            logger.log(err);
+                        }
+                        
                         if (response != 'false' && response != 'both') {
                             console.log('response', response);
                             response = JSON.parse(response);
