@@ -34,26 +34,35 @@ module.exports = {
             } else  if (response) {
                 if (response != 'false') {
                     response = JSON.parse(response);
-                    console.log(response)
-                    if (action == 'content_search' && response.hasOwnProperty('content_search')) {
-                        Object.keys(response.content_search).forEach(function(k){
+                    console.log('!!!action..', action);
+                    if (action == 'content_search') {
+                        let contentTypes = response;
+                        if(response.hasOwnProperty('content_search')) {
+                            contentTypes = response.content_search;
+                        }
+                        Object.keys(contentTypes).forEach(function(k){
                             var entry = {
                                 "text": {
                                     "type": "plain_text",
-                                    "text": response.content_search[k]
+                                    "text": contentTypes[k]
                                 },
                                 "value": k
                             }
                             ref.push(entry);
                         });
-                    } else if(response.hasOwnProperty('account_search')){
-                        Object.keys(response.account_search).forEach(function(k){
+                    } else{
+                        console.log('getting refs');
+                        let refTypes = response;
+                        if(response.hasOwnProperty('account_search')) {
+                            refTypes = response.account_search;
+                        }
+                        Object.keys(refTypes).forEach(function(k){
                             let entry = {
                                 "text": {
                                     "type": "plain_text",
                                     "text": k
                                 },
-                                "value": response.account_search[k]
+                                "value": refTypes[k]
                             }
                             ref.push(entry);
                         });
