@@ -751,8 +751,6 @@ module.exports = controller => {
                         } else {
                             console.log('...view submission ref type flow....');
                             let mapval = await getRefTypes(existingConn,actionName);
-                            console.log('!!!!mapval', mapval);
-                            console.log('!!!email', email);
                             bot.httpBody({
                                 response_action: 'update',
                                 view: {
