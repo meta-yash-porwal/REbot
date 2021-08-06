@@ -50,12 +50,13 @@ module.exports = controller => {
             try {
                 let teamIdsArray = reqBody.teamId.split(',');
                 console.log('team id array...', teamIdsArray);
-                let teams = await controller.plugins.database.teams.find({ id: { $in: teamIdsArray } });
-                teams = null;
+                const teams = await controller.plugins.database.teams.find({ id: { $in: teamIdsArray } });
+                
                 if (!teams) {
-                    return logger.log('team not found for id:', reqBody.teamId);
+                    logger.log('team not found for id:', reqBody.teamId);
                 } else {
                     console.log('teams...', teams);
+                    return;
                 }
 
                 for (let index = 0, len = teams.length; index < len; index++) {
