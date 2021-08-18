@@ -279,7 +279,7 @@ module.exports = controller => {
                             console.log('response', response);
                             if(!response.hasOwnProperty('account_search')) {
                                 //let contentData = processContentResponse(response);
-                                let contentData = processRefTypeResponse(response.content_search);
+                                let contentData = processContentResponse(response.content_search);
                                 console.log('...content opp flow...');
                                 //await opportunityFlow(bot, message, existingConn, 'content_search', userProfile.user.profile.email, contentData);
                                 await bot.api.views.open({
@@ -660,7 +660,7 @@ module.exports = controller => {
     } 
 
     function processContentResponse(response) {
-        let opp = [];
+        /* let opp = [];
         let returnVal = {};
         if (response != 'false') {
             console.log(response);
@@ -678,7 +678,19 @@ module.exports = controller => {
             });
             returnVal['opp'] = opp;
         }
-        return returnVal;
+        return returnVal; */
+        let ref = [];
+        Object.keys(response).forEach(function(k){
+            let entry = {
+                "text": {
+                    "type": "plain_text",
+                    "text": response[k]
+                },
+                "value": k
+            }
+            ref.push(entry);
+        });
+        return ref;
     }
 
     function processRefTypeResponse(response) {
