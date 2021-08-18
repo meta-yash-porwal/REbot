@@ -274,8 +274,9 @@ module.exports = controller => {
                         }
                         
                         if (response != 'false' && response != 'both') {
-                            //console.log('response', response);
+                            
                             response = JSON.parse(response);
+                            console.log('response', response);
                             if(!response.hasOwnProperty('account_search')) {
                                 //let contentData = processContentResponse(response);
                                 let contentData = processRefTypeResponse(response.content_search);
