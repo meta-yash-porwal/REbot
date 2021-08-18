@@ -714,9 +714,9 @@ module.exports = controller => {
                         //let mapval = await getRefTypes(existingConn,actionName);
                         if (actionName == 'content_search') {
                             console.log('...view submission content opp flow....');
-                            await opportunityFlow(bot, message, existingConn, actionName, email, null);
+                            //await opportunityFlow(bot, message, existingConn, actionName, email, null);
                             
-                            /* bot.httpBody({
+                            bot.httpBody({
                                 response_action: 'update',
                                 view: {
                                     "type": "modal",
@@ -756,7 +756,7 @@ module.exports = controller => {
                                         }
                                     ]
                                 }
-                            });  */
+                            });
                         } else {
                             console.log('...view submission ref type flow....');
                             let mapval = await getRefTypes(existingConn,actionName);
