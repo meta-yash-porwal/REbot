@@ -52,13 +52,14 @@ module.exports = controller => {
                 console.log('team id array...', teamIdsArray);
                 let teamsJSON = await controller.plugins.database.teams;
                 let teams = null;
+                
                 if(teamsJSON) {
-                    teams = await teamsJSON.find({ id: { $in: teamIdsArray } });
+                    teams = await controller.plugins.database.teams.find({ id: { $in: teamIdsArray } });
                 }
                 
                 
                 if (!teams) {
-                    logger.log('team not found for id:', reqBody.teamId);
+                    return logger.log('team not found for id:', reqBody.teamId);
                 } else {
                     console.log('teams...', teams);
                 }
@@ -278,8 +279,8 @@ module.exports = controller => {
                             if(!response.hasOwnProperty('account_search')) {
                                 let contentData = processContentResponse(response);
                                 console.log('...content opp flow...');
-                                await opportunityFlow(bot, message, existingConn, 'content_search', userProfile.user.profile.email, contentData);
-                                /* await bot.api.views.open({
+                                //await opportunityFlow(bot, message, existingConn, 'content_search', userProfile.user.profile.email, contentData);
+                                await bot.api.views.open({
                                     trigger_id: message.trigger_id,
                                     view: {
                                         "type": "modal",
@@ -319,7 +320,7 @@ module.exports = controller => {
                                             }
                                         ]
                                     }
-                                }); */
+                                }); 
                             } else {
                                 console.log('...Reftype flow...');
                                 let refTypeData = processRefTypeResponse(response.account_search);
