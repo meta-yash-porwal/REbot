@@ -711,7 +711,7 @@ module.exports = controller => {
                         let actionName = 'account_search';
                         actionName = message.view.state.values.accblock.searchid.selected_option.value;
                         let email = message.view.private_metadata + '::' + actionName;//metadata + '::' + actionName;
-                        //let mapval = await getRefTypes(existingConn,actionName);
+                        let mapval = await getRefTypes(existingConn,actionName);
                         if (actionName == 'content_search') {
                             console.log('...view submission content opp flow....');
                             //await opportunityFlow(bot, message, existingConn, actionName, email, null);
@@ -759,7 +759,7 @@ module.exports = controller => {
                             });
                         } else {
                             console.log('...view submission ref type flow....');
-                            let mapval = await getRefTypes(existingConn,actionName);
+                            //let mapval = await getRefTypes(existingConn,actionName);
                             bot.httpBody({
                                 response_action: 'update',
                                 view: {
