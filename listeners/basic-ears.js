@@ -945,6 +945,7 @@ module.exports = controller => {
                     } else if (message.view.callback_id == 'searchselect') {
                         console.log('@@@metadata_4');
                         let metadata = message.view.private_metadata;
+                        console.log('metadata', metadata);
                         const refselected = metadata.split('::')[1];
                         let oppSelected = message.view.state.values.blkselectopp != null ? message.view.state.values.blkselectopp.opp_select.selected_option.value :
                                             (message.view.state.values.blkselectoppFinal != null ? message.view.state.values.blkselectoppFinal.opp_select.selected_option.value : '');
