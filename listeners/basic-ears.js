@@ -305,7 +305,7 @@ module.exports = controller => {
                                                 "optional" : true,
                                                 "block_id": "blkref",
                                                 "element": {
-                                                    "type": "static_select",
+                                                    "type": "multi_static_select",
                                                     "action_id": "reftype_select",
                                                     "placeholder": {
                                                         "type": "plain_text",
