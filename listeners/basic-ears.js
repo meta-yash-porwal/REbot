@@ -461,8 +461,11 @@ module.exports = controller => {
     });
 
     async function opportunityFlow (bot, message, existingConn, actionName, email, mapval) {
+
         let refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_option != null ? message.view.state.values.blkref.reftype_select.selected_option : 'NONE';
+        console.log('prev refseleccted...', refselected);
         refselected = refselected && refselected != 'NONE' && refselected != '' && refselected != null ? (refselected.value.indexOf('::') > -1 ? refselected.value.split('::')[1] : refselected.value) : '';
+        console.log('!!!refselected!!!:', refselected);
         console.log('----------actionName----------', actionName);
         let openView = false;
         let viewObject = {};
