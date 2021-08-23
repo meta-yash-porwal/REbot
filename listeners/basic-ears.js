@@ -280,7 +280,7 @@ module.exports = controller => {
                             if(!response.hasOwnProperty('account_search')) {
                                 //let contentData = processContentResponse(response);
                                 let contentData = processContentResponse(response.content_search);
-                                console.log('...content opp flow...');
+                                console.log('...content opp flow...');//multi_static_select
                                 //await opportunityFlow(bot, message, existingConn, 'content_search', userProfile.user.profile.email, contentData);
                                 await bot.api.views.open({
                                     trigger_id: message.trigger_id,
@@ -305,7 +305,7 @@ module.exports = controller => {
                                                 "optional" : true,
                                                 "block_id": "blkref",
                                                 "element": {
-                                                    "type": "multi_static_select",
+                                                    "type": "static_select",
                                                     "action_id": "reftype_select",
                                                     "placeholder": {
                                                         "type": "plain_text",
