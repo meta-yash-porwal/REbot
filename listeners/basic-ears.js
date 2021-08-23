@@ -818,6 +818,7 @@ module.exports = controller => {
                     } else if (message.view.callback_id == 'oppselect') {
                         console.log('@@@metadata_2');
                         let metdata = message.view.private_metadata;
+                        console.log('multi metadata ::', metadata);
                         const email = metdata.split('::')[0];
                         const actionName = metdata.split('::')[1];
                         await opportunityFlow(bot, message, existingConn, actionName, email, null);
