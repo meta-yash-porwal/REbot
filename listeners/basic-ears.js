@@ -785,7 +785,7 @@ module.exports = controller => {
                                     ]
                                 }
                             });
-                        } else {
+                        } else if(actionName == 'account_search'){
                             console.log('...view submission ref type flow....');
                             //let mapval = await getRefTypes(existingConn,actionName);
                             bot.httpBody({
@@ -822,6 +822,48 @@ module.exports = controller => {
                                             "label": {
                                                 "type": "plain_text",
                                                 "text": "What type of reference do you need?",
+                                                "emoji": true
+                                            }
+                                        }
+                                    ]
+                                }
+                            });
+                        } else {
+                            bot.httpBody({
+                                response_action: 'update',
+                                view: {
+                                    "type": "modal",
+                                    "notify_on_close" : true,
+                                    "callback_id": "actionSelectionView",
+                                    "private_metadata" : email,
+                                    "submit": {
+                                        "type": "plain_text",
+                                        "text": "Next",
+                                        "emoji": true
+                                    },
+                                    "title": {
+                                        "type": "plain_text",
+                                        "text": "Content Type",
+                                        "emoji": true
+                                    },
+                                    "blocks": [
+                                        {
+                                            "type": "input",
+                                            "optional" : true,
+                                            "block_id": "blkref",
+                                            "element": {
+                                                "type": "multi_static_select",
+                                                "action_id": "reftype_select",
+                                                "placeholder": {
+                                                    "type": "plain_text",
+                                                    "text": "Select a type",
+                                                    "emoji": true
+                                                },
+                                                "options": mapval
+                                            },
+                                            "label": {
+                                                "type": "plain_text",
+                                                "text": "What type of content do you need?",
                                                 "emoji": true
                                             }
                                         }
