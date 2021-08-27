@@ -266,13 +266,15 @@ module.exports = controller => {
                         }
                         
                         if (response != 'false' && response != 'both') {
-                            console.log('response', response);
+                            
                             response = JSON.parse(response);
+                            console.log('response', response);
                             if(!response.hasOwnProperty('account_search')) {
-                                let contentData = processContentResponse(response);
+                                //let contentData = processContentResponse(response);
+                                let contentData = processContentResponse(response.content_search);
                                 console.log('...content opp flow...');
-                                await opportunityFlow(bot, message, existingConn, 'content_search', userProfile.user.profile.email, contentData);
-                                /* await bot.api.views.open({
+                                //await opportunityFlow(bot, message, existingConn, 'content_search', userProfile.user.profile.email, contentData);
+                                await bot.api.views.open({
                                     trigger_id: message.trigger_id,
                                     view: {
                                         "type": "modal",
@@ -295,7 +297,7 @@ module.exports = controller => {
                                                 "optional" : true,
                                                 "block_id": "blkref",
                                                 "element": {
-                                                    "type": "static_select",
+                                                    "type": "multi_static_select",
                                                     "action_id": "reftype_select",
                                                     "placeholder": {
                                                         "type": "plain_text",
@@ -312,7 +314,7 @@ module.exports = controller => {
                                             }
                                         ]
                                     }
-                                }); */
+                                }); 
                             } else {
                                 console.log('...Reftype flow...');
                                 let refTypeData = processRefTypeResponse(response.account_search);
@@ -451,8 +453,22 @@ module.exports = controller => {
     });
 
     async function opportunityFlow (bot, message, existingConn, actionName, email, mapval) {
-        let refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_option != null ? message.view.state.values.blkref.reftype_select.selected_option : 'NONE';
-        refselected = refselected && refselected != 'NONE' && refselected != '' && refselected != null ? (refselected.value.indexOf('::') > -1 ? refselected.value.split('::')[1] : refselected.value) : '';
+        let refselected = null;
+        //let refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_option != null ? message.view.state.values.blkref.reftype_select.selected_option : 'NONE';
+        if(actionName == 'content_search') {
+            refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
+            let selectedValues = [];
+            refselected.forEach(function(ref) {
+                selectedValues.push(ref.value);
+            });
+            refselected = selectedValues.join(',');
+        } else {
+            refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_option != null ? message.view.state.values.blkref.reftype_select.selected_option : 'NONE';
+            refselected = refselected && refselected != 'NONE' && refselected != '' && refselected != null ? (refselected.value.indexOf('::') > -1 ? refselected.value.split('::')[1] : refselected.value) : '';
+        }
+        //console.log('prev refseleccted...', refselected);
+        //refselected = refselected && refselected != 'NONE' && refselected != '' && refselected != null ? (refselected.value.indexOf('::') > -1 ? refselected.value.split('::')[1] : refselected.value) : '';
+        console.log('!!!refselected!!!:', refselected);
         console.log('----------actionName----------', actionName);
         let openView = false;
         let viewObject = {};
@@ -650,7 +666,7 @@ module.exports = controller => {
     } 
 
     function processContentResponse(response) {
-        let opp = [];
+        /* let opp = [];
         let returnVal = {};
         if (response != 'false') {
             console.log(response);
@@ -668,7 +684,19 @@ module.exports = controller => {
             });
             returnVal['opp'] = opp;
         }
-        return returnVal;
+        return returnVal; */
+        let ref = [];
+        Object.keys(response).forEach(function(k){
+            let entry = {
+                "text": {
+                    "type": "plain_text",
+                    "text": response[k]
+                },
+                "value": k
+            }
+            ref.push(entry);
+        });
+        return ref;
     }
 
     function processRefTypeResponse(response) {
@@ -701,14 +729,24 @@ module.exports = controller => {
                     // When Account Name entered
                     if (message.view.callback_id == 'actionSelectionView') {
                         let actionName = 'account_search';
-                        actionName = message.view.state.values.accblock.searchid.selected_option.value;
+                        if(message.view.state.values.accblock.searchid) {
+                            actionName = message.view.state.values.accblock.searchid.selected_option.value;
+                        } else{
+                            refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
+                            let selectedValues = [];
+                            refselected.forEach(function(ref) {
+                                selectedValues.push(ref.value);
+                            });
+                            refselected = selectedValues.join(',');
+                        }
+                        
                         let email = message.view.private_metadata + '::' + actionName;//metadata + '::' + actionName;
-                        //let mapval = await getRefTypes(existingConn,actionName);
+                        let mapval = await getRefTypes(existingConn,actionName);
                         if (actionName == 'content_search') {
                             console.log('...view submission content opp flow....');
-                            await opportunityFlow(bot, message, existingConn, actionName, email, null);
+                            //await opportunityFlow(bot, message, existingConn, actionName, email, null);
                             
-                            /* bot.httpBody({
+                            bot.httpBody({
                                 response_action: 'update',
                                 view: {
                                     "type": "modal",
@@ -731,7 +769,7 @@ module.exports = controller => {
                                             "optional" : true,
                                             "block_id": "blkref",
                                             "element": {
-                                                "type": "static_select",
+                                                "type": "multi_static_select",
                                                 "action_id": "reftype_select",
                                                 "placeholder": {
                                                     "type": "plain_text",
@@ -748,10 +786,10 @@ module.exports = controller => {
                                         }
                                     ]
                                 }
-                            });  */
-                        } else {
+                            });
+                        } else if(actionName == 'account_search'){
                             console.log('...view submission ref type flow....');
-                            let mapval = await getRefTypes(existingConn,actionName);
+                            //let mapval = await getRefTypes(existingConn,actionName);
                             bot.httpBody({
                                 response_action: 'update',
                                 view: {
@@ -792,10 +830,53 @@ module.exports = controller => {
                                     ]
                                 }
                             });
+                        } else {
+                            bot.httpBody({
+                                response_action: 'update',
+                                view: {
+                                    "type": "modal",
+                                    "notify_on_close" : true,
+                                    "callback_id": "actionSelectionView",
+                                    "private_metadata" : email,
+                                    "submit": {
+                                        "type": "plain_text",
+                                        "text": "Next",
+                                        "emoji": true
+                                    },
+                                    "title": {
+                                        "type": "plain_text",
+                                        "text": "Content Type",
+                                        "emoji": true
+                                    },
+                                    "blocks": [
+                                        {
+                                            "type": "input",
+                                            "optional" : true,
+                                            "block_id": "blkref",
+                                            "element": {
+                                                "type": "multi_static_select",
+                                                "action_id": "reftype_select",
+                                                "placeholder": {
+                                                    "type": "plain_text",
+                                                    "text": "Select a type",
+                                                    "emoji": true
+                                                },
+                                                "options": mapval
+                                            },
+                                            "label": {
+                                                "type": "plain_text",
+                                                "text": "What type of content do you need?",
+                                                "emoji": true
+                                            }
+                                        }
+                                    ]
+                                }
+                            });
                         }
                     } else if (message.view.callback_id == 'oppselect') {
                         console.log('@@@metadata_2');
                         let metdata = message.view.private_metadata;
+                        console.log('multi metadata ::', metdata);
                         const email = metdata.split('::')[0];
                         const actionName = metdata.split('::')[1];
                         await opportunityFlow(bot, message, existingConn, actionName, email, null);
@@ -923,6 +1004,7 @@ module.exports = controller => {
                     } else if (message.view.callback_id == 'searchselect') {
                         console.log('@@@metadata_4');
                         let metadata = message.view.private_metadata;
+                        console.log('metadata', metadata);
                         const refselected = metadata.split('::')[1];
                         let oppSelected = message.view.state.values.blkselectopp != null ? message.view.state.values.blkselectopp.opp_select.selected_option.value :
                                             (message.view.state.values.blkselectoppFinal != null ? message.view.state.values.blkselectoppFinal.opp_select.selected_option.value : '');
