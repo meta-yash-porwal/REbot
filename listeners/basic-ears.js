@@ -44,7 +44,8 @@ module.exports = controller => {
     });
 
     controller.on('post-message', reqBody => {
-        console.log('posting message----');
+        console.log('posting message for org----', reqBody.orgId);
+        
         reqBody.messages.forEach(async msg => {
 
             try {
