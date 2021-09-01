@@ -738,9 +738,11 @@ module.exports = controller => {
                                 selectedValues.push(ref.value);
                             });
                             refselected = selectedValues.join(',');
+                            console.log('$$$$ refselected...', refselected);
                         }
                         
                         let email = message.view.private_metadata + '::' + actionName;//metadata + '::' + actionName;
+                        console.log('$$$$ email...', email);
                         let mapval = await getRefTypes(existingConn,actionName);
                         if (actionName == 'content_search') {
                             console.log('...view submission content opp flow....');
