@@ -729,7 +729,7 @@ module.exports = controller => {
                     // When Account Name entered
                     if (message.view.callback_id == 'actionSelectionView') {
                         let actionName = 'account_search';
-                        if(message.view.state.values.accblock.searchid) {
+                        if(message.view.state.values.accblock) {
                             actionName = message.view.state.values.accblock.searchid.selected_option.value;
                         } else{
                             refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
