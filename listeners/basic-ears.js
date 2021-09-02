@@ -914,7 +914,7 @@ module.exports = controller => {
                         let searchURL = metadata.split('::')[0];
                         const refselected = metadata.split('::')[1];
                         const email = metadata.split('::')[2];
-                        if(metadata.split('::').size() == 3) {
+                        if(metadata.split('::').length == 3) {
                             contentTypeSelected = metadata.split('::')[2];
                         }
                         let oppSelected = message.view.state.values.blkselectopp != null && message.view.state.values.blkselectopp.opp_select.selected_option != null ? message.view.state.values.blkselectopp.opp_select.selected_option.value : '';
