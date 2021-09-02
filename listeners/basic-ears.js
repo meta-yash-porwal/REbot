@@ -753,6 +753,7 @@ module.exports = controller => {
                     if (message.view.callback_id == 'actionSelectionView') {
                         let actionName = 'account_search';
                         if(message.view.state.values.accblock) {
+                            console.log('in if... $$$');
                             actionName = message.view.state.values.accblock.searchid.selected_option.value;
                         } else{
                             refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
@@ -763,7 +764,7 @@ module.exports = controller => {
                             refselected = selectedValues.join(',');
                             console.log('$$$$ refselected...', refselected);
                         }
-                        
+                        console.log('... $$$ action ', actionName);
                         let email = message.view.private_metadata + '::' + actionName;//metadata + '::' + actionName;
                         if(refselected) {
                             email = email + '::' + refselected;
