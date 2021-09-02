@@ -455,6 +455,7 @@ module.exports = controller => {
     async function opportunityFlow (bot, message, existingConn, actionName, email, mapval) {
         let refselected = null;
         let contentTypeSelected = null;
+        console.log('oppo flow..', actionName);
         //let refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_option != null ? message.view.state.values.blkref.reftype_select.selected_option : 'NONE';
         if(actionName.includes('::') && actionName.split('::').length == 3) {
             actionName = actionName.split('::')[1];
@@ -541,6 +542,7 @@ module.exports = controller => {
             } else{
                 pvt_metadata = searchURL + '::' + refselected + '::' + email;
             }
+            console.log('opp> 10 -- ', pvt_metadata);
             viewObject = {
                 view: {
                     "type": "modal",
@@ -914,6 +916,7 @@ module.exports = controller => {
                         let searchURL = metadata.split('::')[0];
                         const refselected = metadata.split('::')[1];
                         let email = null;
+                        console.log('metadata--', metadata);
                         if(metadata.split('::').length == 3) {
                             email = metadata.split('::')[3];
                             contentTypeSelected = metadata.split('::')[2];
