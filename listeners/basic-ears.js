@@ -454,7 +454,12 @@ module.exports = controller => {
 
     async function opportunityFlow (bot, message, existingConn, actionName, email, mapval) {
         let refselected = null;
+        let contentTypeSelected = null;
         //let refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_option != null ? message.view.state.values.blkref.reftype_select.selected_option : 'NONE';
+        if(actionName.includes('::') && actionName.split('::').length == 3) {
+            actionName = actionName.split('::')[1];
+            contentTypeSelected = actionName.split('::')[2];
+        }
         if(actionName == 'content_search') {
             refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
             let selectedValues = [];
@@ -484,12 +489,18 @@ module.exports = controller => {
         console.log('------------searchURL----------', searchURL);
         let opps = mapval['opp'];
         if (opps != null && opps.length > 0 && opps.length < 10) {
+            let pvt_metadata = null;
+            if(contentTypeSelected) {
+                pvt_metadata = searchURL + '::' + refselected + '::' + contentTypeSelected;
+            } else{
+                pvt_metadata = searchURL + '::' + refselected;
+            }
             viewObject = {
                 view: {
                     "type": "modal",
                     "notify_on_close" : true,
                     "callback_id": "searchselect",
-                    "private_metadata" : searchURL + '::' + refselected,
+                    "private_metadata" : pvt_metadata,
                     "submit": {
                         "type": "plain_text",
                         "text": "Next",
@@ -524,12 +535,18 @@ module.exports = controller => {
                 }
             };
         } else if (opps != null && opps.length >= 10) {
+            let pvt_metadata = null;
+            if(contentTypeSelected) {
+                pvt_metadata = searchURL + '::' + refselected + '::' + contentTypeSelected + '::' + email;
+            } else{
+                pvt_metadata = searchURL + '::' + refselected + '::' + email;
+            }
             viewObject = {
                 view: {
                     "type": "modal",
                     "notify_on_close" : true,
                     "callback_id": "searchselectopplarge",
-                    "private_metadata" : searchURL + '::' + refselected + '::' + email,
+                    "private_metadata" : pvt_metadata,
                     "submit": {
                         "type": "plain_text",
                         "text": "Next",
@@ -625,7 +642,11 @@ module.exports = controller => {
             };
         } else {
             if (refselected && refselected != 'NONE' && refselected != '' && refselected != null) {
-                searchURL += '&type=' + refselected;
+                if(contentTypeSelected) {
+                    searchURL += '&type=' + refselected + ' &contype=' + contentTypeSelected;
+                } else{
+                    searchURL += '&type=' + refselected;
+                }
             }
             searchURL = 'Thanks! Please <' + searchURL + '|click to complete your request in Salesforce.>';
             viewObject = {
@@ -720,7 +741,7 @@ module.exports = controller => {
             console.log('view_submission');
             try {
                 let existingConn = await connFactory.getConnection(message.team.id, controller);
-                
+                let refselected = null;
                 if (!existingConn) {
                     const authUrl = connFactory.getAuthUrl(message.team);
                     await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
@@ -742,6 +763,9 @@ module.exports = controller => {
                         }
                         
                         let email = message.view.private_metadata + '::' + actionName;//metadata + '::' + actionName;
+                        if(refselected) {
+                            email = email + '::' + refselected;
+                        }
                         console.log('$$$$ email...', email);
                         let mapval = await getRefTypes(existingConn,actionName);
                         if (actionName == 'content_search') {
@@ -880,15 +904,19 @@ module.exports = controller => {
                         let metdata = message.view.private_metadata;
                         console.log('multi metadata ::', metdata);
                         const email = metdata.split('::')[0];
-                        const actionName = metdata.split('::')[1];
-                        await opportunityFlow(bot, message, existingConn, actionName, email, null);
+                        //const actionName = metdata.split('::')[1];
+                        await opportunityFlow(bot, message, existingConn, metdata, email, null);
                         
                     } else if (message.view.callback_id == 'searchselectopplarge') {
                         console.log('@@@metadata_3');
+                        let contentTypeSelected = null;
                         let metadata = message.view.private_metadata;
                         let searchURL = metadata.split('::')[0];
                         const refselected = metadata.split('::')[1];
                         const email = metadata.split('::')[2];
+                        if(metadata.split('::').size() == 3) {
+                            contentTypeSelected = metadata.split('::')[2];
+                        }
                         let oppSelected = message.view.state.values.blkselectopp != null && message.view.state.values.blkselectopp.opp_select.selected_option != null ? message.view.state.values.blkselectopp.opp_select.selected_option.value : '';
                         let acctext = message.view.state.values.accblock != null && message.view.state.values.accblock.account_name.value != null ? message.view.state.values.accblock.account_name.value : '';
                         let opptext = message.view.state.values.oppblock != null && message.view.state.values.oppblock.opp_name.value != null ? message.view.state.values.oppblock.opp_name.value : '';
@@ -898,6 +926,10 @@ module.exports = controller => {
                             if (refselected && refselected != 'NONE' && refselected != '' && refselected != null) {
                                 searchURL += '&type=';
                                 searchURL += refselected;
+                            }
+                            if(contentTypeSelected) {
+                                searchURL += '&contype=';
+                                searchURL += contentTypeSelected;
                             }
                             searchURL = 'Thanks! Please <' + searchURL + '|click to complete your request in Salesforce.>';
                             bot.httpBody({
@@ -1005,9 +1037,14 @@ module.exports = controller => {
                         } 
                     } else if (message.view.callback_id == 'searchselect') {
                         console.log('@@@metadata_4');
+                        let contentTypeSelected = null;
                         let metadata = message.view.private_metadata;
                         console.log('metadata', metadata);
                         const refselected = metadata.split('::')[1];
+                        if(metadata.split('::').length == 3) {
+                            contentTypeSelected = metadata.split('::')[2];
+                        }
+                        
                         let oppSelected = message.view.state.values.blkselectopp != null ? message.view.state.values.blkselectopp.opp_select.selected_option.value :
                                             (message.view.state.values.blkselectoppFinal != null ? message.view.state.values.blkselectoppFinal.opp_select.selected_option.value : '');
                         let searchURL = metadata.split('::')[0];
@@ -1015,6 +1052,11 @@ module.exports = controller => {
                         if (refselected && refselected != 'NONE' && refselected != '' && refselected != null) {
                             searchURL += '&type=';
                             searchURL += refselected;
+                            
+                        }
+                        if(contentTypeSelected) {
+                            searchURL += '&contype=';
+                            searchURL += contentTypeSelected;
                         }
                         searchURL = 'Thanks! Please <' + searchURL + '|click to complete your request in Salesforce.>';
                         bot.httpBody({
