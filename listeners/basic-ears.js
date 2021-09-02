@@ -913,9 +913,12 @@ module.exports = controller => {
                         let metadata = message.view.private_metadata;
                         let searchURL = metadata.split('::')[0];
                         const refselected = metadata.split('::')[1];
-                        const email = metadata.split('::')[2];
+                        let email = null;
                         if(metadata.split('::').length == 3) {
+                            email = metadata.split('::')[3];
                             contentTypeSelected = metadata.split('::')[2];
+                        } else{
+                            email = metadata.split('::')[2];
                         }
                         let oppSelected = message.view.state.values.blkselectopp != null && message.view.state.values.blkselectopp.opp_select.selected_option != null ? message.view.state.values.blkselectopp.opp_select.selected_option.value : '';
                         let acctext = message.view.state.values.accblock != null && message.view.state.values.accblock.account_name.value != null ? message.view.state.values.accblock.account_name.value : '';
