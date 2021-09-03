@@ -756,7 +756,6 @@ module.exports = controller => {
                             console.log('in if... $$$');
                             actionName = message.view.state.values.accblock.searchid.selected_option.value;
                         } else{
-                            actionName = 'content_search';
                             refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
                             let selectedValues = [];
                             refselected.forEach(function(ref) {
@@ -766,7 +765,13 @@ module.exports = controller => {
                             console.log('$$$$ refselected...', refselected);
                         }
                         console.log('... $$$ action ', actionName);
-                        let email = message.view.private_metadata + '::' + actionName;//metadata + '::' + actionName;
+                        let pvt_metadata = null;
+                        if(message.view.private_metadata.includes('::both')) {
+                            pvt_metadata = message.view.private_metadata.split('::')[0];
+                        } else{
+                            pvt_metadata = message.view.private_metadata;
+                        }
+                        let email = pvt_metadata + '::' + actionName;//metadata + '::' + actionName;
                         if(refselected) {
                             email = email + '::' + refselected;
                         }
