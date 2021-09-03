@@ -35,7 +35,7 @@ module.exports = {
                 if (response != 'false') {
                     response = JSON.parse(response);
                     console.log('!!!action..', action);
-                    if (action == 'content_search') {
+                    if (action == 'content_search' || action == 'both') {
                         let contentTypes = response;
                         if(response.hasOwnProperty('content_search')) {
                             contentTypes = response.content_search;
