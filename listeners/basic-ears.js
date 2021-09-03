@@ -461,6 +461,7 @@ module.exports = controller => {
             actionName = actionName.split('::')[1];
             contentTypeSelected = actionName.split('::')[2];
         }
+        console.log('content type selected***', contentTypeSelected);
         if(actionName == 'content_search') {
             refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
             let selectedValues = [];
