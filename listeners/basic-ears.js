@@ -925,7 +925,7 @@ module.exports = controller => {
                         const refselected = metadata.split('::')[1];
                         let email = null;
                         console.log('metadata--', metadata);
-                        if(metadata.split('::').length == 3) {
+                        if(metadata.split('::').length == 4) {
                             email = metadata.split('::')[3];
                             contentTypeSelected = metadata.split('::')[2];
                         } else{
