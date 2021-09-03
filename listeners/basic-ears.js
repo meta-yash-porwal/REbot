@@ -458,8 +458,8 @@ module.exports = controller => {
         console.log('oppo flow..', actionName);
         //let refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_option != null ? message.view.state.values.blkref.reftype_select.selected_option : 'NONE';
         if(actionName.includes('::') && actionName.split('::').length == 3) {
-            actionName = actionName.split('::')[1];
             contentTypeSelected = actionName.split('::')[2];
+            actionName = actionName.split('::')[1];
         }
         console.log('content type selected***', contentTypeSelected);
         if(actionName == 'content_search') {
