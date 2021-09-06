@@ -462,7 +462,7 @@ module.exports = controller => {
             actionName = actionName.split('::')[1];
         }
         console.log('content type selected***', contentTypeSelected);
-        if(actionName == 'content_search') {
+        if(actionName == 'content_search' || actionName.includes('content_search')) {
             refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
             let selectedValues = [];
             refselected.forEach(function(ref) {
