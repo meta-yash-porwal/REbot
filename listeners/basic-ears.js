@@ -816,7 +816,7 @@ module.exports = controller => {
                                     "type": "modal",
                                     "notify_on_close" : true,
                                     "callback_id": "oppselect",
-                                    "private_metadata" : pvt_metadata,//email,
+                                    "private_metadata" : JSON.stringify(pvt_metadata),//email,
                                     "submit": {
                                         "type": "plain_text",
                                         "text": "Next",
@@ -860,7 +860,7 @@ module.exports = controller => {
                                     "type": "modal",
                                     "notify_on_close" : true,
                                     "callback_id": "oppselect",
-                                    "private_metadata" : pvt_metadata,//email,
+                                    "private_metadata" : JSON.stringify(pvt_metadata),//email,
                                     "submit": {
                                         "type": "plain_text",
                                         "text": "Next",
@@ -901,7 +901,7 @@ module.exports = controller => {
                                     "type": "modal",
                                     "notify_on_close" : true,
                                     "callback_id": "actionSelectionView",
-                                    "private_metadata" : pvt_metadata,//email,
+                                    "private_metadata" : JSON.stringify(pvt_metadata),//email,
                                     "submit": {
                                         "type": "plain_text",
                                         "text": "Next",
