@@ -967,7 +967,7 @@ module.exports = controller => {
                         let opptext = message.view.state.values.oppblock != null && message.view.state.values.oppblock.opp_name.value != null ? message.view.state.values.oppblock.opp_name.value : '';
                         let opps = [];
                         if (oppSelected != '') {
-                            searchURL = metadata.searchURL;//searchURL.replace('@@',oppSelected);
+                            searchURL = metadata.searchURL.replace('@@',oppSelected);//searchURL.replace('@@',oppSelected);
                             if (refselected && refselected != 'NONE' && refselected != '' && refselected != null) {
                                 searchURL += '&type=';
                                 searchURL += refselected;
