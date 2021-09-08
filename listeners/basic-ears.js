@@ -518,7 +518,7 @@ module.exports = controller => {
                     "type": "modal",
                     "notify_on_close" : true,
                     "callback_id": "searchselect",
-                    "private_metadata" : pvt_metadata,
+                    "private_metadata" : JSON.stringify(pvt_metadata),
                     "submit": {
                         "type": "plain_text",
                         "text": "Next",
@@ -575,7 +575,7 @@ module.exports = controller => {
                     "type": "modal",
                     "notify_on_close" : true,
                     "callback_id": "searchselectopplarge",
-                    "private_metadata" : pvt_metadata,
+                    "private_metadata" : JSON.stringify(pvt_metadata),
                     "submit": {
                         "type": "plain_text",
                         "text": "Next",
@@ -792,7 +792,7 @@ module.exports = controller => {
                             console.log('$$$$ refselected...', refselected);
                         }
                         console.log('... $$$ action ', actionName);
-                        let pvt_metadata = message.view.private_metadata;
+                        let pvt_metadata = JSON.parse(message.view.private_metadata);
                         pvt_metadata.actionName = actionName;
 
                         /* if(message.view.private_metadata.includes('::both')) {
@@ -939,7 +939,7 @@ module.exports = controller => {
                         }
                     } else if (message.view.callback_id == 'oppselect') {
                         console.log('@@@metadata_2');
-                        let metdata = message.view.private_metadata;
+                        let metdata = JSON.parse(message.view.private_metadata);
                         console.log('multi metadata ::', metdata);
                         const email = metdata.email;//metdata.split('::')[0];
                         //const actionName = metdata.split('::')[1];
@@ -948,7 +948,7 @@ module.exports = controller => {
                     } else if (message.view.callback_id == 'searchselectopplarge') {
                         console.log('@@@metadata_3');
                         
-                        let metadata = message.view.private_metadata;
+                        let metadata = JSON.parse(message.view.private_metadata);
                         let searchURL = metadata.searchURL;//metadata.split('::')[0];
                         const refselected = metadata.refTypes;//metadata.split('::')[1];
                         let email = metadata.email;
@@ -1083,7 +1083,7 @@ module.exports = controller => {
                     } else if (message.view.callback_id == 'searchselect') {
                         console.log('@@@metadata_4');
                         
-                        let metadata = message.view.private_metadata;
+                        let metadata = JSON.parse(message.view.private_metadata);
                         console.log('metadata', metadata);
                         const refselected = metadata.refTypes;//metadata.split('::')[1];
                         let contentTypeSelected = metadata.contentTypes;
