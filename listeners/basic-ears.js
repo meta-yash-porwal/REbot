@@ -474,12 +474,12 @@ module.exports = controller => {
         } */
         console.log('content type selected***', contentTypeSelected);
         if(metadata.actionName == 'content_search' ) {//|| actionName.includes('content_search')) {
-            refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
+            contentTypeSelected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
             let selectedValues = [];
-            refselected.forEach(function(ref) {
+            contentTypeSelected.forEach(function(ref) {
                 selectedValues.push(ref.value);
             });
-            refselected = selectedValues.join(',');
+            contentTypeSelected = selectedValues.join(',');
         } else {
             refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_option != null ? message.view.state.values.blkref.reftype_select.selected_option : 'NONE';
             refselected = refselected && refselected != 'NONE' && refselected != '' && refselected != null ? (refselected.value.indexOf('::') > -1 ? refselected.value.split('::')[1] : refselected.value) : '';
