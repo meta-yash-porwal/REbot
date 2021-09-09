@@ -492,6 +492,9 @@ module.exports = controller => {
         let viewObject = {};
         
         if(!mapval){
+            if(metadata.actionName == 'account_search' && contentTypeSelected) {
+                metadata.actionName = 'both';
+            }
             mapval = await getOpp(existingConn,email,metadata.actionName);
         } else{
             console.log('map val exists.');
@@ -1081,7 +1084,7 @@ module.exports = controller => {
                             });
                         } 
                     } else if (message.view.callback_id == 'searchselect') {
-                        console.log('@@@metadata_4');
+                        console.log('@@@metadata_4', message.view.private_metadata);
                         
                         let metadata = JSON.parse(message.view.private_metadata);
                         console.log('metadata', metadata);
