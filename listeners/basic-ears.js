@@ -980,6 +980,7 @@ module.exports = controller => {
                                 searchURL += contentTypeSelected;
                             }
                             searchURL = 'Thanks! Please <' + searchURL + '|click to complete your request in Salesforce.>';
+                            metadata.searchURL = searchURL;
                             bot.httpBody({
                             response_action: 'update',
                             view: {
@@ -1048,7 +1049,7 @@ module.exports = controller => {
                                     "type": "modal",
                                     "notify_on_close" : true,
                                     "callback_id": "searchselect",
-                                    "private_metadata" : searchURL + '::' + refselected,
+                                    "private_metadata" : JSON.stringify(metadata),//searchURL + '::' + refselected,
                                     "submit": {
                                         "type": "plain_text",
                                         "text": "Next",
