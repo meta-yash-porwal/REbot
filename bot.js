@@ -55,7 +55,6 @@ adapter.use(new SlackMessageTypeMiddleware());
 
 const controller = new Botkit({
     webhook_uri: '/slack/receive',
-    storage: mongoProvider,
     adapter
 
 });
@@ -78,7 +77,7 @@ controller.ready(() => {
     controller.webserver.use(errorHandlerMiddleware.internalError);
 });
 
-async function getTokenForTeam(teamId) {
+async function getTokenForTeam(teamId){
     try {
         const teamData = await controller.plugins.database.teams.get(teamId);
         if (!teamData) {
