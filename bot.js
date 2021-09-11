@@ -76,14 +76,14 @@ controller.ready(() => {
     controller.webserver.use(errorHandlerMiddleware.notFound);
     controller.webserver.use(errorHandlerMiddleware.internalError);
 });
-
+function err() { console.log('error msg callled....')} 
 async function getTokenForTeam(teamId){
     
     const teamData = await controller.plugins.database.teams.get(teamId);
     console.log('team data', teamData);
     if (!teamData) {
         console.log('--team not found for id:-- ', teamId);
-        throw new Error('Missing credentials for team.');
+        return err();
         
     }
     return teamData.bot.token;
@@ -96,7 +96,7 @@ async function getBotUserByTeam(teamId) {
     console.log('team data....', teamData);
     if (!teamData) {
         console.log('----team not found for id:----', teamId);
-        throw new Error('Missing credentials for team.......');
+        return err();
         
     }
     return teamData.bot.user_id;
