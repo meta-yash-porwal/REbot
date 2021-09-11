@@ -78,33 +78,29 @@ controller.ready(() => {
 });
 
 async function getTokenForTeam(teamId){
-    try {
-        const teamData = await controller.plugins.database.teams.get(teamId);
-        console.log('team data', teamData);
-        if (!teamData) {
-            console.log('--team not found for id:-- ', teamId);
-            throw new Error('Missing credentials for team.');
-            
-        }
-        return teamData.bot.token;
-    } catch (err) {
-        console.log(err);
+    
+    const teamData = await controller.plugins.database.teams.get(teamId);
+    console.log('team data', teamData);
+    if (!teamData) {
+        console.log('--team not found for id:-- ', teamId);
+        throw new Error('Missing credentials for team.');
+        
     }
+    return teamData.bot.token;
+    
 }
 
 async function getBotUserByTeam(teamId) {
-    try {
-        const teamData = await controller.plugins.database.teams.get(teamId);
-        console.log('team data....', teamData);
-        if (!teamData) {
-            console.log('----team not found for id:----', teamId);
-            throw new Error('Missing credentials for team.......');
-            
-        }
-        return teamData.bot.user_id;
-    } catch (err) {
-        console.log(err);
+    
+    const teamData = await controller.plugins.database.teams.get(teamId);
+    console.log('team data....', teamData);
+    if (!teamData) {
+        console.log('----team not found for id:----', teamId);
+        throw new Error('Missing credentials for team.......');
+        
     }
+    return teamData.bot.user_id;
+    
 }
 
 module.exports = controller;
