@@ -80,6 +80,7 @@ controller.ready(() => {
 async function getTokenForTeam(teamId){
     try {
         const teamData = await controller.plugins.database.teams.get(teamId);
+        console.log('team data', teamData);
         if (!teamData) {
             console.log('--team not found for id:-- ', teamId);
             return;
@@ -93,6 +94,7 @@ async function getTokenForTeam(teamId){
 async function getBotUserByTeam(teamId) {
     try {
         const teamData = await controller.plugins.database.teams.get(teamId);
+        console.log('team data....', teamData);
         if (!teamData) {
             console.log('----team not found for id:----', teamId);
             return;
