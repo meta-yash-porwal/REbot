@@ -55,10 +55,12 @@ adapter.use(new SlackMessageTypeMiddleware());
 
 const controller = new Botkit({
     webhook_uri: '/slack/receive',
+    storage: mongoProvider,
     adapter
+
 });
 controller.webserver.use(corsMiddleware);
-controller.addPluginExtension('database', mongoProvider);
+//controller.addPluginExtension('database', mongoProvider);
 
 //controller.middleware.receive.use(dialogflowMiddleware.receive);
 controller.middleware.receive.use(getFilterMiddleware);
@@ -81,7 +83,7 @@ async function getTokenForTeam(teamId) {
         const teamData = await controller.plugins.database.teams.get(teamId);
         if (!teamData) {
             console.log('--team not found for id:-- ', teamId);
-            return null;
+            //return null;
         }
         return teamData.bot.token;
     } catch (err) {
@@ -94,7 +96,7 @@ async function getBotUserByTeam(teamId) {
         const teamData = await controller.plugins.database.teams.get(teamId);
         if (!teamData) {
             console.log('----team not found for id:----', teamId);
-            return null;
+            //return null;
         }
         return teamData.bot.user_id;
     } catch (err) {
