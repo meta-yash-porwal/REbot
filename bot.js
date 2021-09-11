@@ -60,7 +60,7 @@ const controller = new Botkit({
 
 });
 controller.webserver.use(corsMiddleware);
-//controller.addPluginExtension('database', mongoProvider);
+controller.addPluginExtension('database', mongoProvider);
 
 //controller.middleware.receive.use(dialogflowMiddleware.receive);
 controller.middleware.receive.use(getFilterMiddleware);
