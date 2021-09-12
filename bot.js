@@ -77,31 +77,31 @@ controller.ready(() => {
     controller.webserver.use(errorHandlerMiddleware.notFound);
     controller.webserver.use(errorHandlerMiddleware.internalError);
 });
-function err() { console.log('error msg callled....')} 
-async function getTokenForTeam(teamId){
-    
-    const teamData = await controller.plugins.database.teams.get(teamId);
-    console.log('team data', teamData);
-    if (!teamData) {
-        console.log('--team not found for id:-- ', teamId);
-        return err();
-        
+
+async function getTokenForTeam(teamId) {
+    try {
+        const teamData = await controller.plugins.database.teams.get(teamId);
+        if (!teamData) {
+            console.log('team not found for id: ', teamId);
+            return next();
+        }
+        return teamData.bot.token;
+    } catch (err) {
+        console.log(err);
     }
-    return teamData.bot.token;
-    
 }
 
 async function getBotUserByTeam(teamId) {
-    
-    const teamData = await controller.plugins.database.teams.get(teamId);
-    console.log('team data....', teamData);
-    if (!teamData) {
-        console.log('----team not found for id:----', teamId);
-        return err();
-        
+    try {
+        const teamData = await controller.plugins.database.teams.get(teamId);
+        if (!teamData) {
+            console.log('team not found for id: ', teamId);
+            return next();
+        }
+        return teamData.bot.user_id;
+    } catch (err) {
+        console.log(err);
     }
-    return teamData.bot.user_id;
-    
 }
 
 module.exports = controller;
