@@ -312,7 +312,7 @@ module.exports = controller => {
                                                 },
                                                 "label": {
                                                     "type": "plain_text",
-                                                    "text": "What type of content do you need?",
+                                                    "text": "What type of reference content do you need?",
                                                     "emoji": true
                                                 }
                                             }
@@ -359,7 +359,7 @@ module.exports = controller => {
                                                 },
                                                 "label": {
                                                     "type": "plain_text",
-                                                    "text": "What type of reference do you need?",
+                                                    "text": "What type of reference accounts do you need?",
                                                     "emoji": true
                                                 }
                                             }
@@ -847,7 +847,7 @@ module.exports = controller => {
                                             },
                                             "label": {
                                                 "type": "plain_text",
-                                                "text": "What type of content do you need?",
+                                                "text": "What type of reference content do you need?",
                                                 "emoji": true
                                             }
                                         }
@@ -890,7 +890,7 @@ module.exports = controller => {
                                             },
                                             "label": {
                                                 "type": "plain_text",
-                                                "text": "What type of reference do you need?",
+                                                "text": "What type of reference accounts do you need?",
                                                 "emoji": true
                                             }
                                         }
@@ -932,7 +932,7 @@ module.exports = controller => {
                                             },
                                             "label": {
                                                 "type": "plain_text",
-                                                "text": "What type of content do you need?",
+                                                "text": "What type of reference content do you need?",
                                                 "emoji": true
                                             }
                                         }
