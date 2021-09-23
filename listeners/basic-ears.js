@@ -474,7 +474,8 @@ module.exports = controller => {
         } */
         console.log('content type selected***', contentTypeSelected);
         if(metadata.actionName == 'content_search' ) {//|| actionName.includes('content_search')) {
-            contentTypeSelected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
+            contentTypeSelected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null 
+                ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
             let selectedValues = [];
             contentTypeSelected.forEach(function(ref) {
                 selectedValues.push(ref.value);
@@ -504,6 +505,7 @@ module.exports = controller => {
         let searchURL = mapval['searchURL'];
         console.log('------------searchURL----------', searchURL);
         let opps = mapval['opp'];
+        console.log('content type selected***', contentTypeSelected);
         if (opps != null && opps.length > 0 && opps.length < 10) {
             let pvt_metadata = {};
             if(contentTypeSelected) {
