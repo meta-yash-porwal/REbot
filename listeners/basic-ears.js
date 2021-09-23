@@ -676,12 +676,17 @@ module.exports = controller => {
             };
         } else {
             if (refselected && refselected != 'NONE' && refselected != '' && refselected != null) {
-                if(contentTypeSelected) {
+                searchURL += '&type=' + refselected;
+                /* if(contentTypeSelected) {
                     searchURL += '&type=' + refselected + ' &contype=' + contentTypeSelected;
                 } else{
                     searchURL += '&type=' + refselected;
-                }
+                } */
+            } 
+            if(contentTypeSelected) {
+                searchURL += ' &contype=' + contentTypeSelected;
             }
+            
             searchURL = 'Thanks! Please <' + searchURL + '|click to complete your request in Salesforce.>';
             viewObject = {
                 view: {
