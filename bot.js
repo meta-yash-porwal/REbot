@@ -52,10 +52,17 @@ const adapter = new SlackAdapter({
 });
 adapter.use(new SlackEventMiddleware());
 adapter.use(new SlackMessageTypeMiddleware());
+adapter.onTurnError = async (context, error) => {
+    console.log('##################on turn error called######################');
+    console.log(error);
+
+    // Catch-all logic for errors.
+};
 
 const controller = new Botkit({
     webhook_uri: '/slack/receive',
     adapter
+
 });
 controller.webserver.use(corsMiddleware);
 controller.addPluginExtension('database', mongoProvider);
@@ -81,8 +88,10 @@ async function getTokenForTeam(teamId) {
         const teamData = await controller.plugins.database.teams.get(teamId);
         if (!teamData) {
             console.log('team not found for id: ', teamId);
+        } else{
+            return teamData.bot.token;    
         }
-        return teamData.bot.token;
+        
     } catch (err) {
         console.log(err);
     }
@@ -93,8 +102,9 @@ async function getBotUserByTeam(teamId) {
         const teamData = await controller.plugins.database.teams.get(teamId);
         if (!teamData) {
             console.log('team not found for id: ', teamId);
+        } else{
+            return teamData.bot.user_id;
         }
-        return teamData.bot.user_id;
     } catch (err) {
         console.log(err);
     }
