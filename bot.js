@@ -52,6 +52,7 @@ const adapter = new SlackAdapter({
 });
 adapter.use(new SlackEventMiddleware());
 adapter.use(new SlackMessageTypeMiddleware());
+adapter.use(myBotBuilderMiddleware);
 
 const controller = new Botkit({
     webhook_uri: '/slack/receive',
@@ -100,6 +101,17 @@ async function getBotUserByTeam(teamId) {
     } catch (err) {
         console.log(err);
     }
+}
+
+async function myBotBuilderMiddleware(turnContext, next) {
+    console.log('called my bot builder middle ware...', turnContext);
+    // do stuff with the turnContext BEFORE it is processed here
+
+    // call next, make sure to use await
+    // inside this next is where your whole bot does its thing!
+    await next();
+
+    // do stuff AFTER the message has been processed.
 }
 
 module.exports = controller;
