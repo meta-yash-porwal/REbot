@@ -53,6 +53,10 @@ const adapter = new SlackAdapter({
 adapter.use(new SlackEventMiddleware());
 adapter.use(new SlackMessageTypeMiddleware());
 adapter.use(myBotBuilderMiddleware);
+adapter.onTurnError = async (context, error) => {
+    console.log('##################on turn error called######################')
+    // Catch-all logic for errors.
+};
 
 const controller = new Botkit({
     webhook_uri: '/slack/receive',
