@@ -54,7 +54,10 @@ adapter.use(new SlackEventMiddleware());
 adapter.use(new SlackMessageTypeMiddleware());
 adapter.use(myBotBuilderMiddleware);
 adapter.onTurnError = async (context, error) => {
-    console.log('##################on turn error called######################')
+    console.log('##################on turn error called######################');
+    console.log(context);
+    console.log(error);
+
     // Catch-all logic for errors.
 };
 
