@@ -92,8 +92,10 @@ async function getTokenForTeam(teamId) {
         const teamData = await controller.plugins.database.teams.get(teamId);
         if (!teamData) {
             console.log('team not found for id: ', teamId);
+        } else{
+            return teamData.bot.token;    
         }
-        return teamData.bot.token;
+        
     } catch (err) {
         console.log(err);
     }
