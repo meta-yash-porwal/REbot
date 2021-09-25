@@ -8,8 +8,6 @@ module.exports = {
         next(err);
     },
     internalError: (error, req, res, next) => {
-        console.log('error*****', error);
-        console.log('res*****', res);
         res.status(error.status || 500);
 
         if (error.status === 404) {

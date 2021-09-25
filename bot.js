@@ -52,10 +52,8 @@ const adapter = new SlackAdapter({
 });
 adapter.use(new SlackEventMiddleware());
 adapter.use(new SlackMessageTypeMiddleware());
-adapter.use(myBotBuilderMiddleware);
 adapter.onTurnError = async (context, error) => {
     console.log('##################on turn error called######################');
-    console.log(context);
     console.log(error);
 
     // Catch-all logic for errors.
@@ -66,9 +64,7 @@ const controller = new Botkit({
     adapter
 
 });
-controller.middleware.ingest.use(myBotkitMiddleware);
 controller.webserver.use(corsMiddleware);
-controller.webserver.use(errorHandlerMiddleware.internalError);
 controller.addPluginExtension('database', mongoProvider);
 
 //controller.middleware.receive.use(dialogflowMiddleware.receive);
@@ -84,7 +80,7 @@ controller.ready(() => {
     sfMsgRouter(controller);
     viewsRouter(controller);
     controller.webserver.use(errorHandlerMiddleware.notFound);
-    //controller.webserver.use(errorHandlerMiddleware.internalError);
+    controller.webserver.use(errorHandlerMiddleware.internalError);
 });
 
 async function getTokenForTeam(teamId) {
@@ -106,31 +102,12 @@ async function getBotUserByTeam(teamId) {
         const teamData = await controller.plugins.database.teams.get(teamId);
         if (!teamData) {
             console.log('team not found for id: ', teamId);
+        } else{
+            return teamData.bot.user_id;
         }
-        return teamData.bot.user_id;
     } catch (err) {
         console.log(err);
     }
-}
-
-async function myBotBuilderMiddleware(turnContext, next) {
-    console.log('called my bot builder middle ware...');
-    // do stuff with the turnContext BEFORE it is processed here
-
-    // call next, make sure to use await
-    // inside this next is where your whole bot does its thing!
-    await next();
-
-    // do stuff AFTER the message has been processed.
-}
-
-function myBotkitMiddleware(bot, message, next) { 
-    console.log('my botkit middleware called..', bot);
-    console.log('my botkit middleware called..', message);
-    // do stuff
-
-    // call next, or else the message will be intercepted
-    next();
 }
 
 module.exports = controller;
