@@ -59,6 +59,7 @@ const controller = new Botkit({
     adapter
 
 });
+controller.middleware.ingest.use(myBotkitMiddleware);
 controller.webserver.use(corsMiddleware);
 controller.webserver.use(errorHandlerMiddleware.internalError);
 controller.addPluginExtension('database', mongoProvider);
@@ -104,7 +105,7 @@ async function getBotUserByTeam(teamId) {
 }
 
 async function myBotBuilderMiddleware(turnContext, next) {
-    console.log('called my bot builder middle ware...', turnContext);
+    console.log('called my bot builder middle ware...');
     // do stuff with the turnContext BEFORE it is processed here
 
     // call next, make sure to use await
@@ -112,6 +113,15 @@ async function myBotBuilderMiddleware(turnContext, next) {
     await next();
 
     // do stuff AFTER the message has been processed.
+}
+
+function myBotkitMiddleware(bot, message, next) { 
+    console.log('my botkit middleware called..', bot);
+    console.log('my botkit middleware called..', message);
+    // do stuff
+
+    // call next, or else the message will be intercepted
+    next();
 }
 
 module.exports = controller;
