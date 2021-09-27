@@ -34,7 +34,7 @@ module.exports = {
             } else  if (response) {
                 if (response != 'false') {
                     response = JSON.parse(response);
-                    console.log('!!!action..', action);
+                    
                     if (action == 'content_search' || action == 'both') {
                         let contentTypes = response;
                         if(response.hasOwnProperty('content_search')) {
@@ -51,7 +51,6 @@ module.exports = {
                             ref.push(entry);
                         });
                     } else{
-                        console.log('getting refs');
                         let refTypes = response;
                         if(response.hasOwnProperty('account_search')) {
                             refTypes = response.account_search;
@@ -81,7 +80,6 @@ module.exports = {
                 logger.log(err);
             } else  if (response) {
                 if (response != 'false') {
-                    console.log(response);
                     response = JSON.parse(response);
                     let oppList = response['opp'];
                     returnVal['searchURL'] = response['searchURL'];
@@ -130,7 +128,6 @@ module.exports = {
         let opp = [];
         name = encodeURIComponent(name);
         let url = process.env.NAMESPACE +'/rebot/OPP_TYPE_ACCNAME' + '::' + email + '::' + name;
-        console.log(url);
         await conn.apex.get(url, (err, response) => {
             if (err) {
                 logger.log(err);

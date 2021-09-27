@@ -223,7 +223,7 @@ module.exports = controller => {
             };
             console.log('-----/ saving crpTeamChannel/-----');
             const savedData = await controller.plugins.database.channels.save(crpTeamChannel);
-            console.log('savedData', savedData);
+            console.log('savedData');
             
             const params = {
                 userId : authData.authed_user.id,
@@ -271,7 +271,6 @@ module.exports = controller => {
                             response = JSON.parse(response);
                             console.log('response', response);
                             if(!response.hasOwnProperty('account_search')) {
-                                //let contentData = processContentResponse(response);
                                 let contentData = processContentResponse(response.content_search);
                                 console.log('...content opp flow...');
                                 pvt_metadata.email = userProfile.user.profile.email;
@@ -284,7 +283,7 @@ module.exports = controller => {
                                         "type": "modal",
                                         "notify_on_close" : true,
                                         "callback_id": "oppselect",
-                                        "private_metadata" : JSON.stringify(pvt_metadata),//userProfile.user.profile.email + '::content_search',
+                                        "private_metadata" : JSON.stringify(pvt_metadata),
                                         "submit": {
                                             "type": "plain_text",
                                             "text": "Next",
@@ -332,7 +331,7 @@ module.exports = controller => {
                                         "type": "modal",
                                         "notify_on_close" : true,
                                         "callback_id": "oppselect",
-                                        "private_metadata" : JSON.stringify(pvt_metadata),//userProfile.user.profile.email + '::account_search',
+                                        "private_metadata" : JSON.stringify(pvt_metadata),
                                         "submit": {
                                             "type": "plain_text",
                                             "text": "Next",
@@ -380,7 +379,7 @@ module.exports = controller => {
                                     "type": "modal",
                                     "notify_on_close" : true,
                                     "callback_id" : "actionSelectionView",
-                                    "private_metadata" : JSON.stringify(pvt_metadata),//userProfile.user.profile.email,
+                                    "private_metadata" : JSON.stringify(pvt_metadata),
                                     "title": {
                                         "type": "plain_text",
                                         "text": "Reference Assistant",
@@ -466,14 +465,9 @@ module.exports = controller => {
     async function opportunityFlow (bot, message, existingConn, metadata, email, mapval) {//actionName
         let refselected = metadata.refTypes;
         let contentTypeSelected = metadata.contentTypes;
-        console.log('oppo flow..', metadata);
-        //let refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_option != null ? message.view.state.values.blkref.reftype_select.selected_option : 'NONE';
-        /* if(actionName.includes('::') && actionName.split('::').length == 3) {
-            contentTypeSelected = actionName.split('::')[2];
-            actionName = actionName.split('::')[1];
-        } */
-        console.log('content type selected***', contentTypeSelected);
-        if(metadata.actionName == 'content_search' ) {//|| actionName.includes('content_search')) {
+        console.log('oppo flow..');
+        
+        if(metadata.actionName == 'content_search' ) {
             contentTypeSelected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null 
                 ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
             let selectedValues = [];
@@ -485,10 +479,7 @@ module.exports = controller => {
             refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_option != null ? message.view.state.values.blkref.reftype_select.selected_option : 'NONE';
             refselected = refselected && refselected != 'NONE' && refselected != '' && refselected != null ? (refselected.value.indexOf('::') > -1 ? refselected.value.split('::')[1] : refselected.value) : '';
         }
-        //console.log('prev refseleccted...', refselected);
-        //refselected = refselected && refselected != 'NONE' && refselected != '' && refselected != null ? (refselected.value.indexOf('::') > -1 ? refselected.value.split('::')[1] : refselected.value) : '';
-        console.log('!!!refselected!!!:', refselected);
-        //console.log('----------actionName----------', actionName);
+        
         let openView = false;
         let viewObject = {};
         
@@ -503,20 +494,19 @@ module.exports = controller => {
         }
         
         let searchURL = mapval['searchURL'];
-        console.log('------------searchURL----------', searchURL);
         let opps = mapval['opp'];
-        console.log('content type selected***', contentTypeSelected);
+
         if (opps != null && opps.length > 0 && opps.length < 10) {
             let pvt_metadata = {};
             if(contentTypeSelected) {
                 metadata.searchURL = searchURL;
                 metadata.refTypes = refselected;
                 metadata.contentTypes = contentTypeSelected;
-                pvt_metadata = metadata;//searchURL + '::' + refselected + '::' + contentTypeSelected;
+                pvt_metadata = metadata;
             } else{
                 metadata.searchURL = searchURL;
                 metadata.refTypes = refselected;
-                pvt_metadata = metadata;//searchURL + '::' + refselected;
+                pvt_metadata = metadata;
             }
             viewObject = {
                 view: {
@@ -566,15 +556,12 @@ module.exports = controller => {
                 metadata.email = email;
                 pvt_metadata = metadata;
 
-                //pvt_metadata = searchURL + '::' + refselected + '::' + contentTypeSelected + '::' + email;
             } else{
                 metadata.searchURL = searchURL;
                 metadata.refTypes = refselected;
                 metadata.email = email;
                 pvt_metadata = metadata;
-                //pvt_metadata = searchURL + '::' + refselected + '::' + email;
             }
-            console.log('opp> 10 -- ', pvt_metadata);
             viewObject = {
                 view: {
                     "type": "modal",
@@ -675,13 +662,9 @@ module.exports = controller => {
                 }
             };
         } else {
+
             if (refselected && refselected != 'NONE' && refselected != '' && refselected != null) {
                 searchURL += '&type=' + refselected;
-                /* if(contentTypeSelected) {
-                    searchURL += '&type=' + refselected + ' &contype=' + contentTypeSelected;
-                } else{
-                    searchURL += '&type=' + refselected;
-                } */
             } 
             if(contentTypeSelected) {
                 searchURL += '&contype=' + contentTypeSelected;
@@ -726,25 +709,7 @@ module.exports = controller => {
     } 
 
     function processContentResponse(response) {
-        /* let opp = [];
-        let returnVal = {};
-        if (response != 'false') {
-            console.log(response);
-            let oppList = response['opp'];
-            returnVal['searchURL'] = response['searchURL'];
-            oppList.forEach(function(oppWrapper){
-                let entry = {
-                    "text": {
-                        "type": "plain_text",
-                        "text": oppWrapper['oppName'] + ' (' + oppWrapper['accName'] + ')'
-                    },
-                    "value": oppWrapper['id']
-                }
-                opp.push(entry);
-            });
-            returnVal['opp'] = opp;
-        }
-        return returnVal; */
+        
         let ref = [];
         Object.keys(response).forEach(function(k){
             let entry = {
@@ -790,7 +755,6 @@ module.exports = controller => {
                     if (message.view.callback_id == 'actionSelectionView') {
                         let actionName = 'account_search';
                         if(message.view.state.values.accblock) {
-                            console.log('in if... $$$');
                             actionName = message.view.state.values.accblock.searchid.selected_option.value;
                         } else{
                             refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
@@ -799,23 +763,14 @@ module.exports = controller => {
                                 selectedValues.push(ref.value);
                             });
                             refselected = selectedValues.join(',');
-                            console.log('$$$$ refselected...', refselected);
                         }
-                        console.log('... $$$ action ', actionName);
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         pvt_metadata.actionName = actionName;
 
-                        /* if(message.view.private_metadata.includes('::both')) {
-                            pvt_metadata = message.view.private_metadata.split('::')[0];
-                        } else{
-                            pvt_metadata = message.view.private_metadata;
-                        } */
-                        //let email = pvt_metadata + '::' + actionName;//metadata + '::' + actionName;
                         if(refselected) {
                             pvt_metadata.contentTypes = refselected;
-                            //email = email + '::' + refselected;
                         }
-                        //console.log('$$$$ email...', email);
+                        
                         let mapval = await getRefTypes(existingConn,actionName);
                         if (actionName == 'content_search') {
                             console.log('...view submission content opp flow....');
@@ -863,14 +818,13 @@ module.exports = controller => {
                             });
                         } else if(actionName == 'account_search'){
                             console.log('...view submission ref type flow....');
-                            //let mapval = await getRefTypes(existingConn,actionName);
                             bot.httpBody({
                                 response_action: 'update',
                                 view: {
                                     "type": "modal",
                                     "notify_on_close" : true,
                                     "callback_id": "oppselect",
-                                    "private_metadata" : JSON.stringify(pvt_metadata),//email,
+                                    "private_metadata" : JSON.stringify(pvt_metadata),
                                     "submit": {
                                         "type": "plain_text",
                                         "text": "Next",
@@ -911,7 +865,7 @@ module.exports = controller => {
                                     "type": "modal",
                                     "notify_on_close" : true,
                                     "callback_id": "actionSelectionView",
-                                    "private_metadata" : JSON.stringify(pvt_metadata),//email,
+                                    "private_metadata" : JSON.stringify(pvt_metadata),
                                     "submit": {
                                         "type": "plain_text",
                                         "text": "Next",
@@ -951,33 +905,24 @@ module.exports = controller => {
                         console.log('@@@metadata_2');
                         let metdata = JSON.parse(message.view.private_metadata);
                         console.log('multi metadata ::', metdata);
-                        const email = metdata.email;//metdata.split('::')[0];
-                        //const actionName = metdata.split('::')[1];
+                        const email = metdata.email;
                         await opportunityFlow(bot, message, existingConn, metdata, email, null);
                         
                     } else if (message.view.callback_id == 'searchselectopplarge') {
                         console.log('@@@metadata_3');
                         
                         let metadata = JSON.parse(message.view.private_metadata);
-                        let searchURL = metadata.searchURL;//metadata.split('::')[0];
-                        const refselected = metadata.refTypes;//metadata.split('::')[1];
+                        let searchURL = metadata.searchURL;
+                        const refselected = metadata.refTypes;
                         let email = metadata.email;
                         let contentTypeSelected = metadata.contentTypes;
 
-                        console.log('metadata--', metadata);
-
-                        /* if(metadata.split('::').length == 4) {
-                            email = metadata.split('::')[3];
-                            contentTypeSelected = metadata.split('::')[2];
-                        } else{
-                            email = metadata.split('::')[2];
-                        } */
                         let oppSelected = message.view.state.values.blkselectopp != null && message.view.state.values.blkselectopp.opp_select.selected_option != null ? message.view.state.values.blkselectopp.opp_select.selected_option.value : '';
                         let acctext = message.view.state.values.accblock != null && message.view.state.values.accblock.account_name.value != null ? message.view.state.values.accblock.account_name.value : '';
                         let opptext = message.view.state.values.oppblock != null && message.view.state.values.oppblock.opp_name.value != null ? message.view.state.values.oppblock.opp_name.value : '';
                         let opps = [];
                         if (oppSelected != '') {
-                            searchURL = metadata.searchURL.replace('@@',oppSelected);//searchURL.replace('@@',oppSelected);
+                            searchURL = metadata.searchURL.replace('@@',oppSelected);
                             if (refselected && refselected != 'NONE' && refselected != '' && refselected != null) {
                                 searchURL += '&type=';
                                 searchURL += refselected;
@@ -1056,7 +1001,7 @@ module.exports = controller => {
                                     "type": "modal",
                                     "notify_on_close" : true,
                                     "callback_id": "searchselect",
-                                    "private_metadata" : JSON.stringify(metadata),//searchURL + '::' + refselected,
+                                    "private_metadata" : JSON.stringify(metadata),
                                     "submit": {
                                         "type": "plain_text",
                                         "text": "Next",
@@ -1092,25 +1037,22 @@ module.exports = controller => {
                             });
                         } 
                     } else if (message.view.callback_id == 'searchselect') {
-                        console.log('@@@metadata_4', message.view.private_metadata);
+                        console.log('@@@metadata_4');
                         
                         let metadata = JSON.parse(message.view.private_metadata);
-                        console.log('metadata', metadata);
-                        const refselected = metadata.refTypes;//metadata.split('::')[1];
+                        const refselected = metadata.refTypes;
                         let contentTypeSelected = metadata.contentTypes;
-                        /* if(metadata.split('::').length == 3) {
-                            contentTypeSelected = metadata.split('::')[2];
-                        } */
                         
                         let oppSelected = message.view.state.values.blkselectopp != null ? message.view.state.values.blkselectopp.opp_select.selected_option.value :
                                             (message.view.state.values.blkselectoppFinal != null ? message.view.state.values.blkselectoppFinal.opp_select.selected_option.value : '');
-                        let searchURL = metadata.searchURL;//metadata.split('::')[0];
+                        let searchURL = metadata.searchURL;
                         searchURL = searchURL.replace('@@',oppSelected);
+
                         if (refselected && refselected != 'NONE' && refselected != '' && refselected != null) {
                             searchURL += '&type=';
                             searchURL += refselected;
-                            
                         }
+                        
                         if(contentTypeSelected) {
                             searchURL += '&contype=';
                             searchURL += contentTypeSelected;
