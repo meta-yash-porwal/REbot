@@ -11,7 +11,7 @@ module.exports = controller => {
     async (bot, message) => {
 
         try {
-            console.log('------direct mention---');
+            console.log('------direct mention---', message);
             const supportUrl = `https://www.point-of-reference.com/contact/`;
             let messageText = message.text ? message.text.toLowerCase() : '';
             if (messageText.includes('hello')) {
