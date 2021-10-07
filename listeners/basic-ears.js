@@ -7,7 +7,7 @@ const { checkTeamMigration } = require('../listeners/middleware/migration-filter
 
 module.exports = controller => {
 
-    controller.on('direct_message,direct_mention','app_mention', 
+    controller.on('direct_message,direct_mention,app_mention', 
     async (bot, message) => {
 
         try {
