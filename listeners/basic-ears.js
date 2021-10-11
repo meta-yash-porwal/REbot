@@ -13,7 +13,17 @@ module.exports = controller => {
         try {
             console.log('------direct mention---', message);
             const supportUrl = `https://www.point-of-reference.com/contact/`;
-            let messageText = message.text ? message.text.toLowerCase() : '';
+            let messageText = '';
+            if(message.type == 'app_mention') {
+                let tempMsg = message?.incoming_message?.channelData?.text;
+                if(tempMsg) {
+                    tempMsg = tempMsg.split('> ');
+                    messageText = tempMsg[1];
+                }
+            } else{
+                messageText = message.text ? message.text.toLowerCase() : '';
+            }
+            
             if (messageText.includes('hello')) {
                 bot.replyEphemeral(message, `Hi, you can invite me to the channel for Customer Reference Team to receive updates!`);
             } else if (messageText == 'connect to a salesforce instance' || messageText == 'connect to sf'  
