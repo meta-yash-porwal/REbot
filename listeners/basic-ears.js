@@ -15,7 +15,7 @@ module.exports = controller => {
             const supportUrl = `https://www.point-of-reference.com/contact/`;
             let messageText = '';
             if(message.type == 'app_mention') {
-                let tempMsg = message?.incoming_message?.channelData?.text;
+                let tempMsg = message.incoming_message.channelData.text;
                 if(tempMsg) {
                     tempMsg = tempMsg.split('> ');
                     messageText = tempMsg[1];
