@@ -31,17 +31,14 @@ const adapter = new SlackAdapter({
     clientId: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
     scopes: [
-    'channels:history',
     'channels:join',
     'channels:manage',
-    'channels:read',
     'chat:write',
     'team:read', 
     'users:read',
     'users:read.email', 
     'im:history',
     'im:write',
-    'incoming-webhook',
     'commands'
     ],
     redirectUri: process.env.SLACK_REDIRECT_URI,
