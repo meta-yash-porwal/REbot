@@ -7,22 +7,13 @@ const { checkTeamMigration } = require('../listeners/middleware/migration-filter
 
 module.exports = controller => {
 
-    controller.on('direct_message,direct_mention,app_mention', 
+    controller.on('direct_message,direct_mention', 
     async (bot, message) => {
 
         try {
             console.log('------direct mention---', message);
             const supportUrl = `https://www.point-of-reference.com/contact/`;
-            let messageText = '';
-            if(message.type == 'app_mention') {
-                let tempMsg = message.incoming_message.channelData.text;
-                if(tempMsg) {
-                    tempMsg = tempMsg.split('> ');
-                    messageText = tempMsg[1];
-                }
-            } else{
-                messageText = message.text ? message.text.toLowerCase() : '';
-            }
+            let messageText = message.text ? message.text.toLowerCase() : '';
             
             if (messageText.includes('hello')) {
                 bot.replyEphemeral(message, `Hi, you can invite me to the channel for Customer Reference Team to receive updates!`);
@@ -111,7 +102,7 @@ module.exports = controller => {
         
         try {
             // Call the conversations.history method.
-            const result = await bot.api.conversations.history({//channels:history, groups:history, im:history, mpim:history
+            const result = await bot.api.conversations.history({//im:history
                 channel: event.channel
             });
             
@@ -221,7 +212,7 @@ module.exports = controller => {
     controller.on('create_channel', async (bot, authData) => {
         console.log('******************-----/create_channel/-----******************');
         try {
-            let result = await bot.api.conversations.create({ //channels:manage, groups:write, im:write, mpim:write
+            let result = await bot.api.conversations.create({ //channels:manage
                 token: authData.access_token,
                 name: 'crp_team'
             });
