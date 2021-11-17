@@ -14,6 +14,7 @@ module.exports = controller => {
             console.log('------direct mention---');
             const supportUrl = `https://www.point-of-reference.com/contact/`;
             let messageText = message.text ? message.text.toLowerCase() : '';
+            
             if (messageText.includes('hello')) {
                 bot.replyEphemeral(message, `Hi, you can invite me to the channel for Customer Reference Team to receive updates!`);
             } else if (messageText == 'connect to a salesforce instance' || messageText == 'connect to sf'  
@@ -65,7 +66,7 @@ module.exports = controller => {
                         console.log('...spawning bot2...');
                         if (msg.userEmail) {
                             console.log('...getting userData...');
-                            const userData = await bot.api.users.lookupByEmail({
+                            const userData = await bot.api.users.lookupByEmail({//Bot token - users:read.email
                                 token: teams[index].bot.token,
                                 email: msg.userEmail
                             });
@@ -101,7 +102,7 @@ module.exports = controller => {
         
         try {
             // Call the conversations.history method.
-            const result = await bot.api.conversations.history({
+            const result = await bot.api.conversations.history({//im:history
                 channel: event.channel
             });
             
@@ -211,7 +212,7 @@ module.exports = controller => {
     controller.on('create_channel', async (bot, authData) => {
         console.log('******************-----/create_channel/-----******************');
         try {
-            let result = await bot.api.conversations.create({
+            let result = await bot.api.conversations.create({ //channels:manage
                 token: authData.access_token,
                 name: 'crp_team'
             });
@@ -252,7 +253,7 @@ module.exports = controller => {
                     let existingConn = await connFactory.getConnection(message.team, controller);
                     
                     if (existingConn) {
-                        const userProfile = await bot.api.users.info({
+                        const userProfile = await bot.api.users.info({//users.read scope
                             token : bot.api.token,
                             user : message.user
                         });
@@ -324,8 +325,7 @@ module.exports = controller => {
                                 pvt_metadata.actionName = 'account_search';
                                 pvt_metadata.isRefType = true;
                                 let refTypeData = processRefTypeResponse(response.account_search);
-                                
-                                await bot.api.views.open({
+                                await bot.api.views.open({//no scope required
                                     trigger_id: message.trigger_id,
                                     view: {
                                         "type": "modal",
@@ -373,7 +373,7 @@ module.exports = controller => {
                             pvt_metadata.email = userProfile.user.profile.email;
                             pvt_metadata.actionName = 'both';
                             pvt_metadata.isBoth = true;
-                            const result = await bot.api.views.open({
+                            const result = await bot.api.views.open({//no scope required.
                                 trigger_id: message.trigger_id,
                                 view: {
                                     "type": "modal",
@@ -700,7 +700,7 @@ module.exports = controller => {
         if(openView) {
             console.log('in open view.');
             viewObject.trigger_id = message.trigger_id;
-            await bot.api.views.open(viewObject);
+            await bot.api.views.open(viewObject);////no scope required.
         } else {
             console.log('in else of open view.');
             viewObject.response_action = 'update';
