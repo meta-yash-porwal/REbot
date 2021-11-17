@@ -754,6 +754,7 @@ module.exports = controller => {
                     // When Account Name entered
                     if (message.view.callback_id == 'actionSelectionView') {
                         let actionName = 'account_search';
+                        console.log('accblock::', message.view.state.values.accblock);
                         if(message.view.state.values.accblock) {
                             actionName = message.view.state.values.accblock.searchid.selected_option.value;
                         } else{
@@ -770,8 +771,10 @@ module.exports = controller => {
                         if(refselected) {
                             pvt_metadata.contentTypes = refselected;
                         }
-                        
+                        console.log('existingConn:: ', existingConn);
+                        console.log('actionName:: ', actionName);
                         let mapval = await getRefTypes(existingConn,actionName);
+                        console.log('mapval::', mapval);
                         if (actionName == 'content_search') {
                             console.log('...view submission content opp flow....');
                              
