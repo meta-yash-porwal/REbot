@@ -243,7 +243,9 @@ module.exports = controller => {
         async (bot, message) => {
             try {
                 console.log('slash_command');
-                let pvt_metadata = {'email':'', 'isContentType':false, 'isRefType':false, 'isBoth':false, 'actionName':'', 'contentTypes': '', 'refTypes':'', 'searchURL':''};
+                let pvt_metadata = {'email':'', 'isContentType':false, 'isRefType':false, 
+                'isBoth':false, 'actionName':'', 'contentTypes': '', 'refTypes':'', 
+                'searchURL':'', 'pkg_version':''};
                 if(message.text && message.text.toLowerCase()  == 'help'){
                     await bot.replyEphemeral(message,
                         `This command allows you to start a search for customer reference resources, without being in Salesforce.\n`
@@ -261,6 +263,13 @@ module.exports = controller => {
                         let response = null;
                         try {
                             response = await checkOrgSettingAndGetData(existingConn, userProfile.user.profile.email);
+                            if(response !== 'both') {
+                                let temp = JSON.parse(response);
+                                if(temp.hasOwnProperty('action')) {
+                                    response = temp.action;
+                                    pvt_metadata.pkg_version = temp.pkg_version;
+                                }
+                            }
                             console.log('checking org settings!!!!', response);
                         }catch(err) {
                             response = 'both';
@@ -273,7 +282,14 @@ module.exports = controller => {
                             response = JSON.parse(response);
                             console.log('response', response);
                             if(!response.hasOwnProperty('account_search')) {
-                                let contentData = processContentResponse(response.content_search);
+                                let content_search = '';
+                                if(response.hasOwnProperty('pkg_version')) {
+                                    pvt_metadata.pkg_version = response.pkg_version;
+                                    content_search = JSON.parse(response.content_search);
+                                } else {
+                                    content_search = response.content_search;
+                                }
+                                let contentData = processContentResponse(content_search);
                                 console.log('...content opp flow...');
                                 pvt_metadata.email = userProfile.user.profile.email;
                                 pvt_metadata.actionName = 'content_search';
@@ -322,10 +338,17 @@ module.exports = controller => {
                                 }); 
                             } else {
                                 console.log('...Reftype flow...');
+                                let account_search = '';
+                                if(response.hasOwnProperty('pkg_version')) {
+                                    pvt_metadata.pkg_version = response.pkg_version;
+                                    account_search = JSON.parse(response.account_search);
+                                } else {
+                                    account_search = response.account_search;
+                                }
                                 pvt_metadata.email = userProfile.user.profile.email;
                                 pvt_metadata.actionName = 'account_search';
                                 pvt_metadata.isRefType = true;
-                                let refTypeData = processRefTypeResponse(response.account_search);
+                                let refTypeData = processRefTypeResponse(account_search);
                                 await bot.api.views.open({//no scope required
                                     trigger_id: message.trigger_id,
                                     view: {
