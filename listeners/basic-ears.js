@@ -261,6 +261,7 @@ module.exports = controller => {
                         let response = null;
                         try {
                             response = await checkOrgSettingAndGetData(existingConn, userProfile.user.profile.email);
+                            console.log('checking org settings!!!!', response);
                         }catch(err) {
                             response = 'both';
                             console.log('...exception in checking org...');
