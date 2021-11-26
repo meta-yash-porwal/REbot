@@ -268,6 +268,8 @@ module.exports = controller => {
                                 if(temp.hasOwnProperty('action')) {
                                     response = temp.action;
                                     pvt_metadata.pkg_version = temp.pkg_version;
+                                    console.log('pkg version: ', pvt_metadata.pkg_version);
+                                    console.log('floating...', parseFloat(pvt_metadata.pkg_version));
                                 }
                             }
                             console.log('checking org settings!!!!', response);
