@@ -265,9 +265,9 @@ module.exports = controller => {
                             response = await checkOrgSettingAndGetData(existingConn, userProfile.user.profile.email);
                             if(response !== 'both') {
                                 let temp = JSON.parse(response);
-                                if(temp.hasOwnProperty('action')) {
+                                if(temp.hasOwnProperty('action')) {//added in 2.26 release.
                                     response = temp.action;
-                                    pvt_metadata.pkg_version = temp.pkg_version;
+                                    pvt_metadata.pkg_version = parseFloat(temp.pkg_version);
                                     console.log('pkg version: ', pvt_metadata.pkg_version);
                                     console.log('floating...', parseFloat(pvt_metadata.pkg_version));
                                 }
@@ -493,7 +493,7 @@ module.exports = controller => {
         let contentTypeSelected = metadata.contentTypes;
         console.log('oppo flow..');
         
-        if(metadata.actionName == 'content_search' ) {
+        if(metadata.actionName == 'content_search' && metadata.pkg_version >= 2.26) {
             contentTypeSelected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null 
                 ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
             let selectedValues = [];
@@ -802,49 +802,53 @@ module.exports = controller => {
                         let mapval = await getRefTypes(existingConn,actionName);
                         console.log('mapval::', mapval);
                         if (actionName == 'content_search') {
-                            console.log('...view submission content opp flow....');
-                             
-                            bot.httpBody({
-                                response_action: 'update',
-                                view: {
-                                    "type": "modal",
-                                    "notify_on_close" : true,
-                                    "callback_id": "oppselect",
-                                    "private_metadata" : JSON.stringify(pvt_metadata),//email,
-                                    "submit": {
-                                        "type": "plain_text",
-                                        "text": "Next",
-                                        "emoji": true
-                                    },
-                                    "title": {
-                                        "type": "plain_text",
-                                        "text": "Content Type",
-                                        "emoji": true
-                                    },
-                                    "blocks": [
-                                        {
-                                            "type": "input",
-                                            "optional" : true,
-                                            "block_id": "blkref",
-                                            "element": {
-                                                "type": "multi_static_select",
-                                                "action_id": "reftype_select",
-                                                "placeholder": {
-                                                    "type": "plain_text",
-                                                    "text": "Select a type",
-                                                    "emoji": true
+                            if(pvt_metadata.pkg_version < 2.26) {
+                                await opportunityFlow(bot, message, existingConn, actionName, email, null);
+                            } else{
+                                console.log('...view submission content opp flow....');
+                                
+                                bot.httpBody({
+                                    response_action: 'update',
+                                    view: {
+                                        "type": "modal",
+                                        "notify_on_close" : true,
+                                        "callback_id": "oppselect",
+                                        "private_metadata" : JSON.stringify(pvt_metadata),//email,
+                                        "submit": {
+                                            "type": "plain_text",
+                                            "text": "Next",
+                                            "emoji": true
+                                        },
+                                        "title": {
+                                            "type": "plain_text",
+                                            "text": "Content Type",
+                                            "emoji": true
+                                        },
+                                        "blocks": [
+                                            {
+                                                "type": "input",
+                                                "optional" : true,
+                                                "block_id": "blkref",
+                                                "element": {
+                                                    "type": "multi_static_select",
+                                                    "action_id": "reftype_select",
+                                                    "placeholder": {
+                                                        "type": "plain_text",
+                                                        "text": "Select a type",
+                                                        "emoji": true
+                                                    },
+                                                    "options": mapval
                                                 },
-                                                "options": mapval
-                                            },
-                                            "label": {
-                                                "type": "plain_text",
-                                                "text": "What type of reference content do you need?",
-                                                "emoji": true
+                                                "label": {
+                                                    "type": "plain_text",
+                                                    "text": "What type of reference content do you need?",
+                                                    "emoji": true
+                                                }
                                             }
-                                        }
-                                    ]
-                                }
-                            });
+                                        ]
+                                    }
+                                });
+                            }
                         } else if(actionName == 'account_search'){
                             console.log('...view submission ref type flow....');
                             bot.httpBody({
