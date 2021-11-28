@@ -805,7 +805,7 @@ module.exports = controller => {
                         
                         if (actionName == 'content_search') {
                             if(pvt_metadata.pkg_version < 2.26) {
-                                await opportunityFlow(bot, message, existingConn, actionName, null, null);
+                                await opportunityFlow(bot, message, existingConn, actionName, pvt_metadata.email, null);
                             } else{
                                 console.log('...view submission content opp flow....');
                                 let mapval = await getRefTypes(existingConn,actionName);
