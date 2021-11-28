@@ -264,6 +264,7 @@ module.exports = controller => {
                         try {
                             response = await checkOrgSettingAndGetData(existingConn, userProfile.user.profile.email);
                             if(response !== 'both') {
+
                                 let temp = JSON.parse(response);
                                 if(temp.hasOwnProperty('action')) {//added in 2.26 release.
                                     response = temp.action;
@@ -797,16 +798,16 @@ module.exports = controller => {
                         if(refselected) {
                             pvt_metadata.contentTypes = refselected;
                         }
-                        console.log('existingConn:: ', existingConn);
                         console.log('actionName:: ', actionName);
-                        let mapval = await getRefTypes(existingConn,actionName);
+
+                        
                         console.log('mapval::', mapval);
                         if (actionName == 'content_search') {
                             if(pvt_metadata.pkg_version < 2.26) {
                                 await opportunityFlow(bot, message, existingConn, actionName, null, null);
                             } else{
                                 console.log('...view submission content opp flow....');
-                                
+                                let mapval = await getRefTypes(existingConn,actionName);
                                 bot.httpBody({
                                     response_action: 'update',
                                     view: {
@@ -851,6 +852,7 @@ module.exports = controller => {
                             }
                         } else if(actionName == 'account_search'){
                             console.log('...view submission ref type flow....');
+                            let mapval = await getRefTypes(existingConn,actionName);
                             bot.httpBody({
                                 response_action: 'update',
                                 view: {
@@ -892,6 +894,7 @@ module.exports = controller => {
                                 }
                             });
                         } else {
+                            let mapval = await getRefTypes(existingConn,actionName);
                             bot.httpBody({
                                 response_action: 'update',
                                 view: {

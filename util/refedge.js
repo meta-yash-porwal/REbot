@@ -37,8 +37,10 @@ module.exports = {
                     
                     if (action == 'content_search' || action == 'both') {
                         let contentTypes = response;
-                        if(response.hasOwnProperty('content_search')) {
+                        if(response.hasOwnProperty('content_search') && !response.hasOwnProperty('pkg_version')) {
                             contentTypes = response.content_search;
+                        } else if(response.hasOwnProperty('pkg_version')) {
+                            contentTypes = JSON.parse(response.content_search);
                         }
                         Object.keys(contentTypes).forEach(function(k){
                             var entry = {
@@ -52,8 +54,10 @@ module.exports = {
                         });
                     } else{
                         let refTypes = response;
-                        if(response.hasOwnProperty('account_search')) {
+                        if(response.hasOwnProperty('account_search') && !response.hasOwnProperty('pkg_version')) {
                             refTypes = response.account_search;
+                        } else if(response.hasOwnProperty('pkg_version')) {
+                            refTypes = JSON.parse(response.account_search);
                         }
                         Object.keys(refTypes).forEach(function(k){
                             let entry = {
