@@ -532,7 +532,9 @@ module.exports = controller => {
                 metadata.refTypes = refselected;
                 metadata.contentTypes = contentTypeSelected;
                 pvt_metadata = metadata;
+                console.log('opp<10::if');
             } else{
+                console.log('opp<10::else');
                 metadata.searchURL = searchURL;
                 metadata.refTypes = refselected;
                 pvt_metadata = metadata;
@@ -1083,6 +1085,8 @@ module.exports = controller => {
                         let oppSelected = message.view.state.values.blkselectopp != null ? message.view.state.values.blkselectopp.opp_select.selected_option.value :
                                             (message.view.state.values.blkselectoppFinal != null ? message.view.state.values.blkselectoppFinal.opp_select.selected_option.value : '');
                         let searchURL = metadata.searchURL;
+                        console.log('search URL : ', searchURL);
+                        console.log('oppSelected : ', oppSelected);
                         searchURL = searchURL.replace('@@',oppSelected);
 
                         if (refselected && refselected != 'NONE' && refselected != '' && refselected != null) {
