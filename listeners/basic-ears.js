@@ -509,12 +509,14 @@ module.exports = controller => {
         
         let openView = false;
         let viewObject = {};
-        
+        console.log('refselected::', refselected);
+        console.log('contentTypeSelected::', contentTypeSelected);
         if(!mapval){
             if(metadata.actionName == 'account_search' && contentTypeSelected) {
                 metadata.actionName = 'both';
             }
             mapval = await getOpp(existingConn,email,metadata.actionName);
+            console.log('oppos:::', mapval);
         } else{
             console.log('map val exists.');
             openView = true;
