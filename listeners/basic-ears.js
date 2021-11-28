@@ -801,7 +801,6 @@ module.exports = controller => {
                         console.log('actionName:: ', actionName);
 
                         
-                        console.log('mapval::', mapval);
                         if (actionName == 'content_search') {
                             if(pvt_metadata.pkg_version < 2.26) {
                                 await opportunityFlow(bot, message, existingConn, actionName, null, null);
