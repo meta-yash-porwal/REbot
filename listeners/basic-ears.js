@@ -537,6 +537,9 @@ module.exports = controller => {
                 metadata.searchURL = searchURL;
                 metadata.refTypes = refselected;
                 pvt_metadata = metadata;
+                console.log('opp<10::else', searchURL);
+                console.log('opp<10::else', refselected);
+                console.log('opp<10::else', metadata);
                 console.log('opp<10::else', pvt_metadata);
             }
             viewObject = {
