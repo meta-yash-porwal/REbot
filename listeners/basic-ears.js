@@ -490,6 +490,7 @@ module.exports = controller => {
     });
 
     async function opportunityFlow (bot, message, existingConn, metadata, email, mapval) {//actionName
+        console.log('metadata initially::: ', metadata);
         let refselected = metadata.refTypes;
         let contentTypeSelected = metadata.contentTypes;
         console.log('oppo flow..');
@@ -506,7 +507,7 @@ module.exports = controller => {
             refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_option != null ? message.view.state.values.blkref.reftype_select.selected_option : 'NONE';
             refselected = refselected && refselected != 'NONE' && refselected != '' && refselected != null ? (refselected.value.indexOf('::') > -1 ? refselected.value.split('::')[1] : refselected.value) : '';
         }
-        
+        console.log('metadata QQQQ:::', metadata);
         let openView = false;
         let viewObject = {};
         console.log('refselected::', refselected);
@@ -521,7 +522,7 @@ module.exports = controller => {
             console.log('map val exists.');
             openView = true;
         }
-        
+        console.log('metadata WWWW:::', metadata);
         let searchURL = mapval['searchURL'];
         let opps = mapval['opp'];
 
