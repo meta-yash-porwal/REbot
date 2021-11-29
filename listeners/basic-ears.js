@@ -534,10 +534,10 @@ module.exports = controller => {
                 pvt_metadata = metadata;
                 console.log('opp<10::if');
             } else{
-                console.log('opp<10::else');
                 metadata.searchURL = searchURL;
                 metadata.refTypes = refselected;
                 pvt_metadata = metadata;
+                console.log('opp<10::else', pvt_metadata);
             }
             viewObject = {
                 view: {
@@ -1076,9 +1076,10 @@ module.exports = controller => {
                             });
                         } 
                     } else if (message.view.callback_id == 'searchselect') {
-                        console.log('@@@metadata_4');
+                        
                         
                         let metadata = JSON.parse(message.view.private_metadata);
+                        console.log('@@@metadata_4', metadata);
                         const refselected = metadata.refTypes;
                         let contentTypeSelected = metadata.contentTypes;
                         
