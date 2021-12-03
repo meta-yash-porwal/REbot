@@ -263,6 +263,7 @@ module.exports = controller => {
                         let response = null;
                         try {
                             response = await checkOrgSettingAndGetData(existingConn, userProfile.user.profile.email);
+                            console.log('###response ', response);
                             if(response !== 'both') {
 
                                 let temp = JSON.parse(response);
@@ -807,7 +808,7 @@ module.exports = controller => {
                             pvt_metadata.contentTypes = refselected;
                         }
                         console.log('actionName:: ', actionName);
-
+                        console.log('pvt_metadata::', pvt_metadata.pkg_version);
                         
                         if (actionName == 'content_search') {
                             if(pvt_metadata.pkg_version < 2.26) {
