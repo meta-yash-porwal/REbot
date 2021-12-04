@@ -245,7 +245,7 @@ module.exports = controller => {
                 console.log('slash_command');
                 let pvt_metadata = {'email':'', 'isContentType':false, 'isRefType':false, 
                 'isBoth':false, 'actionName':'', 'contentTypes': '', 'refTypes':'', 
-                'searchURL':'', 'pkg_version':''};
+                'searchURL':'', 'pkg_version':0};
                 if(message.text && message.text.toLowerCase()  == 'help'){
                     await bot.replyEphemeral(message,
                         `This command allows you to start a search for customer reference resources, without being in Salesforce.\n`
