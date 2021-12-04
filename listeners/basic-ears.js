@@ -905,10 +905,12 @@ module.exports = controller => {
                             let titleText = 'Content Type';
                             let block_element_type = 'multi_static_select';
                             let block_label_text = 'What type of reference content do you need?';
+                            let callbackId = 'actionSelectionView';
                             if(pvt_metadata.pkg_version < 2.26) {
                                 titleText = 'Referenceability Type';
                                 block_element_type = 'static_select';
                                 block_label_text = 'What type of reference accounts do you need?';
+                                callbackId = 'oppselect';
                             }
                             let mapval = await getRefTypes(existingConn,actionName);
                             console.log('@@mapval::', mapval);
@@ -917,7 +919,7 @@ module.exports = controller => {
                                 view: {
                                     "type": "modal",
                                     "notify_on_close" : true,
-                                    "callback_id": "actionSelectionView",
+                                    "callback_id": callbackId,
                                     "private_metadata" : JSON.stringify(pvt_metadata),
                                     "submit": {
                                         "type": "plain_text",
