@@ -902,6 +902,14 @@ module.exports = controller => {
                                 }
                             });
                         } else {
+                            let titleText = 'Content Type';
+                            let block_element_type = 'multi_static_select';
+                            let block_label_text = 'What type of reference content do you need?';
+                            if(pvt_metadata.pkg_version < 2.26) {
+                                titleText = 'Referenceability Type';
+                                block_element_type = 'static_select';
+                                block_label_text = 'What type of reference accounts do you need?';
+                            }
                             let mapval = await getRefTypes(existingConn,actionName);
                             bot.httpBody({
                                 response_action: 'update',
@@ -917,7 +925,7 @@ module.exports = controller => {
                                     },
                                     "title": {
                                         "type": "plain_text",
-                                        "text": "Content Type",
+                                        "text": titleText,
                                         "emoji": true
                                     },
                                     "blocks": [
@@ -926,7 +934,7 @@ module.exports = controller => {
                                             "optional" : true,
                                             "block_id": "blkref",
                                             "element": {
-                                                "type": "multi_static_select",
+                                                "type": block_element_type,
                                                 "action_id": "reftype_select",
                                                 "placeholder": {
                                                     "type": "plain_text",
@@ -937,7 +945,7 @@ module.exports = controller => {
                                             },
                                             "label": {
                                                 "type": "plain_text",
-                                                "text": "What type of reference content do you need?",
+                                                "text": block_label_text,
                                                 "emoji": true
                                             }
                                         }

@@ -34,8 +34,9 @@ module.exports = {
             } else  if (response) {
                 if (response != 'false') {
                     response = JSON.parse(response);
-                    
-                    if (action == 'content_search' || action == 'both') {
+                    //pkg version is added in 2.26 so for "both" 
+                    //feature in 2.26 first content type selection should be shown. 
+                    if (action == 'content_search' || (action == 'both' && response.hasOwnProperty('pkg_version'))) {
                         let contentTypes = response;
                         if(response.hasOwnProperty('content_search') && !response.hasOwnProperty('pkg_version')) {
                             contentTypes = response.content_search;
