@@ -911,6 +911,7 @@ module.exports = controller => {
                                 block_label_text = 'What type of reference accounts do you need?';
                             }
                             let mapval = await getRefTypes(existingConn,actionName);
+                            console.log('@@mapval::', mapval);
                             bot.httpBody({
                                 response_action: 'update',
                                 view: {
