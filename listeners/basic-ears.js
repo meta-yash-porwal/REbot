@@ -288,7 +288,8 @@ module.exports = controller => {
                             if(!response.hasOwnProperty('account_search')) {
                                 let content_search = '';
                                 if(!response.hasOwnProperty('pkg_version')) {
-                                    await opportunityFlow(bot, message, existingConn, pvt_metadata, userProfile.user.profile.email, null);
+                                    let contentData = processContentResponse(response);
+                                    await opportunityFlow(bot, message, existingConn, pvt_metadata, userProfile.user.profile.email, contentData);
                                 } else{
                                     if(response.hasOwnProperty('pkg_version')) {
                                         pvt_metadata.pkg_version = response.pkg_version;
@@ -751,17 +752,36 @@ module.exports = controller => {
     function processContentResponse(response) {
         
         let ref = [];
-        Object.keys(response).forEach(function(k){
-            let entry = {
-                "text": {
-                    "type": "plain_text",
-                    "text": response[k]
-                },
-                "value": k
-            }
-            ref.push(entry);
-        });
-        return ref;
+        let opp = [];
+        let returnVal = {};
+        if(!response.hasOwnProperty('searchURL')) {
+            Object.keys(response).forEach(function(k){
+                let entry = {
+                    "text": {
+                        "type": "plain_text",
+                        "text": response[k]
+                    },
+                    "value": k
+                }
+                ref.push(entry);
+            });
+            return ref;
+        } else if (response != 'false') {
+            let oppList = response['opp'];
+            returnVal['searchURL'] = response['searchURL'];
+            oppList.forEach(function(oppWrapper){
+                let entry = {
+                    "text": {
+                        "type": "plain_text",
+                        "text": oppWrapper['oppName'] + ' (' + oppWrapper['accName'] + ')'
+                    },
+                    "value": oppWrapper['id']
+                }
+                opp.push(entry);
+            });
+            returnVal['opp'] = opp;
+            return returnVal;
+        }
     }
 
     function processRefTypeResponse(response) {
