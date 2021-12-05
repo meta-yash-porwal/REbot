@@ -288,7 +288,7 @@ module.exports = controller => {
                             if(!response.hasOwnProperty('account_search')) {
                                 let content_search = '';
                                 if(!response.hasOwnProperty('pkg_version')) {
-                                    await opportunityFlow(bot, message, existingConn, pvt_metadata, pvt_metadata.email, null);
+                                    await opportunityFlow(bot, message, existingConn, pvt_metadata, userProfile.user.profile.email, null);
                                 } else{
                                     if(response.hasOwnProperty('pkg_version')) {
                                         pvt_metadata.pkg_version = response.pkg_version;
