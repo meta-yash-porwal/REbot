@@ -287,59 +287,63 @@ module.exports = controller => {
                             console.log('response', response);
                             if(!response.hasOwnProperty('account_search')) {
                                 let content_search = '';
-                                if(response.hasOwnProperty('pkg_version')) {
-                                    pvt_metadata.pkg_version = response.pkg_version;
-                                    content_search = JSON.parse(response.content_search);
-                                } else {
-                                    content_search = response.content_search;
-                                }
-                                let contentData = processContentResponse(content_search);
-                                console.log('...content opp flow...');
-                                pvt_metadata.email = userProfile.user.profile.email;
-                                pvt_metadata.actionName = 'content_search';
-                                pvt_metadata.isContentType = true;
-                                
-                                await bot.api.views.open({
-                                    trigger_id: message.trigger_id,
-                                    view: {
-                                        "type": "modal",
-                                        "notify_on_close" : true,
-                                        "callback_id": "oppselect",
-                                        "private_metadata" : JSON.stringify(pvt_metadata),
-                                        "submit": {
-                                            "type": "plain_text",
-                                            "text": "Next",
-                                            "emoji": true
-                                        },
-                                        "title": {
-                                            "type": "plain_text",
-                                            "text": "Content Type",
-                                            "emoji": true
-                                        },
-                                        "blocks": [
-                                            {
-                                                "type": "input",
-                                                "optional" : true,
-                                                "block_id": "blkref",
-                                                "element": {
-                                                    "type": "multi_static_select",
-                                                    "action_id": "reftype_select",
-                                                    "placeholder": {
-                                                        "type": "plain_text",
-                                                        "text": "Select a type",
-                                                        "emoji": true
-                                                    },
-                                                    "options": contentData
-                                                },
-                                                "label": {
-                                                    "type": "plain_text",
-                                                    "text": "What type of reference content do you need?",
-                                                    "emoji": true
-                                                }
-                                            }
-                                        ]
+                                if(!response.hasOwnProperty('pkg_version')) {
+                                    await opportunityFlow(bot, message, existingConn, pvt_metadata, pvt_metadata.email, null);
+                                } else{
+                                    if(response.hasOwnProperty('pkg_version')) {
+                                        pvt_metadata.pkg_version = response.pkg_version;
+                                        content_search = JSON.parse(response.content_search);
+                                    } else {
+                                        content_search = response.content_search;
                                     }
-                                }); 
+                                    let contentData = processContentResponse(content_search);
+                                    console.log('...content opp flow...');
+                                    pvt_metadata.email = userProfile.user.profile.email;
+                                    pvt_metadata.actionName = 'content_search';
+                                    pvt_metadata.isContentType = true;
+                                    
+                                    await bot.api.views.open({
+                                        trigger_id: message.trigger_id,
+                                        view: {
+                                            "type": "modal",
+                                            "notify_on_close" : true,
+                                            "callback_id": "oppselect",
+                                            "private_metadata" : JSON.stringify(pvt_metadata),
+                                            "submit": {
+                                                "type": "plain_text",
+                                                "text": "Next",
+                                                "emoji": true
+                                            },
+                                            "title": {
+                                                "type": "plain_text",
+                                                "text": "Content Type",
+                                                "emoji": true
+                                            },
+                                            "blocks": [
+                                                {
+                                                    "type": "input",
+                                                    "optional" : true,
+                                                    "block_id": "blkref",
+                                                    "element": {
+                                                        "type": "multi_static_select",
+                                                        "action_id": "reftype_select",
+                                                        "placeholder": {
+                                                            "type": "plain_text",
+                                                            "text": "Select a type",
+                                                            "emoji": true
+                                                        },
+                                                        "options": contentData
+                                                    },
+                                                    "label": {
+                                                        "type": "plain_text",
+                                                        "text": "What type of reference content do you need?",
+                                                        "emoji": true
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }); 
+                                }
                             } else {
                                 console.log('...Reftype flow...');
                                 let account_search = '';
