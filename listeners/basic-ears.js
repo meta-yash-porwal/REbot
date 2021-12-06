@@ -263,18 +263,15 @@ module.exports = controller => {
                         let response = null;
                         try {
                             response = await checkOrgSettingAndGetData(existingConn, userProfile.user.profile.email);
-                            console.log('###response ', response);
+                            
                             if(response !== 'both') {
 
                                 let temp = JSON.parse(response);
                                 if(temp.hasOwnProperty('action')) {//added in 2.26 release.
                                     response = temp.action;
                                     pvt_metadata.pkg_version = parseFloat(temp.pkg_version);
-                                    console.log('pkg version: ', pvt_metadata.pkg_version);
-                                    console.log('floating...', parseFloat(pvt_metadata.pkg_version));
                                 }
                             }
-                            console.log('checking org settings!!!!', response);
                         }catch(err) {
                             response = 'both';
                             console.log('...exception in checking org...');
@@ -284,7 +281,7 @@ module.exports = controller => {
                         if (response != 'false' && response != 'both') {
                             
                             response = JSON.parse(response);
-                            console.log('response', response);
+                            
                             if(!response.hasOwnProperty('account_search')) {
                                 let content_search = '';
                                 if(!response.hasOwnProperty('pkg_version')) {
@@ -496,7 +493,6 @@ module.exports = controller => {
     });
 
     async function opportunityFlow (bot, message, existingConn, metadata, email, mapval) {//actionName
-        console.log('metadata initially::: ', metadata);
         let refselected = metadata.refTypes;
         let contentTypeSelected = metadata.contentTypes;
         console.log('oppo flow..');
@@ -513,22 +509,18 @@ module.exports = controller => {
             refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_option != null ? message.view.state.values.blkref.reftype_select.selected_option : 'NONE';
             refselected = refselected && refselected != 'NONE' && refselected != '' && refselected != null ? (refselected.value.indexOf('::') > -1 ? refselected.value.split('::')[1] : refselected.value) : '';
         }
-        console.log('metadata QQQQ:::', metadata);
         let openView = false;
         let viewObject = {};
-        console.log('refselected::', refselected);
-        console.log('contentTypeSelected::', contentTypeSelected);
+        
         if(!mapval){
             if(metadata.actionName == 'account_search' && contentTypeSelected) {
                 metadata.actionName = 'both';
             }
             mapval = await getOpp(existingConn,email,metadata.actionName);
-            console.log('oppos:::', mapval);
         } else{
             console.log('map val exists.');
             openView = true;
         }
-        console.log('metadata WWWW:::', metadata);
         let searchURL = mapval['searchURL'];
         let opps = mapval['opp'];
 
@@ -539,15 +531,10 @@ module.exports = controller => {
                 metadata.refTypes = refselected;
                 metadata.contentTypes = contentTypeSelected;
                 pvt_metadata = metadata;
-                console.log('opp<10::if');
             } else{
                 metadata.searchURL = searchURL;
                 metadata.refTypes = refselected;
                 pvt_metadata = metadata;
-                console.log('opp<10::else', searchURL);
-                console.log('opp<10::else', refselected);
-                console.log('opp<10::else', metadata.searchURL);
-                console.log('opp<10::else', pvt_metadata);
             }
             viewObject = {
                 view: {
@@ -810,11 +797,10 @@ module.exports = controller => {
                     const authUrl = connFactory.getAuthUrl(message.team);
                     await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
                 } else {
-                    console.log('callbackid', message.view.callback_id);
                     // When Account Name entered
                     if (message.view.callback_id == 'actionSelectionView') {
                         let actionName = 'account_search';
-                        console.log('accblock::', message.view.state.values.accblock);
+                        
                         if(message.view.state.values.accblock) {
                             actionName = message.view.state.values.accblock.searchid.selected_option.value;
                         } else{
@@ -831,8 +817,6 @@ module.exports = controller => {
                         if(refselected) {
                             pvt_metadata.contentTypes = refselected;
                         }
-                        console.log('actionName:: ', actionName);
-                        console.log('pvt_metadata::', pvt_metadata.pkg_version);
                         
                         if (actionName == 'content_search') {
                             if(pvt_metadata.pkg_version < 2.26) {
@@ -937,7 +921,6 @@ module.exports = controller => {
                                 callbackId = 'oppselect';
                             }
                             let mapval = await getRefTypes(existingConn,actionName);
-                            console.log('@@mapval::', mapval);
                             bot.httpBody({
                                 response_action: 'update',
                                 view: {
@@ -981,14 +964,11 @@ module.exports = controller => {
                             });
                         }
                     } else if (message.view.callback_id == 'oppselect') {
-                        console.log('@@@metadata_2');
                         let metdata = JSON.parse(message.view.private_metadata);
-                        console.log('multi metadata ::', metdata);
                         const email = metdata.email;
                         await opportunityFlow(bot, message, existingConn, metdata, email, null);
                         
                     } else if (message.view.callback_id == 'searchselectopplarge') {
-                        console.log('@@@metadata_3');
                         
                         let metadata = JSON.parse(message.view.private_metadata);
                         let searchURL = metadata.searchURL;
@@ -1119,15 +1099,12 @@ module.exports = controller => {
                         
                         
                         let metadata = JSON.parse(message.view.private_metadata);
-                        console.log('@@@metadata_4', metadata);
                         const refselected = metadata.refTypes;
                         let contentTypeSelected = metadata.contentTypes;
                         
                         let oppSelected = message.view.state.values.blkselectopp != null ? message.view.state.values.blkselectopp.opp_select.selected_option.value :
                                             (message.view.state.values.blkselectoppFinal != null ? message.view.state.values.blkselectoppFinal.opp_select.selected_option.value : '');
                         let searchURL = metadata.searchURL;
-                        console.log('search URL : ', searchURL);
-                        console.log('oppSelected : ', oppSelected);
                         searchURL = searchURL.replace('@@',oppSelected);
 
                         if (refselected && refselected != 'NONE' && refselected != '' && refselected != null) {
