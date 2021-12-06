@@ -526,16 +526,13 @@ module.exports = controller => {
 
         if (opps != null && opps.length > 0 && opps.length < 10) {
             let pvt_metadata = {};
+            metadata.searchURL = searchURL;
+            metadata.refTypes = refselected;
+            
             if(contentTypeSelected) {
-                metadata.searchURL = searchURL;
-                metadata.refTypes = refselected;
                 metadata.contentTypes = contentTypeSelected;
-                pvt_metadata = metadata;
-            } else{
-                metadata.searchURL = searchURL;
-                metadata.refTypes = refselected;
-                pvt_metadata = metadata;
-            }
+            } 
+            pvt_metadata = metadata;
             viewObject = {
                 view: {
                     "type": "modal",
@@ -577,19 +574,14 @@ module.exports = controller => {
             };
         } else if (opps != null && opps.length >= 10) {
             let pvt_metadata = null;
+            metadata.searchURL = searchURL;
+            metadata.refTypes = refselected;
+            metadata.email = email;
+            
             if(contentTypeSelected) {
-                metadata.searchURL = searchURL;
-                metadata.refTypes = refselected;
                 metadata.contentTypes = contentTypeSelected;
-                metadata.email = email;
-                pvt_metadata = metadata;
-
-            } else{
-                metadata.searchURL = searchURL;
-                metadata.refTypes = refselected;
-                metadata.email = email;
-                pvt_metadata = metadata;
-            }
+            } 
+            pvt_metadata = metadata;
             viewObject = {
                 view: {
                     "type": "modal",
@@ -830,7 +822,7 @@ module.exports = controller => {
                                         "type": "modal",
                                         "notify_on_close" : true,
                                         "callback_id": "oppselect",
-                                        "private_metadata" : JSON.stringify(pvt_metadata),//email,
+                                        "private_metadata" : JSON.stringify(pvt_metadata),
                                         "submit": {
                                             "type": "plain_text",
                                             "text": "Next",
