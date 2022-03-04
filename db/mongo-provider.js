@@ -11,6 +11,7 @@ module.exports = config => {
     }
     mongoose.set('useNewUrlParser', true);
     mongoose.set('useFindAndModify', false);
+    mongoose.set('useUnifiedTopology', true);
     let db = config.db || mongoose.createConnection(config.mongoUri);
     let storage = {};
     let tables = ['teams', 'channels', 'users', 'orgs'];
