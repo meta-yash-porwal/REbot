@@ -776,6 +776,7 @@ module.exports = controller => {
     }
 
     function processRefTypeResponse(response) {
+        console.log('RESPONSE IN processRefTypeResponse ', response);
         let ref = [];
         Object.keys(response).forEach(function(k){
             let entry = {
@@ -833,7 +834,8 @@ module.exports = controller => {
                                 await opportunityFlow(bot, message, existingConn, pvt_metadata, pvt_metadata.email, null);
                             } else{
                                 console.log('...view submission content opp flow....');
-                                let mapval = await getRefTypes(existingConn,actionName);
+                                let mapval = await getRefTypes(existingConn, actionName);
+                                console.log('CONTENT search in MAPVAL 837 Ears ', mapval);
                                 bot.httpBody({
                                     response_action: 'update',
                                     view: {
@@ -878,7 +880,8 @@ module.exports = controller => {
                             }
                         } else if(actionName == 'account_search'){
                             console.log('...view submission Account Search ref type flow....');
-                            let mapval = await getRefTypes(existingConn,actionName);
+                            let mapval = await getRefTypes(existingConn, actionName);
+                            console.log('Account Search MAPVAL 883 Ears', mapval);
                             bot.httpBody({
                                 response_action: 'update',
                                 view: {
@@ -925,13 +928,15 @@ module.exports = controller => {
                             let block_element_type = 'multi_static_select';
                             let block_label_text = 'What type of reference content do you need?';
                             let callbackId = 'actionSelectionView';
-                            if(pvt_metadata.pkg_version < 2.26) {
+                            if (pvt_metadata.pkg_version < 2.26) {
+                                console.log('PCKG Verison', pvt_metadata.pkg_version);
                                 titleText = 'Referenceability Type';
                                 block_element_type = 'static_select';
                                 block_label_text = 'What type of reference accounts do you need?';
                                 callbackId = 'oppselect';
                             }
-                            let mapval = await getRefTypes(existingConn,actionName);
+                            let mapval = await getRefTypes(existingConn, actionName);
+                            console.log('BOTH in MAPVAL EARS 935', mapval);
                             bot.httpBody({
                                 response_action: 'update',
                                 view: {
