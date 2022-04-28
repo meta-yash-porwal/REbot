@@ -30,9 +30,12 @@ module.exports = {
         let url = action == null || action == '' ? process.env.NAMESPACE +'/rebot/REF_TYPE' : process.env.NAMESPACE +'/rebot/REF_TYPE::' + action;
         await conn.apex.get(url, (err, response) => {
             if (err) {
+                console.log('ERROR in getRefTypes REFEDGE.js');
                 logger.log(err);
-            } else  if (response) {
+            } else if (response) {
+                console.log('RESPONSE');
                 if (response != 'false') {
+                    console.log('RESPOSNE refedge.js 38 ', response);
                     response = JSON.parse(response);
                     //pkg version is added in 2.26 so for "both" 
                     //feature in 2.26 first content type selection should be shown. 

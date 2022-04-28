@@ -242,6 +242,9 @@ module.exports = controller => {
         }
     });
 
+    /**
+     * First dialog box in Slack when we first use /slash command
+     */
     controller.on(
         'slash_command',
         async (bot, message) => {
@@ -815,12 +818,14 @@ module.exports = controller => {
                                 selectedValues.push(ref.value);
                             });
                             refselected = selectedValues.join(',');
+                            console.log('Ref Selected EARS', refselected);
                         }
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         pvt_metadata.actionName = actionName;
 
                         if(refselected) {
                             pvt_metadata.contentTypes = refselected;
+                            console.log('PVT Metadata COntent Type');
                         }
                         
                         if (actionName == 'content_search') {
@@ -872,7 +877,7 @@ module.exports = controller => {
                                 });
                             }
                         } else if(actionName == 'account_search'){
-                            console.log('...view submission ref type flow....');
+                            console.log('...view submission Account Search ref type flow....');
                             let mapval = await getRefTypes(existingConn,actionName);
                             bot.httpBody({
                                 response_action: 'update',
@@ -915,6 +920,7 @@ module.exports = controller => {
                                 }
                             });
                         } else {
+                            console.log('ACTION name BOTH');
                             let titleText = 'Content Type';
                             let block_element_type = 'multi_static_select';
                             let block_label_text = 'What type of reference content do you need?';
@@ -969,12 +975,13 @@ module.exports = controller => {
                             });
                         }
                     } else if (message.view.callback_id == 'oppselect') {
+                        console.log('Opp Selected Ears');
                         let metdata = JSON.parse(message.view.private_metadata);
                         const email = metdata.email;
                         await opportunityFlow(bot, message, existingConn, metdata, email, null);
                         
                     } else if (message.view.callback_id == 'searchselectopplarge') {
-                        
+                        console.log('searchselectopplarge Ears');
                         let metadata = JSON.parse(message.view.private_metadata);
                         let searchURL = metadata.searchURL;
                         const refselected = metadata.refTypes;
@@ -1102,7 +1109,7 @@ module.exports = controller => {
                         } 
                     } else if (message.view.callback_id == 'searchselect') {
                         
-                        
+                        console.log('Search Selected EARS');
                         let metadata = JSON.parse(message.view.private_metadata);
                         const refselected = metadata.refTypes;
                         let contentTypeSelected = metadata.contentTypes;
