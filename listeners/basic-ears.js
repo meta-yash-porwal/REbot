@@ -796,16 +796,18 @@ module.exports = controller => {
                 console.log('In view_submission TRY 796');
                 let refselected = null;
                 if (!existingConn) {
+                    console.log('NOT EXisting Connection');
                     const authUrl = connFactory.getAuthUrl(message.team);
                     await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
                 } else {
-                    console.log('In Else 793 Ears');
+                    console.log('In Else 793 Ears Having Existing Connection');
                     // When Account Name entered
                     if (message.view.callback_id == 'actionSelectionView') {
                         let actionName = 'account_search';
                         
                         if(message.view.state.values.accblock) {
                             actionName = message.view.state.values.accblock.searchid.selected_option.value;
+                            console.log('Action Name 810 Ears', actionName);
                         } else{
                             refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
                             let selectedValues = [];
