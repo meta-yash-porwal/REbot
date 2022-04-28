@@ -7,6 +7,9 @@ const { checkTeamMigration } = require('../listeners/middleware/migration-filter
 
 module.exports = controller => {
 
+    /**
+     * Controller for Direct Message like Hello, Help & Connect to sf 
+     */
     controller.on('direct_message,direct_mention', 
     async (bot, message) => {
 
@@ -22,6 +25,7 @@ module.exports = controller => {
                 let existingConn = await connFactory.getConnection(message.team, controller);
 
                 if (!existingConn) {
+                    console.log('For EXISting Connection 28 EARS');
                     const authUrl = connFactory.getAuthUrl(message.team);
                     bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
                 }else {
@@ -246,6 +250,8 @@ module.exports = controller => {
                 let pvt_metadata = {'email':'', 'isContentType':false, 'isRefType':false, 
                 'isBoth':false, 'actionName':'', 'contentTypes': '', 'refTypes':'', 
                 'searchURL':'', 'pkg_version':0};
+                console.log('PVT_DATA 249 Ears', pvt_metadata);
+                
                 if(message.text && message.text.toLowerCase()  == 'help'){
                     await bot.replyEphemeral(message,
                         `This command allows you to start a search for customer reference resources, without being in Salesforce.\n`
@@ -253,17 +259,20 @@ module.exports = controller => {
                     );
                 }else{
                     let existingConn = await connFactory.getConnection(message.team, controller);
+                    console.log('EXistingCONn 258 Ears', existingConn);
                     
                     if (existingConn) {
                         const userProfile = await bot.api.users.info({//users.read scope
                             token : bot.api.token,
                             user : message.user
                         });
+                        console.log('USER PROFILE 265 Ears', userProfile.user.profile.email);
                         console.log('.......checking org settings ....');
                         let response = null;
                         try {
                             response = await checkOrgSettingAndGetData(existingConn, userProfile.user.profile.email);
-                            
+                            console.log('RESponse 270 Ears', response);
+
                             if(response !== 'both') {
 
                                 let temp = JSON.parse(response);
@@ -784,11 +793,13 @@ module.exports = controller => {
             console.log('view_submission');
             try {
                 let existingConn = await connFactory.getConnection(message.team.id, controller);
+                console.log('$$$$$$$$$$$$$$$$$$ existingConn', existingConn);
                 let refselected = null;
                 if (!existingConn) {
                     const authUrl = connFactory.getAuthUrl(message.team);
                     await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
                 } else {
+                    console.log('Hello793 Ears');
                     // When Account Name entered
                     if (message.view.callback_id == 'actionSelectionView') {
                         let actionName = 'account_search';

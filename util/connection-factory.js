@@ -78,10 +78,12 @@ async function deleteOrg(teamId, botController) {
 
 module.exports = {
     getAuthUrl: teamId => {
+        console.log('IN getAuthURL 81 CONNECTION FACTORY ', teamId);
         let authUrl = oauth2.getAuthorizationUrl({ scope: 'api refresh_token web' });
         return (authUrl + '&state=' + teamId);
     },
     getConnection: async (teamId, botController) => {
+        console.log('IN getConnection 86 CONNECTION FACTORY ', teamId);
 
         if (teamId in openConnections) {
             return openConnections[teamId];
