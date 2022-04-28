@@ -250,7 +250,7 @@ module.exports = controller => {
                 let pvt_metadata = {'email':'', 'isContentType':false, 'isRefType':false, 
                 'isBoth':false, 'actionName':'', 'contentTypes': '', 'refTypes':'', 
                 'searchURL':'', 'pkg_version':0};
-                console.log('PVT_DATA 249 Ears', pvt_metadata);
+                console.log('PVT_DATA 249 Ears');
                 
                 if(message.text && message.text.toLowerCase()  == 'help'){
                     await bot.replyEphemeral(message,
@@ -259,7 +259,7 @@ module.exports = controller => {
                     );
                 }else{
                     let existingConn = await connFactory.getConnection(message.team, controller);
-                    console.log('EXistingCONn 258 Ears', existingConn);
+                    console.log('EXistingCONn 258 Ears');
                     
                     if (existingConn) {
                         const userProfile = await bot.api.users.info({//users.read scope
@@ -283,7 +283,7 @@ module.exports = controller => {
                             }
                         }catch(err) {
                             response = 'both';
-                            console.log('...exception in checking org...');
+                            console.log('...exception in checking org... 286 EARS');
                             logger.log(err);
                         }
                         
@@ -793,13 +793,13 @@ module.exports = controller => {
             console.log('view_submission');
             try {
                 let existingConn = await connFactory.getConnection(message.team.id, controller);
-                console.log('$$$$$$$$$$$$$$$$$$ existingConn', existingConn);
+                console.log('In view_submission TRY 796');
                 let refselected = null;
                 if (!existingConn) {
                     const authUrl = connFactory.getAuthUrl(message.team);
                     await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
                 } else {
-                    console.log('Hello793 Ears');
+                    console.log('In Else 793 Ears');
                     // When Account Name entered
                     if (message.view.callback_id == 'actionSelectionView') {
                         let actionName = 'account_search';
@@ -1149,6 +1149,7 @@ module.exports = controller => {
                     }
                 }
             } catch (err) {
+                console.log('IN Catch 1152 Ears');
                 logger.log(err);
             }
         }

@@ -200,13 +200,15 @@ module.exports = {
         }
     },
 
-    checkOrgSettingAndGetData : async(conn, email) => {
+    checkOrgSettingAndGetData: async (conn, email) => {
+        console.log('IN checkOrgSettingAndGetData 204 refedge.js \n', conn);
         let result;
         await conn.apex.get(process.env.NAMESPACE +'/rebot/check_setting::' + email , (err, response) => {
             if (err) {
                 logger.log(err);
                 result = 'both';
-            } else  if (response) {
+            } else if (response) {
+                console.log('IN Else If 211 checkOrgSettingAndGetData refedge.js ', response);
                 if(response === '{}') {
                     response = 'both';
                 }

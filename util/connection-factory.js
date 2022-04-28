@@ -93,7 +93,7 @@ module.exports = {
             let conn = await getExistingConnection(teamId, botController);
             return conn;
         } catch (err) {
-            console.log('error in getConnection');
+            console.log('error in getConnection 96 CONNECTION FACTORy');
             console.dir(err);
             //throw err;
         }
