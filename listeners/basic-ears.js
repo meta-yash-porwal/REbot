@@ -809,10 +809,12 @@ module.exports = controller => {
                     if (message.view.callback_id == 'actionSelectionView') {
                         let actionName = 'account_search';
                         
-                        if(message.view.state.values.accblock) {
+                        if (message.view.state.values.accblock) {
+                            // retrieved what we select in the 1st modal 
                             actionName = message.view.state.values.accblock.searchid.selected_option.value;
                             console.log('Action Name 810 Ears', actionName);
-                        } else{
+                        } else {
+                            //selected values of Content type is in refselected
                             refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
                             let selectedValues = [];
                             refselected.forEach(function(ref) {
@@ -878,50 +880,56 @@ module.exports = controller => {
                                     }
                                 });
                             }
-                        } else if(actionName == 'account_search'){
-                            console.log('...view submission Account Search ref type flow....');
-                            let mapval = await getRefTypes(existingConn, actionName);
-                            console.log('Account Search MAPVAL 883 Ears', mapval);
-                            bot.httpBody({
-                                response_action: 'update',
-                                view: {
-                                    "type": "modal",
-                                    "notify_on_close" : true,
-                                    "callback_id": "oppselect",
-                                    "private_metadata" : JSON.stringify(pvt_metadata),
-                                    "submit": {
-                                        "type": "plain_text",
-                                        "text": "Next",
-                                        "emoji": true
-                                    },
-                                    "title": {
-                                        "type": "plain_text",
-                                        "text": "Referenceability Type",
-                                        "emoji": true
-                                    },
-                                    "blocks": [
-                                        {
-                                            "type": "input",
-                                            "block_id": "blkref",
-                                            "element": {
-                                                "type": "static_select",
-                                                "action_id": "reftype_select",
-                                                "placeholder": {
-                                                    "type": "plain_text",
-                                                    "text": "Select a type",
-                                                    "emoji": true
+                        } else if (actionName == 'account_search') {
+                            try {
+                                console.log('...view submission Account Search ref type flow....');
+                                let mapval = await getRefTypes(existingConn, actionName);
+                                // Referenceability Type
+                                console.log('Account Search MAPVAL 883 Ears', mapval);
+                                bot.httpBody({
+                                    response_action: 'update',
+                                    view: {
+                                        "type": "modal",
+                                        "notify_on_close": true,
+                                        "callback_id": "oppselect",
+                                        "private_metadata": JSON.stringify(pvt_metadata),
+                                        "submit": {
+                                            "type": "plain_text",
+                                            "text": "Next",
+                                            "emoji": true
+                                        },
+                                        "title": {
+                                            "type": "plain_text",
+                                            "text": "Referenceability Type",
+                                            "emoji": true
+                                        },
+                                        "blocks": [
+                                            {
+                                                "type": "input",
+                                                "block_id": "blkref",
+                                                "element": {
+                                                    "type": "static_select",
+                                                    "action_id": "reftype_select",
+                                                    "placeholder": {
+                                                        "type": "plain_text",
+                                                        "text": "Select a type",
+                                                        "emoji": true
+                                                    },
+                                                    "options": mapval
                                                 },
-                                                "options": mapval
-                                            },
-                                            "label": {
-                                                "type": "plain_text",
-                                                "text": "What type of reference accounts do you need?",
-                                                "emoji": true
+                                                "label": {
+                                                    "type": "plain_text",
+                                                    "text": "What type of reference accounts do you need?",
+                                                    "emoji": true
+                                                }
                                             }
-                                        }
-                                    ]
-                                }
-                            });
+                                        ]
+                                    }
+                                });
+                            } catch (err) {
+                                console.log('error occured during Account Search...');
+                                logger.log(err);
+                            }
                         } else {
                             console.log('ACTION name BOTH');
                             let titleText = 'Content Type';
@@ -936,6 +944,8 @@ module.exports = controller => {
                                 callbackId = 'oppselect';
                             }
                             let mapval = await getRefTypes(existingConn, actionName);
+                            //Content Type
+                            //mapval are all values of content type
                             console.log('BOTH in MAPVAL EARS 935', mapval);
                             bot.httpBody({
                                 response_action: 'update',

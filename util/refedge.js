@@ -25,6 +25,12 @@ module.exports = {
         }
             return returnVal;
     },
+    /**
+     * all values of content type & refereceability type as per the value of action (both, Account_Search, Content_Search)
+     * @param {*} conn 
+     * @param {*} action 
+     * @returns 
+     */
     getRefTypes: async (conn,action) => {
         let ref = [];
         let url = action == null || action == '' ? process.env.NAMESPACE +'/rebot/REF_TYPE' : process.env.NAMESPACE +'/rebot/REF_TYPE::' + action;
@@ -202,7 +208,9 @@ module.exports = {
             return val;
         }
     },
-
+    /**
+     * Salesforce Org Custom setting retrived data of Options which are given to User in 1st dialog box
+     */
     checkOrgSettingAndGetData: async (conn, email) => {
         console.log('IN checkOrgSettingAndGetData 204 refedge.js');
         let result;
