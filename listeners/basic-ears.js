@@ -4,6 +4,7 @@ const logger = require('../common/logger');
 const { getRefTypes, getOpp, getOppfromName, getOppfromAcc, saveTeamId, checkOrgSettingAndGetData} = require('../util/refedge');
 
 const { checkTeamMigration } = require('../listeners/middleware/migration-filter');
+const text = require('body-parser/lib/types/text');
 
 module.exports = controller => {
 
@@ -19,31 +20,37 @@ module.exports = controller => {
             let messageText = message.text ? message.text.toLowerCase() : '';
             
             if (messageText.includes('hello')) {
+                console.log('IN Hello section');
                 bot.replyEphemeral(message, `Hi, you can invite me to the channel for Customer Reference Team to receive updates!`);
             } else if (messageText == 'connect to a salesforce instance' || messageText == 'connect to sf'  
-                || (messageText.includes('connect') && messageText.includes('salesforce') )) {//|| message.intent === 'connect_to_sf'
+                || (messageText.includes('connect') && messageText.includes('salesforce'))) {//|| message.intent === 'connect_to_sf'
+                console.log('In connect to sf section');
                 let existingConn = await connFactory.getConnection(message.team, controller);
 
                 if (!existingConn) {
-                    console.log('For EXISting Connection 28 EARS');
+                    console.log('For New Connection to SF-Slack 28 EARS');
                     const authUrl = connFactory.getAuthUrl(message.team);
                     bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
-                }else {
+                } else {
+                    console.log('For Existing Connection');
                         /* await controller.plugins.database.orgs.delete(message.team);
                         const authUrl = connFactory.getAuthUrl(message.team);
                         await bot.reply(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`); */
                         await bot.beginDialog('sf_auth');
                  }
             } else if (messageText.includes('help')) {
+                console.log('IN help SECTION');
                 bot.replyEphemeral(message, 
                 `Hello, Referencebot here. I can help you find customer references, and deliver messages related to your customer reference requests. \n`
                 +`Use the /references command to start a search for reference accounts or reference content. \n`
                 + `Are you an administrator? I can connect you to a Salesforce instance. Just type "connect to a Salesforce instance" to get started. \n`
                 + `Please visit the <${supportUrl}|support page> if you have any further questions.`);
             } else {
+                console.log('NONE OF the aBOVe section');
                 bot.replyEphemeral(message, `Sorry, I didn't understand that.`);
             }
         } catch (err) {
+            console.log('CATCh of direct-mention');
             logger.log(err);
         }
     });
@@ -886,18 +893,51 @@ module.exports = controller => {
                                 let mapval = await getRefTypes(existingConn, actionName);
                                 // Referenceability Type
                                 console.log('Account Search MAPVAL 883 Ears', mapval);
+                                // bot.httpBody({
+                                //     response_action: 'update',
+                                //     view: {
+                                //         "type": "modal",
+                                //         "notify_on_close": true,
+                                //         "callback_id": "oppselect",
+                                //         "private_metadata": JSON.stringify(pvt_metadata),
+                                //         "submit": {
+                                //             "type": "plain_text",
+                                //             "text": "Next",
+                                //             "emoji": true
+                                //         },
+                                //         "title": {
+                                //             "type": "plain_text",
+                                //             "text": "Referenceability Type",
+                                //             "emoji": true
+                                //         },
+                                //         "blocks": [
+                                //             {
+                                //                 "type": "input",
+                                //                 "block_id": "blkref",
+                                //                 "element": {
+                                //                     "type": "static_select",
+                                //                     "action_id": "reftype_select",
+                                //                     "placeholder": {
+                                //                         "type": "plain_text",
+                                //                         "text": "Select a type",
+                                //                         "emoji": true
+                                //                     },
+                                //                     "options": mapval
+                                //                 },
+                                //                 "label": {
+                                //                     "type": "plain_text",
+                                //                     "text": "What type of reference accounts do you need?",
+                                //                     "emoji": true
+                                //                 }
+                                //             }
+                                //         ]
+                                //     }
+                                // });
                                 bot.httpBody({
                                     response_action: 'update',
                                     view: {
                                         "type": "modal",
                                         "notify_on_close": true,
-                                        "callback_id": "oppselect",
-                                        "private_metadata": JSON.stringify(pvt_metadata),
-                                        "submit": {
-                                            "type": "plain_text",
-                                            "text": "Next",
-                                            "emoji": true
-                                        },
                                         "title": {
                                             "type": "plain_text",
                                             "text": "Referenceability Type",
@@ -905,23 +945,8 @@ module.exports = controller => {
                                         },
                                         "blocks": [
                                             {
-                                                "type": "input",
-                                                "block_id": "blkref",
-                                                "element": {
-                                                    "type": "static_select",
-                                                    "action_id": "reftype_select",
-                                                    "placeholder": {
-                                                        "type": "plain_text",
-                                                        "text": "Select a type",
-                                                        "emoji": true
-                                                    },
-                                                    "options": mapval
-                                                },
-                                                "label": {
-                                                    "type": "plain_text",
-                                                    "text": "What type of reference accounts do you need?",
-                                                    "emoji": true
-                                                }
+                                                "type": "plain_text",
+                                                "text": "Hello World!!",
                                             }
                                         ]
                                     }
