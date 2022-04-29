@@ -21,7 +21,8 @@ module.exports = controller => {
             
             if (messageText.includes('hello')) {
                 console.log('IN Hello section');
-                bot.replyEphemeral(message, `Hi, you can invite me to the channel for Customer Reference Team to receive updates!`);
+                await bot.replyEphemeral(message, `Hi, you can invite me to the channel for Customer Reference Team to receive updates!`);
+                console.log('End of Hello Section');
             } else if (messageText == 'connect to a salesforce instance' || messageText == 'connect to sf'  
                 || (messageText.includes('connect') && messageText.includes('salesforce'))) {//|| message.intent === 'connect_to_sf'
                 console.log('In connect to sf section');
