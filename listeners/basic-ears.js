@@ -933,24 +933,49 @@ module.exports = controller => {
                                 //         ]
                                 //     }
                                 // });
+
                                 bot.httpBody({
                                     response_action: 'update',
                                     view: {
                                         "type": "modal",
                                         "notify_on_close": true,
+                                        "callback_id": "oppselect",
+                                        "private_metadata": JSON.stringify(pvt_metadata),
+                                        "submit": {
+                                            "type": "plain_text",
+                                            "text": "Next",
+                                            "emoji": true
+                                        },
                                         "title": {
                                             "type": "plain_text",
-                                            "text": "Referenceability Type",
+                                            "text": "Content Type",
                                             "emoji": true
                                         },
                                         "blocks": [
                                             {
-                                                "type": "plain_text",
-                                                "text": "Hello World!!",
+                                                "type": "input",
+                                                "optional": true,
+                                                "block_id": "blkref",
+                                                "element": {
+                                                    "type": "multi_static_select",
+                                                    "action_id": "reftype_select",
+                                                    "placeholder": {
+                                                        "type": "plain_text",
+                                                        "text": "Select a type",
+                                                        "emoji": true
+                                                    },
+                                                    "options": ["Hello", "Hii", "Ceeeee", "Peeee"]
+                                                },
+                                                "label": {
+                                                    "type": "plain_text",
+                                                    "text": "What type of reference content do you need?",
+                                                    "emoji": true
+                                                }
                                             }
                                         ]
                                     }
                                 });
+
                             } catch (err) {
                                 console.log('error occured during Account Search...');
                                 logger.log(err);
