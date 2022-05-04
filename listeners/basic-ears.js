@@ -31,7 +31,7 @@ module.exports = controller => {
                 if (!existingConn) {
                     console.log('For New Connection to SF-Slack 28 EARS');
                     const authUrl = connFactory.getAuthUrl(message.team);
-                    bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
+                    await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
                 } else {
                     console.log('For Existing Connection');
                         /* await controller.plugins.database.orgs.delete(message.team);
@@ -41,14 +41,14 @@ module.exports = controller => {
                  }
             } else if (messageText.includes('help')) {
                 console.log('IN help SECTION');
-                bot.replyEphemeral(message, 
+                await bot.replyEphemeral(message, 
                 `Hello, Referencebot here. I can help you find customer references, and deliver messages related to your customer reference requests. \n`
                 +`Use the /references command to start a search for reference accounts or reference content. \n`
                 + `Are you an administrator? I can connect you to a Salesforce instance. Just type "connect to a Salesforce instance" to get started. \n`
                 + `Please visit the <${supportUrl}|support page> if you have any further questions.`);
             } else {
                 console.log('NONE OF the aBOVe section');
-                bot.replyEphemeral(message, `Sorry, I didn't understand that.`);
+                await bot.replyEphemeral(message, `Sorry, I didn't understand that.`);
             }
         } catch (err) {
             console.log('CATCh of direct-mention');
@@ -85,6 +85,31 @@ module.exports = controller => {
 
                             if (!userData || !userData.user) {
                                 return logger.log('user not found in team ' + teams[index].id + ' for email:', msg.userEmail);
+                            }
+
+                            if (msg.packageVersion && msg.packageVersion > 2.28) {
+                                console.log('In NEW if with Package Version');
+                                await bot.startPrivateConversation(userData.user.id);
+                                await bot.say(msg.text + '\n' + {
+                                    "blocks": [
+                                        {
+                                            "type": "actions",
+                                            "elements": [
+                                                {
+                                                    "type": "button",
+                                                    "text": {
+                                                        "type": "plain_text",
+                                                        "text": "Approve/Decline",
+                                                        "emoji": true
+                                                    },
+                                                    "action_id": "ApproveDecline_Button"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                });
+                                
+
                             }
                             console.log('...starting conversation...');
                             await bot.startPrivateConversation(userData.user.id);
@@ -1030,6 +1055,7 @@ module.exports = controller => {
                                                 },
                                                 "options": mapval
                                             },
+
                                             "label": {
                                                 "type": "plain_text",
                                                 "text": block_label_text,
