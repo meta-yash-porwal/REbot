@@ -110,9 +110,7 @@ module.exports = controller => {
                                         }
                                     ]
                                 });
-                                
-
-                            }
+                            // }
                             console.log('...starting conversation...');
                             await bot.startPrivateConversation(userData.user.id);
                             await bot.say(msg.text);
