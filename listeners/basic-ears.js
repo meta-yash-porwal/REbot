@@ -89,7 +89,7 @@ module.exports = controller => {
                             }
                             console.log("msg.packageVersion", msg.packageVersion);
 
-                            if (msg.packageVersion) {
+                            // if (msg.packageVersion) {
                                 console.log('In NEW if with Package Version');
                                 await bot.startPrivateConversation(userData.user.id);
                                 await bot.say(msg.text + '\n' + {
