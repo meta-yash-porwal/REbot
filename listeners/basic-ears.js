@@ -60,6 +60,7 @@ module.exports = controller => {
         console.log('posting message for org----', reqBody.orgId);
         
         reqBody.messages.forEach(async msg => {
+            console.log('Message', msg);
 
             try {
                 let teamIdsArray = reqBody.teamId.split(',');
@@ -86,6 +87,7 @@ module.exports = controller => {
                             if (!userData || !userData.user) {
                                 return logger.log('user not found in team ' + teams[index].id + ' for email:', msg.userEmail);
                             }
+                            console.log("msg.packageVersion", msg.packageVersion);
 
                             if (msg.packageVersion && msg.packageVersion > 2.28) {
                                 console.log('In NEW if with Package Version');
