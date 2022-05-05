@@ -60,7 +60,7 @@ module.exports = controller => {
         console.log('posting message for org----', reqBody.orgId);
         
         reqBody.messages.forEach(async msg => {
-            console.log('Message', msg);
+            console.log('Message EARS LINE 63', msg);
 
             try {
                 let teamIdsArray = reqBody.teamId.split(',');
