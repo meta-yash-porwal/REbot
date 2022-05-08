@@ -92,24 +92,26 @@ module.exports = controller => {
                             // if (msg.packageVersion) {
                                 console.log('In NEW if with Package Version');
                                 await bot.startPrivateConversation(userData.user.id);
-                                await bot.say(msg.text + '\n' + {
-                                    "blocks": [
+                            await bot.say(
+                                {
+                                    "text": msg.text,
+                                    "attachments": [
                                         {
-                                            "type": "actions",
-                                            "elements": [
+                                            "callback_id": "wopr_game",
+                                            "color": "#3AA3E3",
+                                            "attachment_type": "default",
+                                            "actions": [
                                                 {
+                                                    "name": "game",
+                                                    "text": "Approve/Decline",
                                                     "type": "button",
-                                                    "text": {
-                                                        "type": "plain_text",
-                                                        "text": "Approve/Decline",
-                                                        "emoji": true
-                                                    },
-                                                    "action_id": "ApproveDecline_Button"
+                                                    "value": "chess"
                                                 }
                                             ]
                                         }
                                     ]
                                 });
+                            
                             // }
                             console.log('...starting conversation...');
                             await bot.startPrivateConversation(userData.user.id);
