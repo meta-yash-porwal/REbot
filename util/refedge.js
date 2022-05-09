@@ -228,5 +228,19 @@ module.exports = {
             }
         });
         return result;
+    },
+
+    getRefUseReqModal: async (conn, rraId) => {
+        console.log('URL 235 Refedge ', url);
+        await conn.apex.get(process.env.NAMESPACE + '/rebot/AD_MODAL' + '::' + rraId, (err, response) => {
+            if (err) {
+                console.log('ERROR in getRefUseReqModal REFEDGE.js');
+                logger.log(err);
+            } else if (response) {
+                console.log('RESPOSNE refedge.js 243 ', response);
+                response = JSON.parse(response);
+                console.log('Response', response);
+            }
+        });
     }
 };

@@ -124,9 +124,9 @@ module.exports = controller => {
                                 });
                             
                             // }
-                            console.log('...starting conversation...');
-                            await bot.startPrivateConversation(userData.user.id);
-                            await bot.say(msg.text);
+                            // console.log('...starting conversation...');
+                            // await bot.startPrivateConversation(userData.user.id);
+                            // await bot.say(msg.text);
                         } else {
                             console.log('....getting channels...');
                             const channels = await controller.plugins.database.channels.find({ team_id: teams[index].id });
@@ -319,6 +319,7 @@ module.exports = controller => {
                         console.log('.......checking org settings ....');
                         let response = null;
                         try {
+                            await getRefUseReqModal(existingConn, 'a0h1P000007TRDzQAO');
                             response = await checkOrgSettingAndGetData(existingConn, userProfile.user.profile.email);
                             console.log('RESponse 270 Ears', response);
 
