@@ -89,44 +89,44 @@ module.exports = controller => {
                             }
                             console.log("msg.packageVersion", msg.packageVersion);
 
-                            // if (msg.packageVersion) {
+                            if (msg.packageVersion) {
                                 console.log('In NEW if with Package Version');
                                 await bot.startPrivateConversation(userData.user.id);
-                            await bot.say(
-                                {
-                                    // "channel": "",
-                                    // "text": msg.text,
-                                    "blocks": [
-                                        {
-                                            "type": "section",
-                                            "text": {
-                                                "type": "mrkdwn",
-                                                "text": msg.text
-                                            }
-                                        },
-                                        {
-                                            "type": "actions",
-                                            "block_id": "actionblock789",
-                                            "elements": [
-                                                {
-                                                    "type": "button",
-                                                    "text": {
-                                                        "type": "plain_text",
-                                                        "text": "Approve/Decline",
-                                                        "emoji": true
-                                                    },
-                                                    "value": "click_me_123",
-                                                    "action_id": "button"
+                                await bot.say(
+                                    {
+                                        // "channel": "",
+                                        // "text": msg.text,
+                                        "blocks": [
+                                            {
+                                                "type": "section",
+                                                "text": {
+                                                    "type": "mrkdwn",
+                                                    "text": msg.text
                                                 }
-                                            ]
-                                        }
-                                    ]
-                                });
-                            
-                            // }
-                            // console.log('...starting conversation...');
-                            // await bot.startPrivateConversation(userData.user.id);
-                            // await bot.say(msg.text);
+                                            },
+                                            {
+                                                "type": "actions",
+                                                "block_id": "actionblock789",
+                                                "elements": [
+                                                    {
+                                                        "type": "button",
+                                                        "text": {
+                                                            "type": "plain_text",
+                                                            "text": "Approve/Decline",
+                                                            "emoji": true
+                                                        },
+                                                        "value": "click_me_123",
+                                                        "action_id": "button"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    });
+                            } else {
+                                console.log('...starting conversation...');
+                                await bot.startPrivateConversation(userData.user.id);
+                                await bot.say(msg.text);
+                            }
                         } else {
                             console.log('....getting channels...');
                             const channels = await controller.plugins.database.channels.find({ team_id: teams[index].id });
