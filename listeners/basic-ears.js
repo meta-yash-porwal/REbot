@@ -94,18 +94,29 @@ module.exports = controller => {
                                 await bot.startPrivateConversation(userData.user.id);
                             await bot.say(
                                 {
-                                    "text": msg.text,
-                                    "attachments": [
+                                    // "channel": "",
+                                    // "text": msg.text,
+                                    "blocks": [
                                         {
-                                            "callback_id": "wopr_game",
-                                            "color": "#3AA3E3",
-                                            "attachment_type": "default",
-                                            "actions": [
+                                            "type": "section",
+                                            "text": {
+                                                "type": "mrkdwn",
+                                                "text": msg.text
+                                            }
+                                        },
+                                        {
+                                            "type": "actions",
+                                            "block_id": "actionblock789",
+                                            "elements": [
                                                 {
-                                                    "name": "game",
-                                                    "text": "Approve/Decline",
                                                     "type": "button",
-                                                    "value": "chess"
+                                                    "text": {
+                                                        "type": "plain_text",
+                                                        "text": "Approve/Decline",
+                                                        "emoji": true
+                                                    },
+                                                    "value": "click_me_123",
+                                                    "action_id": "button"
                                                 }
                                             ]
                                         }

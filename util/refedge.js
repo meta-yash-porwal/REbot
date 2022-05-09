@@ -33,7 +33,8 @@ module.exports = {
      */
     getRefTypes: async (conn,action) => {
         let ref = [];
-        let url = action == null || action == '' ? process.env.NAMESPACE +'/rebot/REF_TYPE' : process.env.NAMESPACE +'/rebot/REF_TYPE::' + action;
+        let url = action == null || action == '' ? process.env.NAMESPACE + '/rebot/REF_TYPE' : process.env.NAMESPACE + '/rebot/REF_TYPE::' + action;
+        console.log('URL 37 Refedge ', url);
         await conn.apex.get(url, (err, response) => {
             if (err) {
                 console.log('ERROR in getRefTypes REFEDGE.js');
