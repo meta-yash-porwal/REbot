@@ -231,7 +231,6 @@ module.exports = {
     },
 
     getRefUseReqModal: async (conn, rraId) => {
-        console.log('URL 235 Refedge ', url);
         await conn.apex.get(process.env.NAMESPACE + '/rebot/AD_MODAL' + '::' + rraId, (err, response) => {
             if (err) {
                 console.log('ERROR in getRefUseReqModal REFEDGE.js');
