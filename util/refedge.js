@@ -231,15 +231,38 @@ module.exports = {
     },
 
     getRefUseReqModal: async (conn, rraId) => {
+        let val;
         await conn.apex.get(process.env.NAMESPACE + '/rebot/AD_MODAL' + '::' + rraId, (err, response) => {
+            
             if (err) {
                 console.log('ERROR in getRefUseReqModal REFEDGE.js');
                 logger.log(err);
             } else if (response) {
-                console.log('RESPOSNE refedge.js 243 ', response);
-                response = JSON.parse(response);
-                console.log('Response', response);
+
+                if (response != 'false') {
+                    console.log('RESPOSNE getRefUseReqModal refedge.js 243 ', response);
+                    val = JSON.parse(response);
+                }
             }
         });
-    }
+        return val;
+    },
+
+    getAdditionalModal: async (conn, rraId) => {
+        let val;
+        await conn.apex.get(process.env.NAMESPACE + '/rebot/AD_MODAL' + '::' + rraId + '::Additional', (err, response) => {
+
+            if (err) {
+                console.log('ERROR in getAdditionalModal REFEDGE.js');
+                logger.log(err);
+            } else if (response) {
+
+                if (response != 'false') {
+                    console.log('RESPOSNE getAdditionalModal refedge.js 252 ', response);
+                    val = JSON.parse(response);
+                }
+            }
+        });
+        return val;
+    },
 };

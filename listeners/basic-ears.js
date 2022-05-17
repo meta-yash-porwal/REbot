@@ -1,7 +1,7 @@
 const connFactory = require('../util/connection-factory');
 const logger = require('../common/logger');
 
-const { getRefTypes, getOpp, getOppfromName, getOppfromAcc, saveTeamId, checkOrgSettingAndGetData, getRefUseReqModal} = require('../util/refedge');
+const { getRefTypes, getOpp, getOppfromName, getOppfromAcc, saveTeamId, checkOrgSettingAndGetData, getRefUseReqModal, getAdditionalModal} = require('../util/refedge');
 
 const { checkTeamMigration } = require('../listeners/middleware/migration-filter');
 const text = require('body-parser/lib/types/text');
@@ -91,6 +91,11 @@ module.exports = controller => {
 
                             if (msg.packageVersion) {
                                 console.log('In NEW if with Package Version');
+                                let url = msg.text.split("\n<https://").pop();
+                                url.split('|Approve/Decline').pop();
+                                url = url.replace('\n<', '');
+                                url = new URL(url);
+                                let rraID = url.searchParams.get("id");
                                 await bot.startPrivateConversation(userData.user.id);
                                 await bot.say(
                                     {
@@ -106,7 +111,7 @@ module.exports = controller => {
                                             },
                                             {
                                                 "type": "actions",
-                                                "block_id": "actionblock789",
+                                                "block_id": "refUseReqMainBlock",
                                                 "elements": [
                                                     {
                                                         "type": "button",
@@ -115,8 +120,8 @@ module.exports = controller => {
                                                             "text": "Approve/Decline",
                                                             "emoji": true
                                                         },
-                                                        "value": "click_me_123",
-                                                        "action_id": "button"
+                                                        "value": rraID,
+                                                        "action_id": "refUseReqMainBlock"
                                                     }
                                                 ]
                                             }
@@ -1266,6 +1271,204 @@ module.exports = controller => {
             } catch (err) {
                 console.log('IN Catch 1152 Ears');
                 logger.log(err);
+            }
+        }
+    );
+
+    controller.on('interactive_message_callback,block_actions',
+        async (bot, message) => {
+            console.log('interactive_message_callback, block_actions');
+            try {
+                let existingConn = await connFactory.getConnection(message.team, controller);
+                console.log('existingConn 1283 Ears interactive_message_callback, block_actions', existingConn);
+                
+                if (existingConn) {
+                    // const userProfile = await bot.api.users.info({//users.read scope
+                    //     token: bot.api.token,
+                    //     user: message.user
+                    // });
+                    try {
+                        console.log('MESSAGE 1281 EARS', message.block_id, message.action_id);
+
+                        if (message.block_id == 'refUseReqMainBlock' || message.action_id == 'refUseReqMainBlock') {
+                            // await getRefUseReqModal(existingConn, 'a0h1P000007TRDzQAO');
+
+                            let obj = await getRefUseReqModal(existingConn, message.value);
+
+                            if (obj) {
+                                activeCons = [];
+                                inactiveCons = [];
+                                obj.Contacts.forEach(con => {
+                                    
+                                    if (con.Status === 'Active') {
+                                        activeCons.push(con);
+                                    } else {
+                                        inactiveCons.push(con);
+                                    }
+                                });
+                                let pvt_metadata;
+                                await bot.api.views.open({
+                                    trigger_id: message.trigger_id,
+                                    view: {
+                                        "type": "modal",
+                                        "notify_on_close": true,
+                                        "callback_id": "refMainModal",
+                                        "private_metadata": JSON.stringify(pvt_metadata),
+                                        "submit": {
+                                            "type": "plain_text",
+                                            "text": "Next",
+                                            "emoji": true
+                                        },
+                                        "close": {
+                                            "type": "plain_text",
+                                            "text": "Close",
+                                            "emoji": true
+                                        },
+                                        "title": {
+                                            "type": "plain_text",
+                                            "text": "Reference Use Request",
+                                            "emoji": true
+                                        },
+                                        "blocks": [
+                                            {
+                                                "type": "section",
+                                                "text": {
+                                                    "type": "mrkdwn",
+                                                    "text": " "
+                                                },
+                                                "accessory": {
+                                                    "type": "button",
+                                                    "text": {
+                                                        "type": "plain_text",
+                                                        "text": "Additional Request Info",
+                                                        "emoji": true
+                                                    },
+                                                    "style": "primary",
+                                                    "value": "addReqInfoModal"
+                                                }
+                                            },
+                                            {
+                                                "type": "input",
+                                                "optional": true,
+                                                "block_id": "blkCon1",
+                                                "element": {
+                                                    "type": "multi_static_select",
+                                                    "action_id": "con_select1",
+                                                    "placeholder": {
+                                                        "type": "plain_text",
+                                                        "text": "Select a type",
+                                                        "emoji": true
+                                                    },
+                                                    "options": activeCons
+                                                },
+                                                "label": {
+                                                    "type": "plain_text",
+                                                    "text": "Select an existing program member....",
+                                                    "emoji": true
+                                                }
+                                            },
+                                            {
+                                                "type": "input",
+                                                "optional": true,
+                                                "block_id": "blkCon2",
+                                                "element": {
+                                                    "type": "multi_static_select",
+                                                    "action_id": "con_select2",
+                                                    "placeholder": {
+                                                        "type": "plain_text",
+                                                        "text": "Select a type",
+                                                        "emoji": true
+                                                    },
+                                                    "options": inactiveCons
+                                                },
+                                                "label": {
+                                                    "type": "plain_text",
+                                                    "text": "or add another contact to the reference program",
+                                                    "emoji": true
+                                                }
+                                            },
+                                            // {
+                                            //     "type": "section",
+                                            //     "text": {
+                                            //         "type": "plain_text",
+                                            //         "text": "Select an existing program member...."
+                                            //     },
+                                            //     "accessory": {
+                                            //         "type": "static_select",
+                                            //         "placeholder": {
+                                            //             "type": "plain_text",
+                                            //             "text": "Select a Contact",
+                                            //             "emoji": true
+                                            //         },
+                                            //         "options": [
+                                            //             {
+                                            //                 "text": {
+                                            //                     "type": "plain_text",
+                                            //                     "text": "*this is plain_text text*",
+                                            //                     "emoji": true
+                                            //                 },
+                                            //                 "value": "value-0"
+                                            //             },
+                                            //             {
+                                            //                 "text": {
+                                            //                     "type": "plain_text",
+                                            //                     "text": "*this is plain_text text*",
+                                            //                     "emoji": true
+                                            //                 },
+                                            //                 "value": "value-1"
+                                            //             },
+                                            //             {
+                                            //                 "text": {
+                                            //                     "type": "plain_text",
+                                            //                     "text": "*this is plain_text text*",
+                                            //                     "emoji": true
+                                            //                 },
+                                            //                 "value": "value-2"
+                                            //             }
+                                            //         ],
+                                            //         "action_id": "static_select-action"
+                                            //     }
+                                            // },
+                                            {
+                                                "type": "section",
+                                                "fields": [
+                                                    {
+                                                        "type": "mrkdwn",
+                                                        "text": "*Reference Account*\n"
+                                                    },
+                                                    {
+                                                        "type": "mrkdwn",
+                                                        "text": "*Opportunity Account*\n"
+                                                    },
+                                                    {
+                                                        "type": "mrkdwn",
+                                                        "text": "*Reference Type*\n"
+                                                    },
+                                                    {
+                                                        "type": "mrkdwn",
+                                                        "text": "*Opportunity Name*\n"
+                                                    },
+                                                    {
+                                                        "type": "mrkdwn",
+                                                        "text": "*Requester*\n"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                });
+                            }
+                        }
+                    } catch (err) {
+                        console.log('...exception in getRefUseReqModal ... 1287 EARS');
+                        logger.log(err);
+                    }
+                } else if (!existingConn) {
+                    const authUrl = connFactory.getAuthUrl(message.team);
+                    await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
+                }
+            } catch (err) {
+                
             }
         }
     );
