@@ -1289,12 +1289,13 @@ module.exports = controller => {
     controller.on('interactive_message_callback,block_actions',
         async (bot, message) => {
             console.log('interactive_message_callback, block_actions');
-            console.log('message EARC 1292', message);
+            console.log('message EARC 1292', message.team);
+            console.log('message EARC 1292', controller);
             try {
-                // let existingConn = await connFactory.getConnection(message.team, controller);
-                // console.log('existingConn 1283 Ears interactive_message_callback, block_actions', existingConn);
+                let existingConn = await connFactory.getConnection(message.team, controller);
+                console.log('existingConn 1283 Ears interactive_message_callback, block_actions', existingConn);
                 
-                // if (existingConn) {
+                if (existingConn) {
                     // const userProfile = await bot.api.users.info({//users.read scope
                     //     token: bot.api.token,
                     //     user: message.user
@@ -1474,7 +1475,8 @@ module.exports = controller => {
                         console.log('...exception in getRefUseReqModal ... 1287 EARS');
                         logger.log(err);
                     }
-                // } else if (!existingConn) {
+                }
+                // else if (!existingConn) {
                 //     const authUrl = connFactory.getAuthUrl(message.team);
                 //     await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
                 // }
