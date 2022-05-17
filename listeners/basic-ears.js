@@ -101,8 +101,9 @@ module.exports = controller => {
                                 let url = msg.text.split("\n<https://").pop();
                                 console.log('URL 102 EARS MESG', url);
                                 console.log('URL 103 EARS MESG', msg.text);
-                                url.split('|Approve/Decline').pop();
-                                url = url.replace('\n<', '');
+                                url.replace('|Approve/Decline>', '');
+                                url = 'https://' + url;
+                                console.log('NEW url', url);
                                 url = new URL(url);
                                 let rraID = url.searchParams.get("id");
                                 await bot.startPrivateConversation(userData.user.id);
