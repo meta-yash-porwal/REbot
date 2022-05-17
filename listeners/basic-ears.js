@@ -1300,12 +1300,11 @@ module.exports = controller => {
                     //     user: message.user
                     // });
                     try {
-                        console.log('MESSAGE 1281 EARS', message.block_id, message.action_id);
+                        console.log('MESSAGE 1281 EARS', message.actions[0].block_id, message.actions[0].action_id);
 
-                        if (message.block_id == 'refUseReqMainBlock' || message.action_id == 'refUseReqMainBlock') {
+                        if (message.actions[0].block_id == 'refUseReqMainBlock' || message.actions[0].action_id == 'refUseReqMainBlock') {
                             // await getRefUseReqModal(existingConn, 'a0h1P000007TRDzQAO');
-
-                            let obj = await getRefUseReqModal(existingConn, message.value);
+                            let obj = await getRefUseReqModal(existingConn, message.actions[0].value);
 
                             if (obj) {
                                 activeCons = [];
