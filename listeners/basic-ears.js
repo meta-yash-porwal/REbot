@@ -80,7 +80,7 @@ module.exports = controller => {
 
                         if (msg.userEmail) {
                             console.log('...getting userData...');
-                            
+
                             try {
                                 const userData = await bot.api.users.lookupByEmail({//Bot token - users:read.email
                                     token: teams[index].bot.token,
