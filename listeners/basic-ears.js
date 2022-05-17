@@ -1289,11 +1289,8 @@ module.exports = controller => {
     controller.on('interactive_message_callback,block_actions',
         async (bot, message) => {
             console.log('interactive_message_callback, block_actions');
-            console.log('message EARC 1292', message.team);
-            console.log('message EARC 1292', controller);
             try {
                 let existingConn = await connFactory.getConnection(message.team.id, controller);
-                console.log('existingConn 1283 Ears interactive_message_callback, block_actions', existingConn);
                 
                 if (existingConn) {
                     // const userProfile = await bot.api.users.info({//users.read scope
@@ -1305,6 +1302,7 @@ module.exports = controller => {
 
                         if (message.actions[0].block_id == 'refUseReqMainBlock' || message.actions[0].action_id == 'refUseReqMainBlock') {
                             // await getRefUseReqModal(existingConn, 'a0h1P000007TRDzQAO');
+                            console.log('RRAID EARS', message.actions[0].value);
                             let obj = await getRefUseReqModal(existingConn, message.actions[0].value);
 
                             if (obj) {
