@@ -100,7 +100,6 @@ module.exports = controller => {
                                 console.log('In NEW if with Package Version');
                                 let mestxt = msg.text.split("\n<https://");
                                 let url = mestxt[1];
-                                msg.text = mestxt[0];
                                 console.log('URL 102 EARS MESG', url);
                                 console.log('URL 103 EARS MESG', msg.text);
                                 url = url.split('|Approve/Decline')[0];
@@ -118,7 +117,7 @@ module.exports = controller => {
                                                 "type": "section",
                                                 "text": {
                                                     "type": "mrkdwn",
-                                                    "text": msg.text
+                                                    "text": mestxt[0]
                                                 }
                                             },
                                             {
