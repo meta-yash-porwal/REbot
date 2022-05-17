@@ -1289,6 +1289,7 @@ module.exports = controller => {
     controller.on('interactive_message_callback,block_actions',
         async (bot, message) => {
             console.log('interactive_message_callback, block_actions');
+            console.log('message EARC 1292', message);
             try {
                 // let existingConn = await connFactory.getConnection(message.team, controller);
                 // console.log('existingConn 1283 Ears interactive_message_callback, block_actions', existingConn);
@@ -1479,7 +1480,7 @@ module.exports = controller => {
                 //     await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
                 // }
             } catch (err) {
-                
+                logger.log(err);
             }
         }
     );
