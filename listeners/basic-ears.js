@@ -96,7 +96,7 @@ module.exports = controller => {
                             }
                             console.log("msg.packageVersion", msg.packageVersion);
 
-                            if (msg.packageVersion) {
+                            if (msg.packageVersion && msg.text) {
                                 console.log('In NEW if with Package Version');
                                 let mestxt = msg.text.split("\n<https://");
                                 let url = mestxt[1];
