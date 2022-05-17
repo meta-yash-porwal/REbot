@@ -1292,7 +1292,7 @@ module.exports = controller => {
             console.log('message EARC 1292', message.team);
             console.log('message EARC 1292', controller);
             try {
-                let existingConn = await connFactory.getConnection(message.team, controller);
+                let existingConn = await connFactory.getConnection(message.team.id, controller);
                 console.log('existingConn 1283 Ears interactive_message_callback, block_actions', existingConn);
                 
                 if (existingConn) {
