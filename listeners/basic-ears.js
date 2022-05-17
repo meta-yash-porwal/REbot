@@ -98,7 +98,8 @@ module.exports = controller => {
 
                             if (msg.packageVersion) {
                                 console.log('In NEW if with Package Version');
-                                let url = msg.text.split("\n<https://").pop();
+                                msg.text = msg.text.split("\n<https://");
+                                let url = msg.text.pop();
                                 console.log('URL 102 EARS MESG', url);
                                 console.log('URL 103 EARS MESG', msg.text);
                                 url.replace('|Approve/Decline>', '');
@@ -1289,10 +1290,10 @@ module.exports = controller => {
         async (bot, message) => {
             console.log('interactive_message_callback, block_actions');
             try {
-                let existingConn = await connFactory.getConnection(message.team, controller);
-                console.log('existingConn 1283 Ears interactive_message_callback, block_actions', existingConn);
+                // let existingConn = await connFactory.getConnection(message.team, controller);
+                // console.log('existingConn 1283 Ears interactive_message_callback, block_actions', existingConn);
                 
-                if (existingConn) {
+                // if (existingConn) {
                     // const userProfile = await bot.api.users.info({//users.read scope
                     //     token: bot.api.token,
                     //     user: message.user
@@ -1473,10 +1474,10 @@ module.exports = controller => {
                         console.log('...exception in getRefUseReqModal ... 1287 EARS');
                         logger.log(err);
                     }
-                } else if (!existingConn) {
-                    const authUrl = connFactory.getAuthUrl(message.team);
-                    await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
-                }
+                // } else if (!existingConn) {
+                //     const authUrl = connFactory.getAuthUrl(message.team);
+                //     await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
+                // }
             } catch (err) {
                 
             }
