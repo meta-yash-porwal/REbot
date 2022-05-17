@@ -99,6 +99,8 @@ module.exports = controller => {
                             if (msg.packageVersion) {
                                 console.log('In NEW if with Package Version');
                                 let url = msg.text.split("\n<https://").pop();
+                                console.log('URL 102 EARS MESG', url);
+                                console.log('URL 103 EARS MESG', msg.text);
                                 url.split('|Approve/Decline').pop();
                                 url = url.replace('\n<', '');
                                 url = new URL(url);
