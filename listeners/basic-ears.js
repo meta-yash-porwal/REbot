@@ -1310,12 +1310,29 @@ module.exports = controller => {
                                 inactiveCons = [];
                                 obj.Contacts.forEach(con => {
                                     
-                                    if (con.Status === 'Active') {
-                                        activeCons.push(con);
+                                    if (con.Status == 'Active') {
+                                        let entry = {
+                                            "text": {
+                                                "type": "plain_text",
+                                                "text": con.Title
+                                            },
+                                            "value": con.id
+                                        }
+                                        activeCons.push(entry);
                                     } else {
-                                        inactiveCons.push(con);
+                                        let entry = {
+                                            "text": {
+                                                "type": "plain_text",
+                                                "text": con.Title
+                                            },
+                                            "value": con.id
+                                        }
+                                        inactiveCons.push(entry);
                                     }
                                 });
+                                console.log('Active COntacts 1319 EARCS', activeCons);
+                                console.log('InActive COntacts 1320 EARCS', inactiveCons);
+                                console.log('MEssage Trigger ID 1321 EARCS', message.trigger_id);
                                 let pvt_metadata;
                                 await bot.api.views.open({
                                     trigger_id: message.trigger_id,
