@@ -1386,7 +1386,13 @@ module.exports = controller => {
                                                         "text": "Select a type",
                                                         "emoji": true
                                                     },
-                                                    "options": []
+                                                    "options": [{
+                                                        "text": {
+                                                            "type": "plain_text",
+                                                            "text": ""
+                                                        },
+                                                        "value": ""
+                                                    }]
                                                 },
                                                 "label": {
                                                     "type": "plain_text",
