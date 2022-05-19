@@ -1374,26 +1374,26 @@ module.exports = controller => {
                                                     "value": "addReqInfoModal"
                                                 }
                                             },
-                                            // {
-                                            //     "type": "input",
-                                            //     "optional": true,
-                                            //     "block_id": "blkCon1",
-                                            //     "element": {
-                                            //         "type": "multi_static_select",
-                                            //         "action_id": "con_select1",
-                                            //         "placeholder": {
-                                            //             "type": "plain_text",
-                                            //             "text": "Select a type",
-                                            //             "emoji": true
-                                            //         },
-                                            //         "options": activeCons
-                                            //     },
-                                            //     "label": {
-                                            //         "type": "plain_text",
-                                            //         "text": "Select an existing program member....",
-                                            //         "emoji": true
-                                            //     }
-                                            // },
+                                            {
+                                                "type": "input",
+                                                "optional": true,
+                                                "block_id": "blkCon1",
+                                                "element": {
+                                                    "type": "multi_static_select",
+                                                    "action_id": "con_select1",
+                                                    "placeholder": {
+                                                        "type": "plain_text",
+                                                        "text": "Select a type",
+                                                        "emoji": true
+                                                    },
+                                                    "options": ""
+                                                },
+                                                "label": {
+                                                    "type": "plain_text",
+                                                    "text": "Select an existing program member....",
+                                                    "emoji": true
+                                                }
+                                            },
                                             {
                                                 "type": "input",
                                                 "optional": true,
@@ -1461,23 +1461,23 @@ module.exports = controller => {
                                                 "fields": [
                                                     {
                                                         "type": "mrkdwn",
-                                                        "text": "*Reference Account*\n"
+                                                        "text": "*Reference Account*\n" + obj["Account Name"]
                                                     },
                                                     {
                                                         "type": "mrkdwn",
-                                                        "text": "*Opportunity Account*\n"
+                                                        "text": "*Opportunity Account*\n" + obj["Opportunity Account Name"]
                                                     },
                                                     {
                                                         "type": "mrkdwn",
-                                                        "text": "*Reference Type*\n"
+                                                        "text": "*Reference Type*\n" + obj["Reference Type"]
                                                     },
                                                     {
                                                         "type": "mrkdwn",
-                                                        "text": "*Opportunity Name*\n"
+                                                        "text": "*Opportunity Name*\n" + obj["Opportunity Name"]
                                                     },
                                                     {
                                                         "type": "mrkdwn",
-                                                        "text": "*Requester*\n"
+                                                        "text": "*Requester*\n" + obj["Requester Name"]
                                                     }
                                                 ]
                                             }
