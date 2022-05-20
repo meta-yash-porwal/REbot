@@ -1300,7 +1300,7 @@ module.exports = controller => {
                     try {
                         console.log('MESSAGE 1281 EARS', message.actions[0].block_id, message.actions[0].action_id);
 
-                        if (message.actions[0].block_id == 'refUseReqMainBlock' || message.actions[0].action_id == 'refUseReqMainBlock') {
+                        if (message.actions[0].block_id == 'refUseReqMainBlock' && message.actions[0].action_id == 'refUseReqMainBlock') {
                             // await getRefUseReqModal(existingConn, 'a0h1P000007TRDzQAO');
                             console.log('RRAID EARS', message.actions[0].value);
                             let obj = await getRefUseReqModal(existingConn, message.actions[0].value);
@@ -1516,6 +1516,7 @@ module.exports = controller => {
                                     }
                                     jsonArray.concat(entry);
                                 });
+                                console.log('JSON ARRAY 1519 EARS', jsonArray);
                                 await bot.api.views.open({
                                     trigger_id: message.trigger_id,
                                     view: {
@@ -1535,7 +1536,15 @@ module.exports = controller => {
                                             "text": "Close",
                                             "emoji": true
                                         },
-                                        "blocks": jsonArray
+                                        "blocks": [
+                                            {
+                                                "type": "section",
+                                                "text": {
+                                                    "type": "mrkdwn",
+                                                    "text": "*Requester Notes*\n"
+                                                }
+                                            }
+                                        ]
                                     }
                                 });
                             }
