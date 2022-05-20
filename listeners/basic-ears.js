@@ -1489,7 +1489,7 @@ module.exports = controller => {
                         } else if (message.actions[0].action_id == "additionalmodalid") {
                             let obj = await getAdditionalModal(existingConn, message.actions[0].value);
                             if (obj) {
-                                var jsonArray = [{
+                                let jsonArray = [{
                                     "type": "section",
                                     "text": {
                                         "type": "mrkdwn",
@@ -1512,7 +1512,7 @@ module.exports = controller => {
                                                 "type": "mrkdwn",
                                                 "text": "*" + con + "*\n" + obj[con]
                                             }
-                                        }]
+                                        }];
                                     }
                                     jsonArray.concat(entry);
                                 });
@@ -1536,15 +1536,7 @@ module.exports = controller => {
                                             "text": "Close",
                                             "emoji": true
                                         },
-                                        "blocks": [
-                                            {
-                                                "type": "section",
-                                                "text": {
-                                                    "type": "mrkdwn",
-                                                    "text": "*Requester Notes*\n"
-                                                }
-                                            }
-                                        ]
+                                        "blocks": jsonArray
                                     }
                                 });
                             }
