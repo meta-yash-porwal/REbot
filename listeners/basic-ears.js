@@ -1517,7 +1517,7 @@ module.exports = controller => {
                                     jsonArray.concat(entry);
                                 });
                                 console.log('JSON ARRAY 1519 EARS', jsonArray);
-                                await bot.api.views.open({
+                                await bot.api.views.push({
                                     trigger_id: message.trigger_id,
                                     view: {
                                         "title": {
