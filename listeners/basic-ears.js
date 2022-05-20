@@ -1504,7 +1504,7 @@ module.exports = controller => {
                                     }
                                 }];
                                 let entry;
-                                obj.keys(obj).forEach(con => {
+                                Object.keys(obj).forEach(con => {
                                     if (con != "Requester Notes") {
                                         entry = [{
                                             "type": "section",
