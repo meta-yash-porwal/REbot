@@ -1365,41 +1365,36 @@ module.exports = controller => {
                                                 },
                                                 "accessory": {
                                                     "type": "button",
+                                                    "action_id": "additionalmodalid",
                                                     "text": {
                                                         "type": "plain_text",
                                                         "text": "Additional Request Info",
                                                         "emoji": true
                                                     },
                                                     "style": "primary",
-                                                    "value": "addReqInfoModal"
+                                                    "value": message.actions[0].value
                                                 }
                                             },
-                                            {
-                                                "type": "input",
-                                                "optional": true,
-                                                "block_id": "blkCon1",
-                                                "element": {
-                                                    "type": "multi_static_select",
-                                                    "action_id": "con_select1",
-                                                    "placeholder": {
-                                                        "type": "plain_text",
-                                                        "text": "Select a type",
-                                                        "emoji": true
-                                                    },
-                                                    "options": [{
-                                                        "text": {
-                                                            "type": "plain_text",
-                                                            "text": ""
-                                                        },
-                                                        "value": ""
-                                                    }]
-                                                },
-                                                "label": {
-                                                    "type": "plain_text",
-                                                    "text": "Select an existing program member....",
-                                                    "emoji": true
-                                                }
-                                            },
+                                            // {
+                                            //     "type": "input",
+                                            //     "optional": true,
+                                            //     "block_id": "blkCon1",
+                                            //     "element": {
+                                            //         "type": "multi_static_select",
+                                            //         "action_id": "con_select1",
+                                            //         "placeholder": {
+                                            //             "type": "plain_text",
+                                            //             "text": "Select a type",
+                                            //             "emoji": true
+                                            //         },
+                                            //         "options": activeCons
+                                            //     },
+                                            //     "label": {
+                                            //         "type": "plain_text",
+                                            //         "text": "Select an existing program member....",
+                                            //         "emoji": true
+                                            //     }
+                                            // },
                                             {
                                                 "type": "input",
                                                 "optional": true,
@@ -1488,6 +1483,59 @@ module.exports = controller => {
                                                 ]
                                             }
                                         ]
+                                    }
+                                });
+                            }
+                        } else if (message.actions[0].action_id == "additionalmodalid") {
+                            let obj = await getAdditionalModal(existingConn, message.actions[0].value);
+                            if (obj) {
+                                var jsonArray = [{
+                                    "type": "section",
+                                    "text": {
+                                        "type": "mrkdwn",
+                                        "text": "*Requester Notes*\n" + obj["Requester Notes"]
+                                    }
+                                },
+                                {
+                                    "type": "section",
+                                    "text": {
+                                        "type": "mrkdwn",
+                                        "text": " "
+                                    }
+                                }];
+                                let entry;
+                                obj.keys(obj).forEach(con => {
+                                    if (con != "Requester Notes") {
+                                        entry = [{
+                                            "type": "section",
+                                            "text": {
+                                                "type": "mrkdwn",
+                                                "text": "*" + con + "*\n" + obj[con]
+                                            }
+                                        }]
+                                    }
+                                    jsonArray.concat(entry);
+                                });
+                                await bot.api.views.open({
+                                    trigger_id: message.trigger_id,
+                                    view: {
+                                        "title": {
+                                            "type": "plain_text",
+                                            "text": "Additional Request Info",
+                                            "emoji": true
+                                        },
+                                        "submit": {
+                                            "type": "plain_text",
+                                            "text": "Back",
+                                            "emoji": true
+                                        },
+                                        "type": "modal",
+                                        "close": {
+                                            "type": "plain_text",
+                                            "text": "Close",
+                                            "emoji": true
+                                        },
+                                        "blocks": jsonArray
                                     }
                                 });
                             }
