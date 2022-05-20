@@ -1375,26 +1375,26 @@ module.exports = controller => {
                                                     "value": message.actions[0].value
                                                 }
                                             },
-                                            // {
-                                            //     "type": "input",
-                                            //     "optional": true,
-                                            //     "block_id": "blkCon1",
-                                            //     "element": {
-                                            //         "type": "multi_static_select",
-                                            //         "action_id": "con_select1",
-                                            //         "placeholder": {
-                                            //             "type": "plain_text",
-                                            //             "text": "Select a type",
-                                            //             "emoji": true
-                                            //         },
-                                            //         "options": activeCons
-                                            //     },
-                                            //     "label": {
-                                            //         "type": "plain_text",
-                                            //         "text": "Select an existing program member....",
-                                            //         "emoji": true
-                                            //     }
-                                            // },
+                                            {
+                                                "type": "input",
+                                                "optional": true,
+                                                "block_id": "blkCon1",
+                                                "element": {
+                                                    "type": "multi_static_select",
+                                                    "action_id": "con_select1",
+                                                    "placeholder": {
+                                                        "type": "plain_text",
+                                                        "text": "Select a type",
+                                                        "emoji": true
+                                                    },
+                                                    "options": activeCons
+                                                },
+                                                "label": {
+                                                    "type": "plain_text",
+                                                    "text": "Select an existing program member....",
+                                                    "emoji": true
+                                                }
+                                            },
                                             {
                                                 "type": "input",
                                                 "optional": true,
