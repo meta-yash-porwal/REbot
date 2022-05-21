@@ -1489,7 +1489,8 @@ module.exports = controller => {
                         } else if (message.actions[0].action_id == "additionalmodalid") {
                             let obj = await getAdditionalModal(existingConn, message.actions[0].value);
                             if (obj) {
-                                let jsonArray = [{
+                                let jsonArray = [];
+                                jsonArray.add({
                                     "type": "section",
                                     "text": {
                                         "type": "mrkdwn",
@@ -1502,19 +1503,20 @@ module.exports = controller => {
                                         "type": "mrkdwn",
                                         "text": " "
                                     }
-                                }];
-                                let entry;
+                                }); 
+                                
                                 Object.keys(obj).forEach(con => {
+
                                     if (con != "Requester Notes") {
-                                        entry = [{
+                                        var entry = {
                                             "type": "section",
                                             "text": {
                                                 "type": "mrkdwn",
                                                 "text": "*" + con + "*\n" + obj[con]
                                             }
-                                        }];
+                                        };
                                     }
-                                    jsonArray.concat(entry);
+                                    jsonArray.add(entry);
                                 });
                                 console.log('JSON ARRAY 1519 EARS', jsonArray);
                                 await bot.api.views.push({
