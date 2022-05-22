@@ -1508,15 +1508,15 @@ module.exports = controller => {
                                 Object.keys(obj).forEach(con => {
 
                                     if (con != "Requester Notes") {
-                                        var entry = {
+                                        let entry = {
                                             "type": "section",
                                             "text": {
                                                 "type": "mrkdwn",
                                                 "text": "*" + con + "*\n" + obj[con]
                                             }
                                         };
+                                        jsonArray.push(entry);
                                     }
-                                    jsonArray.push(entry);
                                 });
                                 console.log('JSON ARRAY 1519 EARS', jsonArray);
                                 await bot.api.views.push({
