@@ -1490,7 +1490,7 @@ module.exports = controller => {
                             let obj = await getAdditionalModal(existingConn, message.actions[0].value);
                             if (obj) {
                                 let jsonArray = [];
-                                jsonArray.add({
+                                jsonArray.push({
                                     "type": "section",
                                     "text": {
                                         "type": "mrkdwn",
@@ -1516,7 +1516,7 @@ module.exports = controller => {
                                             }
                                         };
                                     }
-                                    jsonArray.add(entry);
+                                    jsonArray.push(entry);
                                 });
                                 console.log('JSON ARRAY 1519 EARS', jsonArray);
                                 await bot.api.views.push({
