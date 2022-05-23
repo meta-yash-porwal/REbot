@@ -269,7 +269,7 @@ module.exports = {
     submitP2PRequest: async (conn, requestData) => {
         console.log('requestData submitP2PRequest REFEDGE.js 270', requestData);
 
-        await conn.apex.post(process.env.NAMESPACE + '/rebot/Approve_Decline', requestData, (err, res) => {
+        await conn.apex.post(process.env.NAMESPACE + '/rebot/approveDeclineRequest', requestData, (err, res) => {
             console.log('RESponse in submitP2PRequest REFEDGE.js 273', res);
 
             if (err) {
