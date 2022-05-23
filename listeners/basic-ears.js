@@ -561,12 +561,15 @@ module.exports = controller => {
     controller.on(
         'view_closed',
         async (bot, message) => {
+            console.log('view_closed EARS');
+
             try {
                 let existingConn = await connFactory.getConnection(message.team.id, controller);
                 if (!existingConn) {
                     const authUrl = connFactory.getAuthUrl(message.team);
                     await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
                 } else {
+                    console.log('IN ELSE CallBackID EARS view_closed', message.view.callback_id);
                     if (message.view.callback_id == 'AD_Modal') {
                         bot.httpBody({
                             response_action: 'update',
