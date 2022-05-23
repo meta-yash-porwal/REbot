@@ -571,8 +571,11 @@ module.exports = controller => {
                 } else {
                     console.log('IN ELSE CallBackID EARS view_closed', message.view.callback_id);
                     if (message.view.callback_id == 'AD_Modal') {
-                        bot.httpBody({
-                            response_action: 'update',
+                        await bot.api.views.push({
+                            trigger_id: message.trigger_id,
+                        //     view: {
+                        // bot.httpBody({
+                        //     response_action: 'update',
                             view: {
                                 "title": {
                                     "type": "plain_text",
