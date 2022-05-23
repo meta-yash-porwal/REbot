@@ -1493,8 +1493,13 @@ module.exports = controller => {
                     } else if (message.view.callback_id == 'approveRequest') {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         console.log("PVT DATA", pvt_metadata);
-                        let approveData;
+                        let approveData = {};
                         approveData.rraId = pvt_metadata.rraId;
+                        approveData.notes = pvt_metadata.Notes;
+                        approveData.type = 'Approve';
+                        approveData.selectedContactId = pvt_metadata.Id;
+                        approveData.isUpdate = false;
+                        submitP2PRequest(existingConn, approveData);
 
                     } else if (message.view.callback_id == 'declineRequest') {
 
