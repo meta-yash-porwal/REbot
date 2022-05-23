@@ -1492,7 +1492,6 @@ module.exports = controller => {
                         });
                     } else if (message.view.callback_id == 'approveRequest') {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
-                        console.log("PVT DATA", pvt_metadata);
                         let approveData = {};
                         approveData.rraId = pvt_metadata.rraId;
                         approveData.notes = pvt_metadata.Notes;
@@ -1502,7 +1501,12 @@ module.exports = controller => {
                         submitP2PRequest(existingConn, approveData);
 
                     } else if (message.view.callback_id == 'declineRequest') {
-
+                        let pvt_metadata = JSON.parse(message.view.private_metadata);
+                        let approveData = {};
+                        approveData.rraId = pvt_metadata.rraId;
+                        approveData.notes = pvt_metadata.Notes;
+                        approveData.type = 'Decline';
+                        submitP2PRequest(existingConn, approveData);
                     }
 
                 }
