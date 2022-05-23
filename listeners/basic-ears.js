@@ -561,9 +561,62 @@ module.exports = controller => {
     controller.on(
         'view_closed',
         async (bot, message) => {
-            bot.httpBody({
-                "response_action": "clear"
-            });
+            try {
+                let existingConn = await connFactory.getConnection(message.team.id, controller);
+                if (!existingConn) {
+                    const authUrl = connFactory.getAuthUrl(message.team);
+                    await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
+                } else {
+                    if (message.view.callback_id == 'refMainModal') {
+                        bot.httpBody({
+                            response_action: 'update',
+                            view: {
+                                "title": {
+                                    "type": "plain_text",
+                                    "text": "Reference Use Request",
+                                    "emoji": true
+                                },
+                                "submit": {
+                                    "type": "plain_text",
+                                    "text": "Decline",
+                                    "emoji": true
+                                },
+                                "type": "modal",
+                                "callback_id": "declineRequest",
+                                "close": {
+                                    "type": "plain_text",
+                                    "text": "Cancel",
+                                    "emoji": true
+                                },
+                                "blocks": [
+                                    {
+                                        "type": "input",
+                                        "element": {
+                                            "type": "plain_text_input",
+                                            "multiline": true,
+                                            "action_id": "plain_text_input-action"
+                                        },
+                                        "label": {
+                                            "type": "plain_text",
+                                            "text": "*Notes",
+                                            "emoji": true
+                                        }
+                                    }
+                                ]
+                            }
+                        });
+                    }
+                    else {
+                        bot.httpBody({
+                            "response_action": "clear"
+                        });
+                    }
+                }
+            }
+            catch (err) {
+                console.log('IN Catch 617 Ears');
+                logger.log(err);
+            }
             
     });
 
@@ -1277,6 +1330,155 @@ module.exports = controller => {
                                 ]
                             }
                         });
+                    } else if (message.view.callback_id == 'refMainModal') {
+                        let pvt_metadata = JSON.parse(message.view.private_metadata);
+                        bot.httpBody({
+                            response_action: 'update',
+                            view: {
+                                "title": {
+                                    "type": "plain_text",
+                                    "text": "Reference Use Request",
+                                    "emoji": true
+                                },
+                                "submit": {
+                                    "type": "plain_text",
+                                    "text": "Approve",
+                                    "emoji": true
+                                },
+                                "type": "modal",
+                                "callback_id": "approveRequest",
+                                "private_metadata": JSON.stringify(pvt_metadata),
+                                "close": {
+                                    "type": "plain_text",
+                                    "text": "Cancel",
+                                    "emoji": true
+                                },
+                                "blocks": [
+                                    {
+                                        "type": "section",
+                                        "text": {
+                                            "type": "mrkdwn",
+                                            "text": "*Selected Contact Info*"
+                                        }
+                                    },
+                                    {
+                                        "type": "section",
+                                        "fields": [
+                                            {
+                                                "type": "mrkdwn",
+                                                "text": "*Name*\n" + pvt_metadata.Name
+                                            },
+                                            {
+                                                "type": "mrkdwn",
+                                                "text": "*Title*\n" + pvt_metadata.Title
+                                            },
+                                            {
+                                                "type": "mrkdwn",
+                                                "text": "*Email*\n" + pvt_metadata.Email
+                                            },
+                                            {
+                                                "type": "mrkdwn",
+                                                "text": "*Program Member*\n" + pvt_metadata.Status
+                                            },
+                                            {
+                                                "type": "mrkdwn",
+                                                "text": "*Phone*\n" + pvt_metadata.Phone
+                                            },
+                                            {
+                                                "type": "mrkdwn",
+                                                "text": "*Last Used*\n" + pvt_metadata.Last_Used
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "divider"
+                                    },
+                                    {
+                                        "type": "input",
+                                        "element": {
+                                            "type": "plain_text_input",
+                                            "multiline": true,
+                                            "action_id": "contactnotes"
+                                        },
+                                        "label": {
+                                            "type": "plain_text",
+                                            "text": "*Notes",
+                                            "emoji": true
+                                        }
+                                    }
+                                ]
+                            }
+                        });
+                    } else if (message.view.callback_id == 'approveRequest') {
+                        let pvt_metadata = JSON.parse(message.view.private_metadata);
+                        bot.httpBody({
+                            response_action: 'update',
+                            view: {
+                                "title": {
+                                    "type": "plain_text",
+                                    "text": "Reference Use Request",
+                                    "emoji": true
+                                },
+                                "submit": {
+                                    "type": "plain_text",
+                                    "text": "Yes",
+                                    "emoji": true
+                                },
+                                "type": "modal",
+                                "private_metadata": JSON.stringify(pvt_metadata),
+                                "callback_id": "approvePopup",
+                                "close": {
+                                    "type": "plain_text",
+                                    "text": "No",
+                                    "emoji": true
+                                },
+                                "blocks": [
+                                    {
+                                        "type": "section",
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "Are you sure you want to approve this Reference use Request?",
+                                            "emoji": true
+                                        }
+                                    }
+                                ]
+                            }
+                        });
+                    } else if (message.view.callback_id == 'declineRequest') {
+                        let pvt_metadata = JSON.parse(message.view.private_metadata);
+                        bot.httpBody({
+                            response_action: 'update',
+                            view: {
+                                "title": {
+                                    "type": "plain_text",
+                                    "text": "Reference Use Request",
+                                    "emoji": true
+                                },
+                                "submit": {
+                                    "type": "plain_text",
+                                    "text": "Yes",
+                                    "emoji": true
+                                },
+                                "type": "modal",
+                                "private_metadata": JSON.stringify(pvt_metadata),
+                                "callback_id": "declinePopup",
+                                "close": {
+                                    "type": "plain_text",
+                                    "text": "No",
+                                    "emoji": true
+                                },
+                                "blocks": [
+                                    {
+                                        "type": "section",
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "Are you sure you want to decline this Reference use Request?",
+                                            "emoji": true
+                                        }
+                                    }
+                                ]
+                            }
+                        });
                     }
                 }
             } catch (err) {
@@ -1333,22 +1535,22 @@ module.exports = controller => {
                                 console.log('Active COntacts 1319 EARCS', activeCons);
                                 console.log('InActive COntacts 1320 EARCS', inactiveCons);
                                 console.log('MEssage Trigger ID 1321 EARCS', message.trigger_id);
-                                let pvt_metadata;
+                                let pvt_metadata = obj;
+                                pvt_metadata.rraId = message.actions[0].value;
                                 await bot.api.views.open({
                                     trigger_id: message.trigger_id,
                                     view: {
                                         "type": "modal",
-                                        "notify_on_close": true,
                                         "callback_id": "refMainModal",
                                         "private_metadata": JSON.stringify(pvt_metadata),
                                         "submit": {
                                             "type": "plain_text",
-                                            "text": "Next",
+                                            "text": "Approve",
                                             "emoji": true
                                         },
                                         "close": {
                                             "type": "plain_text",
-                                            "text": "Close",
+                                            "text": "Decline",
                                             "emoji": true
                                         },
                                         "title": {
@@ -1381,7 +1583,7 @@ module.exports = controller => {
                                                 "block_id": "blkCon1",
                                                 "dispatch_action": true,
                                                 "element": {
-                                                    "type": "multi_static_select",
+                                                    "type": "static_select",
                                                     "action_id": "con_select1",
                                                     "placeholder": {
                                                         "type": "plain_text",
@@ -1402,7 +1604,7 @@ module.exports = controller => {
                                                 "block_id": "blkCon2",
                                                 "dispatch_action": true,
                                                 "element": {
-                                                    "type": "multi_static_select",
+                                                    "type": "static_select",
                                                     "action_id": "con_select2",
                                                     "placeholder": {
                                                         "type": "plain_text",
@@ -1558,6 +1760,16 @@ module.exports = controller => {
                                     }
                                 });
                             }
+                        } else if (message.actions[0].action_id == "con_select1" && message.actions[0].block_id == 'blkCon1') {
+                            let selCon = message.view.state.values.blkCon1.con_select1.selected_option.value;
+                            let pvt_metadata = JSON.parse(message.view.private_metadata);
+                            pvt_metadata.Id = selCon;
+                            pvt_metadata.Name = 'qwertyuiop';
+                            pvt_metadata.Email = 'qwertyuiop@email.com';
+                            pvt_metadata.Title = 'Hello Hii';
+                            pvt_metadata.Status = 'Active';
+                            pvt_metadata.Phone = '1234-234234-1234213';
+                            pvt_metadata.Last_Used = 'null';
                         }
                     } catch (err) {
                         console.log('...exception in getRefUseReqModal ... 1287 EARS');
