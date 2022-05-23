@@ -1420,6 +1420,8 @@ module.exports = controller => {
                         });
                     } else if (message.view.callback_id == 'approvePopup') {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
+                        let notes = message.view.state.values.noteBlock.contactnotes;
+                        console.log("NOTES", notes);
                         bot.httpBody({
                             response_action: 'update',
                             view: {
@@ -1490,8 +1492,6 @@ module.exports = controller => {
                         });
                     } else if (message.view.callback_id == 'approveRequest') {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
-                        let notes = message.view.state.values.noteBlock.contactnotes;
-                        console.log("NOTES", notes);
                     } else if (message.view.callback_id == 'declineRequest') {
 
                     }
