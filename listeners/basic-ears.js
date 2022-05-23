@@ -1574,6 +1574,7 @@ module.exports = controller => {
                                     view: {
                                         "type": "modal",
                                         "callback_id": "AD_Modal",
+                                        "notify_on_close": true,
                                         "private_metadata": JSON.stringify(pvt_metadata),
                                         "submit": {
                                             "type": "plain_text",
