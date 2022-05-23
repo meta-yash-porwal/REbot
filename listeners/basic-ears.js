@@ -1379,6 +1379,7 @@ module.exports = controller => {
                                                 "type": "input",
                                                 "optional": true,
                                                 "block_id": "blkCon1",
+                                                "dispatch_action": true,
                                                 "element": {
                                                     "type": "multi_static_select",
                                                     "action_id": "con_select1",
@@ -1399,6 +1400,7 @@ module.exports = controller => {
                                                 "type": "input",
                                                 "optional": true,
                                                 "block_id": "blkCon2",
+                                                "dispatch_action": true,
                                                 "element": {
                                                     "type": "multi_static_select",
                                                     "action_id": "con_select2",
@@ -1415,6 +1417,20 @@ module.exports = controller => {
                                                     "emoji": true
                                                 }
                                             },
+                                            // {
+                                            //     "type": "action",
+                                            //     "block_id": "updateConModal",
+                                            //     "elements": [{
+                                            //         "type": "button",
+                                            //         "text": {
+                                            //             "type": "plain_text",
+                                            //             "text": "Go"
+                                            //         },
+                                            //         "style": "primary",
+                                            //         "value": " ",
+                                            //         "action_id": "goButton"
+                                            //     }]
+                                            // },
                                             // {
                                             //     "type": "section",
                                             //     "text": {
