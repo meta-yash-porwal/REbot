@@ -265,4 +265,13 @@ module.exports = {
         });
         return val;
     },
+
+    submitP2PRequest: async (conn, requestData) => {
+        await conn.apex.post(process.env.NAMESPACE + '/rebot/Approve_Decline', requestData, (err, res) => {
+            
+            if (err) {
+                logger.log(err);
+            }
+        });
+    },
 };

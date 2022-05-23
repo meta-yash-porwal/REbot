@@ -1,7 +1,7 @@
 const connFactory = require('../util/connection-factory');
 const logger = require('../common/logger');
 
-const { getRefTypes, getOpp, getOppfromName, getOppfromAcc, saveTeamId, checkOrgSettingAndGetData, getRefUseReqModal, getAdditionalModal} = require('../util/refedge');
+const { getRefTypes, getOpp, getOppfromName, getOppfromAcc, saveTeamId, checkOrgSettingAndGetData, getRefUseReqModal, getAdditionalModal, submitP2PRequest} = require('../util/refedge');
 
 const { checkTeamMigration } = require('../listeners/middleware/migration-filter');
 const text = require('body-parser/lib/types/text');
@@ -567,7 +567,7 @@ module.exports = controller => {
                     const authUrl = connFactory.getAuthUrl(message.team);
                     await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
                 } else {
-                    if (message.view.callback_id == 'refMainModal') {
+                    if (message.view.callback_id == 'AD_Modal') {
                         bot.httpBody({
                             response_action: 'update',
                             view: {
@@ -582,7 +582,7 @@ module.exports = controller => {
                                     "emoji": true
                                 },
                                 "type": "modal",
-                                "callback_id": "declineRequest",
+                                "callback_id": "declinePopup",
                                 "close": {
                                     "type": "plain_text",
                                     "text": "Cancel",
@@ -933,7 +933,7 @@ module.exports = controller => {
                             //selected values of Content type is in refselected
                             refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
                             let selectedValues = [];
-                            refselected.forEach(function(ref) {
+                            refselected.forEach(function (ref) {
                                 selectedValues.push(ref.value);
                             });
                             refselected = selectedValues.join(',');
@@ -942,15 +942,15 @@ module.exports = controller => {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         pvt_metadata.actionName = actionName;
 
-                        if(refselected) {
+                        if (refselected) {
                             pvt_metadata.contentTypes = refselected;
                             console.log('PVT Metadata COntent Type');
                         }
                         
                         if (actionName == 'content_search') {
-                            if(pvt_metadata.pkg_version < 2.26) {
+                            if (pvt_metadata.pkg_version < 2.26) {
                                 await opportunityFlow(bot, message, existingConn, pvt_metadata, pvt_metadata.email, null);
-                            } else{
+                            } else {
                                 console.log('...view submission content opp flow....');
                                 let mapval = await getRefTypes(existingConn, actionName);
                                 console.log('CONTENT search in MAPVAL 837 Ears ', mapval);
@@ -958,9 +958,9 @@ module.exports = controller => {
                                     response_action: 'update',
                                     view: {
                                         "type": "modal",
-                                        "notify_on_close" : true,
+                                        "notify_on_close": true,
                                         "callback_id": "oppselect",
-                                        "private_metadata" : JSON.stringify(pvt_metadata),
+                                        "private_metadata": JSON.stringify(pvt_metadata),
                                         "submit": {
                                             "type": "plain_text",
                                             "text": "Next",
@@ -974,7 +974,7 @@ module.exports = controller => {
                                         "blocks": [
                                             {
                                                 "type": "input",
-                                                "optional" : true,
+                                                "optional": true,
                                                 "block_id": "blkref",
                                                 "element": {
                                                     "type": "multi_static_select",
@@ -1110,9 +1110,9 @@ module.exports = controller => {
                                 response_action: 'update',
                                 view: {
                                     "type": "modal",
-                                    "notify_on_close" : true,
+                                    "notify_on_close": true,
                                     "callback_id": callbackId,
-                                    "private_metadata" : JSON.stringify(pvt_metadata),
+                                    "private_metadata": JSON.stringify(pvt_metadata),
                                     "submit": {
                                         "type": "plain_text",
                                         "text": "Next",
@@ -1126,7 +1126,7 @@ module.exports = controller => {
                                     "blocks": [
                                         {
                                             "type": "input",
-                                            "optional" : true,
+                                            "optional": true,
                                             "block_id": "blkref",
                                             "element": {
                                                 "type": block_element_type,
@@ -1168,43 +1168,43 @@ module.exports = controller => {
                         let opptext = message.view.state.values.oppblock != null && message.view.state.values.oppblock.opp_name.value != null ? message.view.state.values.oppblock.opp_name.value : '';
                         let opps = [];
                         if (oppSelected != '') {
-                            searchURL = metadata.searchURL.replace('@@',oppSelected);
+                            searchURL = metadata.searchURL.replace('@@', oppSelected);
                             if (refselected && refselected != 'NONE' && refselected != '' && refselected != null) {
                                 searchURL += '&type=';
                                 searchURL += refselected;
                             }
-                            if(contentTypeSelected) {
+                            if (contentTypeSelected) {
                                 searchURL += '&contype=';
                                 searchURL += contentTypeSelected;
                             }
                             searchURL = 'Thanks! Please <' + searchURL + '|click to complete your request in Salesforce.>';
                             metadata.searchURL = searchURL;
                             bot.httpBody({
-                            response_action: 'update',
-                            view: {
-                                "type": "modal",
-                                "notify_on_close" : true,
-                                "close": {
-                                    "type": "plain_text",
-                                    "text": "Close",
-                                    "emoji": true
-                                },
-                                "title": {
-                                    "type": "plain_text",
-                                    "text": "Continue Search",
-                                    "emoji": true
-                                },
-                                "blocks": [
-                                    {
-                                        "type": "section",
-                                        "text": {
-                                            "type": "mrkdwn",
-                                            "text": searchURL
+                                response_action: 'update',
+                                view: {
+                                    "type": "modal",
+                                    "notify_on_close": true,
+                                    "close": {
+                                        "type": "plain_text",
+                                        "text": "Close",
+                                        "emoji": true
+                                    },
+                                    "title": {
+                                        "type": "plain_text",
+                                        "text": "Continue Search",
+                                        "emoji": true
+                                    },
+                                    "blocks": [
+                                        {
+                                            "type": "section",
+                                            "text": {
+                                                "type": "mrkdwn",
+                                                "text": searchURL
+                                            }
                                         }
-                                    }
-                                ]
-                            }
-                        });
+                                    ]
+                                }
+                            });
                         } else if (oppSelected == '' && acctext == '' && opptext == '') {
                             bot.httpBody({
                                 response_action: 'errors',
@@ -1220,7 +1220,7 @@ module.exports = controller => {
                                 }
                             });
                         } else if (acctext != '' && opptext == '') {
-                            opps = await getOppfromAcc(existingConn,email,acctext);
+                            opps = await getOppfromAcc(existingConn, email, acctext);
                             if (opps == null || opps.length == 0) {
                                 bot.httpBody({
                                     response_action: 'errors',
@@ -1228,9 +1228,9 @@ module.exports = controller => {
                                         "accblock": 'No Opportunity matching the Opportunity Account Name found.Please retry.'
                                     }
                                 });
-                            } 
+                            }
                         } else if (acctext == '' && opptext != '') {
-                            opps = await getOppfromName(existingConn,email,opptext);
+                            opps = await getOppfromName(existingConn, email, opptext);
                             if (opps == null || opps.length == 0) {
                                 bot.httpBody({
                                     response_action: 'errors',
@@ -1239,15 +1239,15 @@ module.exports = controller => {
                                     }
                                 });
                             }
-                        } 
+                        }
                         if (opps != null && opps.length > 0) {
                             bot.httpBody({
                                 response_action: 'update',
                                 view: {
                                     "type": "modal",
-                                    "notify_on_close" : true,
+                                    "notify_on_close": true,
                                     "callback_id": "searchselect",
-                                    "private_metadata" : JSON.stringify(metadata),
+                                    "private_metadata": JSON.stringify(metadata),
                                     "submit": {
                                         "type": "plain_text",
                                         "text": "Next",
@@ -1281,7 +1281,7 @@ module.exports = controller => {
                                     ]
                                 }
                             });
-                        } 
+                        }
                     } else if (message.view.callback_id == 'searchselect') {
                         
                         console.log('Search Selected EARS');
@@ -1290,16 +1290,16 @@ module.exports = controller => {
                         let contentTypeSelected = metadata.contentTypes;
                         
                         let oppSelected = message.view.state.values.blkselectopp != null ? message.view.state.values.blkselectopp.opp_select.selected_option.value :
-                                            (message.view.state.values.blkselectoppFinal != null ? message.view.state.values.blkselectoppFinal.opp_select.selected_option.value : '');
+                            (message.view.state.values.blkselectoppFinal != null ? message.view.state.values.blkselectoppFinal.opp_select.selected_option.value : '');
                         let searchURL = metadata.searchURL;
-                        searchURL = searchURL.replace('@@',oppSelected);
+                        searchURL = searchURL.replace('@@', oppSelected);
 
                         if (refselected && refselected != 'NONE' && refselected != '' && refselected != null) {
                             searchURL += '&type=';
                             searchURL += refselected;
                         }
                         
-                        if(contentTypeSelected) {
+                        if (contentTypeSelected) {
                             searchURL += '&contype=';
                             searchURL += contentTypeSelected;
                         }
@@ -1308,7 +1308,7 @@ module.exports = controller => {
                             response_action: 'update',
                             view: {
                                 "type": "modal",
-                                "notify_on_close" : true,
+                                "notify_on_close": true,
                                 "close": {
                                     "type": "plain_text",
                                     "text": "Close",
@@ -1330,8 +1330,16 @@ module.exports = controller => {
                                 ]
                             }
                         });
-                    } else if (message.view.callback_id == 'refMainModal') {
+                    } else if (message.view.callback_id == 'AD_Modal') {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
+                        let selCon = message.view.state.values.blkCon1.con_select1.selected_option.value;
+                        pvt_metadata.Id = selCon;
+                        pvt_metadata.Name = 'qwertyuiop';
+                        pvt_metadata.Email = 'qwertyuiop@email.com';
+                        pvt_metadata.Title = 'Hello Hii';
+                        pvt_metadata.Status = 'Active';
+                        pvt_metadata.Phone = '1234-234234-1234213';
+                        pvt_metadata.Last_Used = 'null';
                         bot.httpBody({
                             response_action: 'update',
                             view: {
@@ -1346,7 +1354,7 @@ module.exports = controller => {
                                     "emoji": true
                                 },
                                 "type": "modal",
-                                "callback_id": "approveRequest",
+                                "callback_id": "approvePopup",
                                 "private_metadata": JSON.stringify(pvt_metadata),
                                 "close": {
                                     "type": "plain_text",
@@ -1395,6 +1403,7 @@ module.exports = controller => {
                                     },
                                     {
                                         "type": "input",
+                                        "block_id": "noteBlock",
                                         "element": {
                                             "type": "plain_text_input",
                                             "multiline": true,
@@ -1402,14 +1411,14 @@ module.exports = controller => {
                                         },
                                         "label": {
                                             "type": "plain_text",
-                                            "text": "*Notes",
+                                            "text": "*Notes*",
                                             "emoji": true
                                         }
                                     }
                                 ]
                             }
                         });
-                    } else if (message.view.callback_id == 'approveRequest') {
+                    } else if (message.view.callback_id == 'approvePopup') {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         bot.httpBody({
                             response_action: 'update',
@@ -1426,7 +1435,7 @@ module.exports = controller => {
                                 },
                                 "type": "modal",
                                 "private_metadata": JSON.stringify(pvt_metadata),
-                                "callback_id": "approvePopup",
+                                "callback_id": "approveRequest",
                                 "close": {
                                     "type": "plain_text",
                                     "text": "No",
@@ -1444,7 +1453,7 @@ module.exports = controller => {
                                 ]
                             }
                         });
-                    } else if (message.view.callback_id == 'declineRequest') {
+                    } else if (message.view.callback_id == 'declinePopup') {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         bot.httpBody({
                             response_action: 'update',
@@ -1461,7 +1470,7 @@ module.exports = controller => {
                                 },
                                 "type": "modal",
                                 "private_metadata": JSON.stringify(pvt_metadata),
-                                "callback_id": "declinePopup",
+                                "callback_id": "declineRequest",
                                 "close": {
                                     "type": "plain_text",
                                     "text": "No",
@@ -1479,7 +1488,14 @@ module.exports = controller => {
                                 ]
                             }
                         });
+                    } else if (message.view.callback_id == 'approveRequest') {
+                        let pvt_metadata = JSON.parse(message.view.private_metadata);
+                        let notes = message.view.state.values.noteBlock.contactnotes;
+                        console.log("NOTES", notes);
+                    } else if (message.view.callback_id == 'declineRequest') {
+
                     }
+
                 }
             } catch (err) {
                 console.log('IN Catch 1152 Ears');
@@ -1541,7 +1557,7 @@ module.exports = controller => {
                                     trigger_id: message.trigger_id,
                                     view: {
                                         "type": "modal",
-                                        "callback_id": "refMainModal",
+                                        "callback_id": "AD_Modal",
                                         "private_metadata": JSON.stringify(pvt_metadata),
                                         "submit": {
                                             "type": "plain_text",
