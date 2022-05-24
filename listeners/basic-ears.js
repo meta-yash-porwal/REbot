@@ -1786,7 +1786,7 @@ module.exports = controller => {
                             await bot.api.views.update({
                                 trigger_id: message.trigger_id,
                                 root_view_id: message.root_view_id,
-                                view_id: container.view_id,
+                                view_id: message.container.view_id,
                                 view: {
                                     "type": "modal",
                                     "callback_id": "AD_Modal",
@@ -1981,7 +1981,7 @@ module.exports = controller => {
                             await bot.api.views.update({
                                 trigger_id: message.trigger_id,
                                 root_view_id: message.root_view_id,
-                                view_id: container.view_id,
+                                view_id: message.container.view_id,
                                 view: {
                                     "type": "modal",
                                     "callback_id": "AD_Modal",
