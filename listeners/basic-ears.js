@@ -1720,11 +1720,8 @@ module.exports = controller => {
                                     }
                                 });
                                 console.log('JSON ARRAY 1519 EARS', jsonArray);
-                                // await bot.api.views.push({
-                                //     trigger_id: message.trigger_id,
-                                //     view: {
-                                bot.httpBody({
-                                    response_action: 'update',
+                                await bot.api.views.push({
+                                    trigger_id: message.trigger_id,
                                     view: {
                                         "title": {
                                             "type": "plain_text",
@@ -1782,8 +1779,11 @@ module.exports = controller => {
                                     inactiveCons.push(entry);
                                 }
                             });
-                            bot.httpBody({
-                                response_action: 'update',
+                            // bot.httpBody({
+                            //     response_action: 'update',
+                            //     view: {
+                            await bot.api.views.update({
+                                trigger_id: message.trigger_id,
                                 view: {
                                     "type": "modal",
                                     "callback_id": "AD_Modal",
@@ -1974,8 +1974,11 @@ module.exports = controller => {
                                     inactiveCons.push(entry);
                                 }
                             });
-                            bot.httpBody({
-                                response_action: 'update',
+                            // bot.httpBody({
+                            //     response_action: 'update',
+                            //     view: {
+                            await bot.api.views.update({
+                                trigger_id: message.trigger_id,
                                 view: {
                                     "type": "modal",
                                     "callback_id": "AD_Modal",
