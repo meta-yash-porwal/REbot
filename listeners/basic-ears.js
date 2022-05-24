@@ -1784,7 +1784,7 @@ module.exports = controller => {
                             console.log("VIEW_Id EARS block_actions", message.view.id);
 
                             await bot.api.views.update({
-                                trigger_id: message.trigger_id,
+                                // trigger_id: message.trigger_id,
                                 view_id: message.container.view_id,
                                 view: {
                                     "type": "modal",
@@ -1983,7 +1983,7 @@ module.exports = controller => {
                             });
 
                             await bot.api.views.update({
-                                trigger_id: message.trigger_id,
+                                // trigger_id: message.trigger_id,
                                 view_id: message.container.view_id,
                                 view: {
                                     "type": "modal",
