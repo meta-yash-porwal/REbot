@@ -571,11 +571,11 @@ module.exports = controller => {
                 } else {
                     console.log('IN ELSE CallBackID EARS view_closed', message.view.callback_id);
                     if (message.view.callback_id == 'AD_Modal') {
-                        await bot.api.views.open({
-                            trigger_id: message.trigger_id,
+                        // await bot.api.views.open({
+                        //     trigger_id: message.trigger_id,
                         //     view: {
-                        // bot.httpBody({
-                        //     response_action: 'update',
+                        bot.httpBody({
+                            response_action: 'push',
                             view: {
                                 "title": {
                                     "type": "plain_text",
@@ -1655,62 +1655,6 @@ module.exports = controller => {
                                                     "emoji": true
                                                 }
                                             },
-                                            // {
-                                            //     "type": "action",
-                                            //     "block_id": "updateConModal",
-                                            //     "elements": [{
-                                            //         "type": "button",
-                                            //         "text": {
-                                            //             "type": "plain_text",
-                                            //             "text": "Go"
-                                            //         },
-                                            //         "style": "primary",
-                                            //         "value": " ",
-                                            //         "action_id": "goButton"
-                                            //     }]
-                                            // },
-                                            // {
-                                            //     "type": "section",
-                                            //     "text": {
-                                            //         "type": "plain_text",
-                                            //         "text": "Select an existing program member...."
-                                            //     },
-                                            //     "accessory": {
-                                            //         "type": "static_select",
-                                            //         "placeholder": {
-                                            //             "type": "plain_text",
-                                            //             "text": "Select a Contact",
-                                            //             "emoji": true
-                                            //         },
-                                            //         "options": [
-                                            //             {
-                                            //                 "text": {
-                                            //                     "type": "plain_text",
-                                            //                     "text": "*this is plain_text text*",
-                                            //                     "emoji": true
-                                            //                 },
-                                            //                 "value": "value-0"
-                                            //             },
-                                            //             {
-                                            //                 "text": {
-                                            //                     "type": "plain_text",
-                                            //                     "text": "*this is plain_text text*",
-                                            //                     "emoji": true
-                                            //                 },
-                                            //                 "value": "value-1"
-                                            //             },
-                                            //             {
-                                            //                 "text": {
-                                            //                     "type": "plain_text",
-                                            //                     "text": "*this is plain_text text*",
-                                            //                     "emoji": true
-                                            //                 },
-                                            //                 "value": "value-2"
-                                            //             }
-                                            //         ],
-                                            //         "action_id": "static_select-action"
-                                            //     }
-                                            // },
                                             {
                                                 "type": "section",
                                                 "fields": [
