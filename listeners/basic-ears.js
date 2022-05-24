@@ -1946,7 +1946,7 @@ module.exports = controller => {
                                 }
                             });
                         } else if (message.actions[0].action_id == "con_select2" && message.actions[0].block_id == 'blkCon2') {
-                            let selConId = message.view.state.values.blkCon1.con_select1.selected_option.value;
+                            let selConId = message.view.state.values.blkCon2.con_select2.selected_option.value;
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
                             let activeCons = [], inactiveCons = [];
 
