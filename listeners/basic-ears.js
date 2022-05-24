@@ -570,7 +570,9 @@ module.exports = controller => {
                     await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
                 } else {
                     console.log('IN ELSE CallBackID EARS view_closed', message.view.callback_id);
+                    
                     if (message.view.callback_id == 'AD_Modal') {
+                        console.log('in AD_Modal Ears view_closed');
                         // await bot.api.views.open({
                         //     trigger_id: message.trigger_id,
                         //     view: {
