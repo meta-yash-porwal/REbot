@@ -1784,9 +1784,8 @@ module.exports = controller => {
 
                             await bot.api.views.update({
                                 trigger_id: message.trigger_id,
-                                "root_view_id": message.root_view_id,
+                                root_view_id: message.root_view_id,
                                 view: {
-                                    "id": "VNM522E2U",
                                     "type": "modal",
                                     "callback_id": "AD_Modal",
                                     "notify_on_close": true,
@@ -1979,8 +1978,8 @@ module.exports = controller => {
                             // console.log('MESSAGE con2 EARS buttonController', message);
                             await bot.api.views.update({
                                 trigger_id: message.trigger_id,
+                                root_view_id: message.root_view_id,
                                 view: {
-                                    "id": message.view.id,
                                     "type": "modal",
                                     "callback_id": "AD_Modal",
                                     "notify_on_close": true,
