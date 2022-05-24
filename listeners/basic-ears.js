@@ -573,6 +573,7 @@ module.exports = controller => {
 
                     if (message.view.callback_id == 'AD_Modal') {
                         console.log('in AD_Modal Ears view_closed');
+                        console.log('view_closed MESSAGE EARS', message);
                         await bot.api.views.open({
                             trigger_id: message.trigger_id,
                             view: {
@@ -1785,6 +1786,7 @@ module.exports = controller => {
                             await bot.api.views.update({
                                 trigger_id: message.trigger_id,
                                 root_view_id: message.root_view_id,
+                                view_id: container.view_id,
                                 view: {
                                     "type": "modal",
                                     "callback_id": "AD_Modal",
@@ -1979,6 +1981,7 @@ module.exports = controller => {
                             await bot.api.views.update({
                                 trigger_id: message.trigger_id,
                                 root_view_id: message.root_view_id,
+                                view_id: container.view_id,
                                 view: {
                                     "type": "modal",
                                     "callback_id": "AD_Modal",
