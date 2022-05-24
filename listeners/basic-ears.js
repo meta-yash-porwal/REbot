@@ -1779,11 +1779,12 @@ module.exports = controller => {
                                     inactiveCons.push(entry);
                                 }
                             });
-                            console.log('MESSAGE con1 EARS buttonController', message);
+                            // console.log('MESSAGE con1 EARS buttonController', message);
 
                             await bot.api.views.update({
                                 trigger_id: message.trigger_id,
                                 view: {
+                                    "id": message.view.id,
                                     "type": "modal",
                                     "callback_id": "AD_Modal",
                                     "notify_on_close": true,
@@ -1973,10 +1974,11 @@ module.exports = controller => {
                                     inactiveCons.push(entry);
                                 }
                             });
-                            console.log('MESSAGE con2 EARS buttonController', message);
+                            // console.log('MESSAGE con2 EARS buttonController', message);
                             await bot.api.views.update({
                                 trigger_id: message.trigger_id,
                                 view: {
+                                    "id": message.view.id,
                                     "type": "modal",
                                     "callback_id": "AD_Modal",
                                     "notify_on_close": true,
