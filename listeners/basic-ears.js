@@ -1780,6 +1780,7 @@ module.exports = controller => {
                                 }
                             });
                             // console.log('MESSAGE con1 EARS buttonController', message);
+                            console.log("VIEW_Id EARS block_actions", message.view.id);
 
                             await bot.api.views.update({
                                 trigger_id: message.trigger_id,
