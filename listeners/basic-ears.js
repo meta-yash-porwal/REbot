@@ -1779,7 +1779,7 @@ module.exports = controller => {
                                     inactiveCons.push(entry);
                                 }
                             });
-                            console.log('MESSAGE con2 EARS buttonController', message.trigger_id);
+                            console.log('MESSAGE con1 EARS buttonController', message);
 
                             await bot.api.views.update({
                                 trigger_id: message.trigger_id,
@@ -1973,7 +1973,7 @@ module.exports = controller => {
                                     inactiveCons.push(entry);
                                 }
                             });
-                            console.log('MESSAGE con2 EARS buttonController', message.trigger_id);
+                            console.log('MESSAGE con2 EARS buttonController', message);
                             await bot.api.views.update({
                                 trigger_id: message.trigger_id,
                                 view: {
