@@ -573,7 +573,6 @@ module.exports = controller => {
 
                     if (message.view.callback_id == 'AD_Modal') {
                         console.log('in AD_Modal Ears view_closed');
-                        console.log('view_closed MESSAGE EARS', message);
                         await bot.api.views.update({
                             view_id: message.view.id,
                             view: {
