@@ -574,8 +574,8 @@ module.exports = controller => {
                     if (message.view.callback_id == 'AD_Modal') {
                         console.log('in AD_Modal Ears view_closed');
                         console.log('view_closed MESSAGE EARS', message);
-                        await bot.api.views.open({
-                            trigger_id: message.trigger_id,
+                        await bot.api.views.update({
+                            view_id: message.view.id,
                             view: {
                         // bot.httpBody({
                         //     response_action: 'push',
@@ -1601,13 +1601,14 @@ module.exports = controller => {
                                         "blocks": [
                                             {
                                                 "type": "section",
+                                                "block_id": "additionalBlock",
                                                 "text": {
                                                     "type": "mrkdwn",
                                                     "text": " "
                                                 },
                                                 "accessory": {
                                                     "type": "button",
-                                                    "action_id": "additionalmodalid",
+                                                    "action_id": "additionalModal",
                                                     "text": {
                                                         "type": "plain_text",
                                                         "text": "Additional Request Info",
@@ -1688,7 +1689,7 @@ module.exports = controller => {
                                     }
                                 });
                             }
-                        } else if (message.actions[0].action_id == "additionalmodalid") {
+                        } else if (message.actions[0].action_id == "additionalModal" && message.actions[0].block_id == 'additionalBlock') {
                             let obj = await getAdditionalModal(existingConn, message.actions[0].value);
                             if (obj) {
                                 let jsonArray = [];
@@ -1785,7 +1786,6 @@ module.exports = controller => {
 
                             await bot.api.views.update({
                                 trigger_id: message.trigger_id,
-                                root_view_id: message.root_view_id,
                                 view_id: message.container.view_id,
                                 view: {
                                     "type": "modal",
@@ -1811,13 +1811,14 @@ module.exports = controller => {
                                     "blocks": [
                                         {
                                             "type": "section",
+                                            "block_id": "additionalBlock",
                                             "text": {
                                                 "type": "mrkdwn",
                                                 "text": " "
                                             },
                                             "accessory": {
                                                 "type": "button",
-                                                "action_id": "additionalmodalid",
+                                                "action_id": "additionalModal",
                                                 "text": {
                                                     "type": "plain_text",
                                                     "text": "Additional Request Info",
@@ -1871,6 +1872,7 @@ module.exports = controller => {
                                         },
                                         {
                                             "type": "section",
+                                            "block_id": "editContactBlock",
                                             "text": {
                                                 "type": "mrkdwn",
                                                 "text": "Selected Contact Info"
@@ -1885,7 +1887,10 @@ module.exports = controller => {
                                                 },
                                                 "style": "primary",
                                                 "value": selConId
-                                            },
+                                            }
+                                        },
+                                        {
+                                            "type": "section",
                                             "fields": [
                                                 {
                                                     "type": "mrkdwn",
@@ -1977,10 +1982,9 @@ module.exports = controller => {
                                     inactiveCons.push(entry);
                                 }
                             });
-                            // console.log('MESSAGE con2 EARS buttonController', message);
+
                             await bot.api.views.update({
                                 trigger_id: message.trigger_id,
-                                root_view_id: message.root_view_id,
                                 view_id: message.container.view_id,
                                 view: {
                                     "type": "modal",
@@ -2006,13 +2010,14 @@ module.exports = controller => {
                                     "blocks": [
                                         {
                                             "type": "section",
+                                            "block_id": "additionalBlock",
                                             "text": {
                                                 "type": "mrkdwn",
                                                 "text": " "
                                             },
                                             "accessory": {
                                                 "type": "button",
-                                                "action_id": "additionalmodalid",
+                                                "action_id": "additionalModal",
                                                 "text": {
                                                     "type": "plain_text",
                                                     "text": "Additional Request Info",
@@ -2066,6 +2071,7 @@ module.exports = controller => {
                                         },
                                         {
                                             "type": "section",
+                                            "block_id": "editContactBlock",
                                             "text": {
                                                 "type": "mrkdwn",
                                                 "text": "Selected Contact Info"
@@ -2081,6 +2087,9 @@ module.exports = controller => {
                                                 "style": "primary",
                                                 "value": selConId
                                             },
+                                        },
+                                        {
+                                            "type": "section",
                                             "fields": [
                                                 {
                                                     "type": "mrkdwn",
@@ -2132,6 +2141,107 @@ module.exports = controller => {
                                                     "text": "*Requester*\n" + pvt_metadata["Requester Name"]
                                                 }
                                             ]
+                                        }
+                                    ]
+                                }
+                            });
+                        } else if (message.actions[0].action_id == "editContactModal" && message.actions[0].block_id == 'editContactBlock') {
+                            let pvt_metadata = JSON.parse(message.view.private_metadata);
+
+                            await bot.api.views.push({
+                                trigger_id: message.trigger_id,
+                                view: {
+                                    "title": {
+                                        "type": "plain_text",
+                                        "text": "Reference Use Request",
+                                        "emoji": true
+                                    },
+                                    "submit": {
+                                        "type": "plain_text",
+                                        "text": "Back",
+                                        "emoji": true
+                                    },
+                                    "type": "modal",
+                                    "close": {
+                                        "type": "plain_text",
+                                        "text": "Close",
+                                        "emoji": true
+                                    },
+                                    "blocks": [
+                                        {
+                                            "type": "section",
+                                            "text": {
+                                                "type": "mrkdwn",
+                                                "text": "*Selected Contact Info*"
+                                            },
+                                        },
+                                        {
+                                            "type": "section",
+                                            "text": {
+                                                "type": "mrkdwn",
+                                                "text": "*Name*\n" + pvt_metadata.Name
+                                            },
+                                        },
+                                        {
+                                            "type": "input",
+                                            "label": {
+                                                "type": "plain_text",
+                                                "text": "Email",
+                                                "emoji": true
+                                            },
+                                            "element": {
+                                                "type": "plain_text_input",
+                                                "action_id": "conEmail",
+                                                "initial_value": pvt_metadata.Email
+                                            }
+
+                                        },
+                                        {
+                                            "type": "input",
+                                            "label": {
+                                                "type": "plain_text",
+                                                "text": "Phone",
+                                                "emoji": true
+                                            },
+                                            "element": {
+                                                "type": "plain_text_input",
+                                                "action_id": "conPhone",
+                                                "initial_value": pvt_metadata.Phone
+                                            }
+                                        },
+                                        {
+                                            "type": "input",
+                                            "label": {
+                                                "type": "plain_text",
+                                                "text": "Title",
+                                                "emoji": true
+                                            },
+                                            "element": {
+                                                "type": "plain_text_input",
+                                                "action_id": "conTitle",
+                                                "initial_value": pvt_metadata.Title
+                                            }
+
+                                        },
+                                        {
+                                            "type": "section",
+                                            "text": {
+                                                "type": "plain_text",
+                                                "text": "Write these changes back to the Contact record?"
+                                            },
+                                            "accessory": {
+                                                "type": "checkboxes",
+                                                "action_id": "isUpdateableCon",
+                                                "options": [
+                                                    {
+                                                        "value": "true",
+                                                        "text": {
+                                                            "type": "plain_text",
+                                                            "text": " "
+                                                        }
+                                                    },
+                                                ]
+                                            }
                                         }
                                     ]
                                 }
