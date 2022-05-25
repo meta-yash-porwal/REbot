@@ -1557,7 +1557,7 @@ module.exports = controller => {
                                         let entry = {
                                             "text": {
                                                 "type": "plain_text",
-                                                "text": con.Title
+                                                "text": con.Name
                                             },
                                             "value": con.id
                                         }
@@ -1566,7 +1566,7 @@ module.exports = controller => {
                                         let entry = {
                                             "text": {
                                                 "type": "plain_text",
-                                                "text": con.Title
+                                                "text": con.Name
                                             },
                                             "value": con.id
                                         }
@@ -1699,6 +1699,7 @@ module.exports = controller => {
                             let obj = await getAdditionalModal(existingConn, message.actions[0].value);
                             if (obj) {
                                 let jsonArray = [];
+                                obj["Requester Notes"] = obj["Requester Notes"] ? obj["Requester Notes"] : '';
                                 jsonArray.push({
                                     "type": "section",
                                     "text": {
@@ -1771,7 +1772,7 @@ module.exports = controller => {
                                     let entry = {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": con.Title
+                                            "text": con.Name
                                         },
                                         "value": con.id
                                     }
@@ -1780,7 +1781,7 @@ module.exports = controller => {
                                     let entry = {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": con.Title
+                                            "text": con.Name
                                         },
                                         "value": con.id
                                     }
@@ -1875,6 +1876,9 @@ module.exports = controller => {
                                                 "text": "or add another contact to the reference program",
                                                 "emoji": true
                                             }
+                                        },
+                                        {
+                                            "type": "divider"
                                         },
                                         {
                                             "type": "section",
@@ -1975,7 +1979,7 @@ module.exports = controller => {
                                     let entry = {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": con.Title
+                                            "text": con.Name
                                         },
                                         "value": con.id
                                     }
@@ -1984,7 +1988,7 @@ module.exports = controller => {
                                     let entry = {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": con.Title
+                                            "text": con.Name
                                         },
                                         "value": con.id
                                     }
@@ -2079,6 +2083,9 @@ module.exports = controller => {
                                             }
                                         },
                                         {
+                                            "type": "divider"
+                                        },
+                                        {
                                             "type": "section",
                                             "block_id": "editContactBlock",
                                             "text": {
@@ -2096,9 +2103,6 @@ module.exports = controller => {
                                                 "style": "primary",
                                                 "value": selConId
                                             },
-                                        },
-                                        {
-                                            "type": "divider"
                                         },
                                         {
                                             "type": "section",
@@ -2162,6 +2166,9 @@ module.exports = controller => {
                             });
                         } else if (message.actions[0].action_id == "editContactModal" && message.actions[0].block_id == 'editContactBlock') {
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
+                            pvt_metadata.Phone = pvt_metadata.Phone ? pvt_metadata.Phone : '';
+                            pvt_metadata.Email = pvt_metadata.Email ? pvt_metadata.Email : '';
+                            pvt_metadata.Title = pvt_metadata.Title ? pvt_metadata.Title : '';
 
                             await bot.api.views.push({
                                 trigger_id: message.trigger_id,
