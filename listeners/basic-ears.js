@@ -1958,7 +1958,7 @@ module.exports = controller => {
                                     pvt_metadata.Email = con.Email;
                                     pvt_metadata.Title = con.Title;
                                     pvt_metadata.Status = con.Status;
-                                    pvt_metadata.Last_Used = con.Last_Used;
+                                    pvt_metadata.Last_Used = con.Last_Used ? con.Last_Used : '';
                                 }
 
                                 if (con.Status == 'Active') {
