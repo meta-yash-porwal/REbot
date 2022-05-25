@@ -1340,86 +1340,89 @@ module.exports = controller => {
                         });
                     } else if (message.view.callback_id == 'AD_Modal') {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
-                        let selCon = message.view.state.values.blkCon1.con_select1.selected_option.value;
-                        pvt_metadata.Id = selCon;
-                        bot.httpBody({
-                            response_action: 'update',
-                            view: {
-                                "title": {
-                                    "type": "plain_text",
-                                    "text": "Reference Use Request",
-                                    "emoji": true
-                                },
-                                "submit": {
-                                    "type": "plain_text",
-                                    "text": "Approve",
-                                    "emoji": true
-                                },
-                                "type": "modal",
-                                "callback_id": "approvePopup",
-                                "private_metadata": JSON.stringify(pvt_metadata),
-                                "close": {
-                                    "type": "plain_text",
-                                    "text": "Cancel",
-                                    "emoji": true
-                                },
-                                "blocks": [
-                                    {
-                                        "type": "section",
-                                        "text": {
-                                            "type": "mrkdwn",
-                                            "text": "*Selected Contact Info*"
-                                        }
+                        let selCon = message.view.state.values.blkCon1.con_select1.selected_option ? message.view.state.values.blkCon1.con_select1.selected_option.value : message.view.state.values.blkCon2.con_select2.selected_option ? message.view.state.values.blkCon2.con_select2.selected_option.value : '';
+
+                        if (selCon) {
+                            pvt_metadata.Id = selCon;
+                            bot.httpBody({
+                                response_action: 'update',
+                                view: {
+                                    "title": {
+                                        "type": "plain_text",
+                                        "text": "Reference Use Request",
+                                        "emoji": true
                                     },
-                                    {
-                                        "type": "section",
-                                        "fields": [
-                                            {
+                                    "submit": {
+                                        "type": "plain_text",
+                                        "text": "Approve",
+                                        "emoji": true
+                                    },
+                                    "type": "modal",
+                                    "callback_id": "approvePopup",
+                                    "private_metadata": JSON.stringify(pvt_metadata),
+                                    "close": {
+                                        "type": "plain_text",
+                                        "text": "Cancel",
+                                        "emoji": true
+                                    },
+                                    "blocks": [
+                                        {
+                                            "type": "section",
+                                            "text": {
                                                 "type": "mrkdwn",
-                                                "text": "*Name*\n" + pvt_metadata.Name
-                                            },
-                                            {
-                                                "type": "mrkdwn",
-                                                "text": "*Title*\n" + pvt_metadata.Title
-                                            },
-                                            {
-                                                "type": "mrkdwn",
-                                                "text": "*Email*\n" + pvt_metadata.Email
-                                            },
-                                            {
-                                                "type": "mrkdwn",
-                                                "text": "*Program Member*\n" + pvt_metadata.Status
-                                            },
-                                            {
-                                                "type": "mrkdwn",
-                                                "text": "*Phone*\n" + pvt_metadata.Phone
-                                            },
-                                            {
-                                                "type": "mrkdwn",
-                                                "text": "*Last Used*\n" + pvt_metadata.Last_Used
+                                                "text": "*Selected Contact Info*"
                                             }
-                                        ]
-                                    },
-                                    {
-                                        "type": "divider"
-                                    },
-                                    {
-                                        "type": "input",
-                                        "block_id": "noteBlock",
-                                        "element": {
-                                            "type": "plain_text_input",
-                                            "multiline": true,
-                                            "action_id": "contactnotes"
                                         },
-                                        "label": {
-                                            "type": "plain_text",
-                                            "text": "*Notes*",
-                                            "emoji": true
+                                        {
+                                            "type": "section",
+                                            "fields": [
+                                                {
+                                                    "type": "mrkdwn",
+                                                    "text": "*Name*\n" + pvt_metadata.Name
+                                                },
+                                                {
+                                                    "type": "mrkdwn",
+                                                    "text": "*Title*\n" + pvt_metadata.Title
+                                                },
+                                                {
+                                                    "type": "mrkdwn",
+                                                    "text": "*Email*\n" + pvt_metadata.Email
+                                                },
+                                                {
+                                                    "type": "mrkdwn",
+                                                    "text": "*Program Member*\n" + pvt_metadata.Status
+                                                },
+                                                {
+                                                    "type": "mrkdwn",
+                                                    "text": "*Phone*\n" + pvt_metadata.Phone
+                                                },
+                                                {
+                                                    "type": "mrkdwn",
+                                                    "text": "*Last Used*\n" + pvt_metadata.Last_Used
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "divider"
+                                        },
+                                        {
+                                            "type": "input",
+                                            "block_id": "noteBlock",
+                                            "element": {
+                                                "type": "plain_text_input",
+                                                "multiline": true,
+                                                "action_id": "contactnotes"
+                                            },
+                                            "label": {
+                                                "type": "plain_text",
+                                                "text": "*Notes*",
+                                                "emoji": true
+                                            }
                                         }
-                                    }
-                                ]
-                            }
-                        });
+                                    ]
+                                }
+                            });
+                        }
                     } else if (message.view.callback_id == 'approvePopup') {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let notes = message.view.state.values.noteBlock.contactnotes.value;
