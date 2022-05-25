@@ -1472,6 +1472,7 @@ module.exports = controller => {
                             }
                         });
                     } else if (message.view.callback_id == 'declinePopup') {
+                        console.log('In Decline Popup EARS BEfore 1473');
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let notes = message.view.state.values.noteBlock.contactnotes.value;
                         pvt_metadata.Notes = notes;
