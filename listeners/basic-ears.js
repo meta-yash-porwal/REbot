@@ -1810,12 +1810,12 @@ module.exports = controller => {
                                     "private_metadata": JSON.stringify(pvt_metadata),
                                     "submit": {
                                         "type": "plain_text",
-                                        "text": "Approve",
+                                        "text": "Next",
                                         "emoji": true
                                     },
                                     "close": {
                                         "type": "plain_text",
-                                        "text": "Decline",
+                                        "text": "Close",
                                         "emoji": true
                                     },
                                     "title": {
@@ -2051,12 +2051,12 @@ module.exports = controller => {
                                     "private_metadata": JSON.stringify(pvt_metadata),
                                     "submit": {
                                         "type": "plain_text",
-                                        "text": "Approve",
+                                        "text": "Next",
                                         "emoji": true
                                     },
                                     "close": {
                                         "type": "plain_text",
-                                        "text": "Decline",
+                                        "text": "Close",
                                         "emoji": true
                                     },
                                     "title": {
