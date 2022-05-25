@@ -1760,11 +1760,11 @@ module.exports = controller => {
                             pvt_metadata.Contacts.forEach(con => {
                                 
                                 if (con.id == selConId) {
-                                    pvt_metadata.Name = con.Name;
-                                    pvt_metadata.Phone = con.Phone;
-                                    pvt_metadata.Email = con.Email;
-                                    pvt_metadata.Title = con.Title;
-                                    pvt_metadata.Status = con.Status;
+                                    pvt_metadata.Name = con.Name ? con.Name : '';
+                                    pvt_metadata.Phone = con.Phone ? con.Phone : '';
+                                    pvt_metadata.Email = con.Email ? con.Email : '';
+                                    pvt_metadata.Title = con.Title ? con.Title : '';
+                                    pvt_metadata.Status = con.Status ? con.Status : '';
                                     pvt_metadata.Last_Used = con.Last_Used ? con.Last_Used : '';
                                 }
 
@@ -1967,11 +1967,11 @@ module.exports = controller => {
                             pvt_metadata.Contacts.forEach(con => {
 
                                 if (con.id == selConId) {
-                                    pvt_metadata.Name = con.Name;
-                                    pvt_metadata.Phone = con.Phone;
-                                    pvt_metadata.Email = con.Email;
-                                    pvt_metadata.Title = con.Title;
-                                    pvt_metadata.Status = con.Status;
+                                    pvt_metadata.Name = con.Name ? con.Name : '';
+                                    pvt_metadata.Phone = con.Phone ? con.Phone : '';
+                                    pvt_metadata.Email = con.Email ? con.Email : '';
+                                    pvt_metadata.Title = con.Title ? con.Title : '';
+                                    pvt_metadata.Status = con.Status ? con.Status : '';
                                     pvt_metadata.Last_Used = con.Last_Used ? con.Last_Used : '';
                                 }
 
