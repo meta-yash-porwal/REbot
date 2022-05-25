@@ -1411,14 +1411,15 @@ module.exports = controller => {
                                     "blocks": [
                                         {
                                             "type": "input",
+                                            "block_id": "noteBlock",
                                             "element": {
                                                 "type": "plain_text_input",
                                                 "multiline": true,
-                                                "action_id": "plain_text_input-action"
+                                                "action_id": "contactnotes"
                                             },
                                             "label": {
                                                 "type": "plain_text",
-                                                "text": "*Notes",
+                                                "text": "*Notes*",
                                                 "emoji": true
                                             }
                                         }
@@ -1471,8 +1472,10 @@ module.exports = controller => {
                             }
                         });
                     } else if (message.view.callback_id == 'declinePopup') {
-                        console.log('In Decline Popup EARS 1473');
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
+                        let notes = message.view.state.values.noteBlock.contactnotes.value;
+                        pvt_metadata.Notes = notes;
+                        console.log('In Decline Popup EARS 1473');
                         bot.httpBody({
                             response_action: 'update',
                             view: {
