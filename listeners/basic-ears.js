@@ -1422,6 +1422,13 @@ module.exports = controller => {
                                     ]
                                 }
                             });
+                        } else {
+                            bot.httpBody({
+                                "response_action": "errors",
+                                "errors": {
+                                    "blkCon1": "You may not select a due date in the past"
+                                }
+                            });
                         }
                     } else if (message.view.callback_id == 'approvePopup') {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
