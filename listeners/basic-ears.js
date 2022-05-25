@@ -1386,6 +1386,7 @@ module.exports = controller => {
                                 }
                             });
                         } else if (selCon && requestStatus === "Decline") {
+                            console.log('In DECLINE NOTES MODAL ears 1389');
                             pvt_metadata.Id = selCon;
                             bot.httpBody({
                                 response_action: 'update',
@@ -1470,6 +1471,7 @@ module.exports = controller => {
                             }
                         });
                     } else if (message.view.callback_id == 'declinePopup') {
+                        console.log('In Decline Popup EARS 1473');
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         bot.httpBody({
                             response_action: 'update',
