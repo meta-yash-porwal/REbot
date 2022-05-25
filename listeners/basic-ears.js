@@ -1342,12 +1342,6 @@ module.exports = controller => {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let selCon = message.view.state.values.blkCon1.con_select1.selected_option.value;
                         pvt_metadata.Id = selCon;
-                        pvt_metadata.Name = 'qwertyuiop';
-                        pvt_metadata.Email = 'qwertyuiop@email.com';
-                        pvt_metadata.Title = 'Hello Hii';
-                        pvt_metadata.Status = 'Active';
-                        pvt_metadata.Phone = '1234-234234-1234213';
-                        pvt_metadata.Last_Used = 'null';
                         bot.httpBody({
                             response_action: 'update',
                             view: {
@@ -1760,7 +1754,7 @@ module.exports = controller => {
                                     pvt_metadata.Email = con.Email;
                                     pvt_metadata.Title = con.Title;
                                     pvt_metadata.Status = con.Status;
-                                    pvt_metadata.Last_Used = con.Last_Used;
+                                    pvt_metadata.Last_Used = con.Last_Used ? con.Last_Used : '';
                                 }
 
                                 if (con.Status == 'Active') {
@@ -1877,7 +1871,7 @@ module.exports = controller => {
                                             "block_id": "editContactBlock",
                                             "text": {
                                                 "type": "mrkdwn",
-                                                "text": "Selected Contact Info"
+                                                "text": "*Selected Contact Info*"
                                             },
                                             "accessory": {
                                                 "type": "button",
@@ -2079,7 +2073,7 @@ module.exports = controller => {
                                             "block_id": "editContactBlock",
                                             "text": {
                                                 "type": "mrkdwn",
-                                                "text": "Selected Contact Info"
+                                                "text": "*Selected Contact Info*"
                                             },
                                             "accessory": {
                                                 "type": "button",
