@@ -1302,8 +1302,8 @@ module.exports = controller => {
                     } else if (message.view.callback_id == 'AD_Modal') {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let selCon = message.view.state.values.blkCon1.con_select1.selected_option ? message.view.state.values.blkCon1.con_select1.selected_option.value : message.view.state.values.blkCon2.con_select2.selected_option ? message.view.state.values.blkCon2.con_select2.selected_option.value : '';
-                        let requestStatus = message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.text.value;
-                        console.log('APPROVED', message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.text.value);
+                        let requestStatus = message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value;
+                        console.log('APPROVED', message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value);
 
                         if (selCon && requestStatus === "Approve") {
                             pvt_metadata.Id = selCon;
