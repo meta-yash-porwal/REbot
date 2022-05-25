@@ -573,46 +573,7 @@ module.exports = controller => {
 
                     if (message.view.callback_id == 'AD_Modal') {
                         console.log('in AD_Modal Ears view_closed');
-                        await bot.api.views.update({
-                            view_id: message.view.id,
-                            view: {
-                        // bot.httpBody({
-                        //     response_action: 'push',
-                            // view: {
-                                "title": {
-                                    "type": "plain_text",
-                                    "text": "Reference Use Request",
-                                    "emoji": true
-                                },
-                                "submit": {
-                                    "type": "plain_text",
-                                    "text": "Decline",
-                                    "emoji": true
-                                },
-                                "type": "modal",
-                                "callback_id": "declinePopup",
-                                "close": {
-                                    "type": "plain_text",
-                                    "text": "Cancel",
-                                    "emoji": true
-                                },
-                                "blocks": [
-                                    {
-                                        "type": "input",
-                                        "element": {
-                                            "type": "plain_text_input",
-                                            "multiline": true,
-                                            "action_id": "plain_text_input-action"
-                                        },
-                                        "label": {
-                                            "type": "plain_text",
-                                            "text": "*Notes",
-                                            "emoji": true
-                                        }
-                                    }
-                                ]
-                            }
-                        });
+                        
                     }
                     else {
                         bot.httpBody({
@@ -1341,9 +1302,9 @@ module.exports = controller => {
                     } else if (message.view.callback_id == 'AD_Modal') {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let selCon = message.view.state.values.blkCon1.con_select1.selected_option ? message.view.state.values.blkCon1.con_select1.selected_option.value : message.view.state.values.blkCon2.con_select2.selected_option ? message.view.state.values.blkCon2.con_select2.selected_option.value : '';
-                        console.log('MESSAGE 1344 EARS ', message.view.state.values);
+                        let requestStatus = message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option;
 
-                        if (selCon) {
+                        if (selCon && requestStatus === "Approve") {
                             pvt_metadata.Id = selCon;
                             bot.httpBody({
                                 response_action: 'update',
@@ -1417,6 +1378,45 @@ module.exports = controller => {
                                             "label": {
                                                 "type": "plain_text",
                                                 "text": "*Notes*",
+                                                "emoji": true
+                                            }
+                                        }
+                                    ]
+                                }
+                            });
+                        } else if (selCon && requestStatus === "Decline") {
+                            pvt_metadata.Id = selCon;
+                            bot.httpBody({
+                                response_action: 'update',
+                                view: {
+                                    "title": {
+                                        "type": "plain_text",
+                                        "text": "Reference Use Request",
+                                        "emoji": true
+                                    },
+                                    "submit": {
+                                        "type": "plain_text",
+                                        "text": "Decline",
+                                        "emoji": true
+                                    },
+                                    "type": "modal",
+                                    "callback_id": "declinePopup",
+                                    "close": {
+                                        "type": "plain_text",
+                                        "text": "Cancel",
+                                        "emoji": true
+                                    },
+                                    "blocks": [
+                                        {
+                                            "type": "input",
+                                            "element": {
+                                                "type": "plain_text_input",
+                                                "multiline": true,
+                                                "action_id": "plain_text_input-action"
+                                            },
+                                            "label": {
+                                                "type": "plain_text",
+                                                "text": "*Notes",
                                                 "emoji": true
                                             }
                                         }
