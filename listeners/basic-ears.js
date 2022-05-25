@@ -1472,7 +1472,7 @@ module.exports = controller => {
                             }
                         });
                     } else if (message.view.callback_id == 'declinePopup') {
-                        console.log('In Decline Popup EARS BEfore 1473');
+                        console.log('In Decline Popup EARS BEfore 1473 ', pvt_metadata);
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let notes = message.view.state.values.noteBlock.contactnotes.value;
                         pvt_metadata.Notes = notes;
@@ -1596,12 +1596,12 @@ module.exports = controller => {
                                         "private_metadata": JSON.stringify(pvt_metadata),
                                         "submit": {
                                             "type": "plain_text",
-                                            "text": "Approve",
+                                            "text": "Next",
                                             "emoji": true
                                         },
                                         "close": {
                                             "type": "plain_text",
-                                            "text": "Decline",
+                                            "text": "Close",
                                             "emoji": true
                                         },
                                         "title": {
