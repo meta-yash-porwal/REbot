@@ -1955,6 +1955,41 @@ module.exports = controller => {
                                                     "text": "*Requester*\n" + pvt_metadata["Requester Name"]
                                                 }
                                             ]
+                                        },
+                                        {
+                                            "type": "divider"
+                                        },
+                                        {
+                                            "type": "actions",
+                                            "elements": [
+                                                {
+                                                    "type": "radio_buttons",
+                                                    "options": [
+                                                        {
+                                                            "text": {
+                                                                "type": "mrkdwn",
+                                                                "text": "*Approve*"
+                                                            },
+                                                            "value": "Approve"
+                                                        },
+                                                        {
+                                                            "text": {
+                                                                "type": "mrkdwn",
+                                                                "text": "*Decline*"
+                                                            },
+                                                            "value": "Decline"
+                                                        }
+                                                    ],
+                                                    "action_id": "approveDeclineRadio",
+                                                    "initial_option": {
+                                                        "value": "Approve",
+                                                        "text": {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Approve*"
+                                                        }
+                                                    }
+                                                }
+                                            ]
                                         }
                                     ]
                                 }
@@ -1972,7 +2007,7 @@ module.exports = controller => {
                                     pvt_metadata.Email = con.Email;
                                     pvt_metadata.Title = con.Title;
                                     pvt_metadata.Status = con.Status;
-                                    pvt_metadata.Last_Used = con.Last_Used ? con.Last_Used : ' ';
+                                    pvt_metadata.Last_Used = con.Last_Used ? con.Last_Used : '';
                                 }
 
                                 if (con.Status == 'Active') {
@@ -2158,6 +2193,41 @@ module.exports = controller => {
                                                 {
                                                     "type": "mrkdwn",
                                                     "text": "*Requester*\n" + pvt_metadata["Requester Name"]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "divider"
+                                        },
+                                        {
+                                            "type": "actions",
+                                            "elements": [
+                                                {
+                                                    "type": "radio_buttons",
+                                                    "options": [
+                                                        {
+                                                            "text": {
+                                                                "type": "mrkdwn",
+                                                                "text": "*Approve*"
+                                                            },
+                                                            "value": "Approve"
+                                                        },
+                                                        {
+                                                            "text": {
+                                                                "type": "mrkdwn",
+                                                                "text": "*Decline*"
+                                                            },
+                                                            "value": "Decline"
+                                                        }
+                                                    ],
+                                                    "action_id": "approveDeclineRadio",
+                                                    "initial_option": {
+                                                        "value": "Approve",
+                                                        "text": {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Approve*"
+                                                        }
+                                                    }
                                                 }
                                             ]
                                         }
