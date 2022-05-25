@@ -1303,6 +1303,7 @@ module.exports = controller => {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let selCon = message.view.state.values.blkCon1.con_select1.selected_option ? message.view.state.values.blkCon1.con_select1.selected_option.value : message.view.state.values.blkCon2.con_select2.selected_option ? message.view.state.values.blkCon2.con_select2.selected_option.value : '';
                         let requestStatus = message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option;
+                        console.log('APPROVED', message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option);
 
                         if (selCon && requestStatus === "Approve") {
                             pvt_metadata.Id = selCon;
