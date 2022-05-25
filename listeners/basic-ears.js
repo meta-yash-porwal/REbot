@@ -1473,9 +1473,9 @@ module.exports = controller => {
                         });
                     } else if (message.view.callback_id == 'declinePopup') {
                         console.log('In Decline Popup EARS BEfore 1473 ', message.view.private_metadata);
-                        let pvt_metadata = JSON.parse(message.view.private_metadata);
-                        let notes = message.view.state.values.noteBlock.contactnotes.value;
-                        pvt_metadata.Notes = notes;
+                        // let pvt_metadata = JSON.parse(message.view.private_metadata);
+                        // // let notes = message.view.state.values.noteBlock.contactnotes.value;
+                        // pvt_metadata.Notes = notes;
                         console.log('In Decline Popup EARS 1473');
                         bot.httpBody({
                             response_action: 'update',
@@ -1844,6 +1844,42 @@ module.exports = controller => {
                                             }
                                         },
                                         {
+                                            "type": "actions",
+                                            "block_id": "approveDeclineBlock",
+                                            "elements": [
+                                                {
+                                                    "type": "radio_buttons",
+                                                    "options": [
+                                                        {
+                                                            "text": {
+                                                                "type": "mrkdwn",
+                                                                "text": "*Approve*"
+                                                            },
+                                                            "value": "Approve"
+                                                        },
+                                                        {
+                                                            "text": {
+                                                                "type": "mrkdwn",
+                                                                "text": "*Decline*"
+                                                            },
+                                                            "value": "Decline"
+                                                        }
+                                                    ],
+                                                    "action_id": "approveDeclineRadio",
+                                                    "initial_option": {
+                                                        "value": "Approve",
+                                                        "text": {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Approve*"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "divider"
+                                        },
+                                        {
                                             "type": "input",
                                             "optional": true,
                                             "block_id": "blkCon1",
@@ -1964,42 +2000,42 @@ module.exports = controller => {
                                                 }
                                             ]
                                         },
-                                        {
-                                            "type": "divider"
-                                        },
-                                        {
-                                            "type": "actions",
-                                            "block_id": "approveDeclineBlock",
-                                            "elements": [
-                                                {
-                                                    "type": "radio_buttons",
-                                                    "options": [
-                                                        {
-                                                            "text": {
-                                                                "type": "mrkdwn",
-                                                                "text": "*Approve*"
-                                                            },
-                                                            "value": "Approve"
-                                                        },
-                                                        {
-                                                            "text": {
-                                                                "type": "mrkdwn",
-                                                                "text": "*Decline*"
-                                                            },
-                                                            "value": "Decline"
-                                                        }
-                                                    ],
-                                                    "action_id": "approveDeclineRadio",
-                                                    "initial_option": {
-                                                        "value": "Approve",
-                                                        "text": {
-                                                            "type": "mrkdwn",
-                                                            "text": "*Approve*"
-                                                        }
-                                                    }
-                                                }
-                                            ]
-                                        }
+                                        // {
+                                        //     "type": "divider"
+                                        // },
+                                        // {
+                                        //     "type": "actions",
+                                        //     "block_id": "approveDeclineBlock",
+                                        //     "elements": [
+                                        //         {
+                                        //             "type": "radio_buttons",
+                                        //             "options": [
+                                        //                 {
+                                        //                     "text": {
+                                        //                         "type": "mrkdwn",
+                                        //                         "text": "*Approve*"
+                                        //                     },
+                                        //                     "value": "Approve"
+                                        //                 },
+                                        //                 {
+                                        //                     "text": {
+                                        //                         "type": "mrkdwn",
+                                        //                         "text": "*Decline*"
+                                        //                     },
+                                        //                     "value": "Decline"
+                                        //                 }
+                                        //             ],
+                                        //             "action_id": "approveDeclineRadio",
+                                        //             "initial_option": {
+                                        //                 "value": "Approve",
+                                        //                 "text": {
+                                        //                     "type": "mrkdwn",
+                                        //                     "text": "*Approve*"
+                                        //                 }
+                                        //             }
+                                        //         }
+                                        //     ]
+                                        // }
                                     ]
                                 }
                             });
@@ -2085,6 +2121,42 @@ module.exports = controller => {
                                             }
                                         },
                                         {
+                                            "type": "actions",
+                                            "block_id": "approveDeclineBlock",
+                                            "elements": [
+                                                {
+                                                    "type": "radio_buttons",
+                                                    "options": [
+                                                        {
+                                                            "text": {
+                                                                "type": "mrkdwn",
+                                                                "text": "*Approve*"
+                                                            },
+                                                            "value": "Approve"
+                                                        },
+                                                        {
+                                                            "text": {
+                                                                "type": "mrkdwn",
+                                                                "text": "*Decline*"
+                                                            },
+                                                            "value": "Decline"
+                                                        }
+                                                    ],
+                                                    "action_id": "approveDeclineRadio",
+                                                    "initial_option": {
+                                                        "value": "Approve",
+                                                        "text": {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Approve*"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "divider"
+                                        },
+                                        {
                                             "type": "input",
                                             "optional": true,
                                             "block_id": "blkCon1",
@@ -2202,42 +2274,6 @@ module.exports = controller => {
                                                 {
                                                     "type": "mrkdwn",
                                                     "text": "*Requester*\n" + pvt_metadata["Requester Name"]
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "type": "divider"
-                                        },
-                                        {
-                                            "type": "actions",
-                                            "block_id": "approveDeclineBlock",
-                                            "elements": [
-                                                {
-                                                    "type": "radio_buttons",
-                                                    "options": [
-                                                        {
-                                                            "text": {
-                                                                "type": "mrkdwn",
-                                                                "text": "*Approve*"
-                                                            },
-                                                            "value": "Approve"
-                                                        },
-                                                        {
-                                                            "text": {
-                                                                "type": "mrkdwn",
-                                                                "text": "*Decline*"
-                                                            },
-                                                            "value": "Decline"
-                                                        }
-                                                    ],
-                                                    "action_id": "approveDeclineRadio",
-                                                    "initial_option": {
-                                                        "value": "Approve",
-                                                        "text": {
-                                                            "type": "mrkdwn",
-                                                            "text": "*Approve*"
-                                                        }
-                                                    }
                                                 }
                                             ]
                                         }
