@@ -1660,6 +1660,9 @@ module.exports = controller => {
                                                 }
                                             },
                                             {
+                                                "type": "divider"
+                                            },
+                                            {
                                                 "type": "section",
                                                 "fields": [
                                                     {
@@ -1918,6 +1921,9 @@ module.exports = controller => {
                                             ]
                                         },
                                         {
+                                            "type": "divider"
+                                        },
+                                        {
                                             "type": "section",
                                             "fields": [
                                                 {
@@ -2088,6 +2094,9 @@ module.exports = controller => {
                                             },
                                         },
                                         {
+                                            "type": "divider"
+                                        },
+                                        {
                                             "type": "section",
                                             "fields": [
                                                 {
@@ -2115,6 +2124,9 @@ module.exports = controller => {
                                                     "text": "*Last Used*\n" + pvt_metadata.Last_Used,
                                                 },
                                             ]
+                                        },
+                                        {
+                                            "type": "divider"
                                         },
                                         {
                                             "type": "section",
