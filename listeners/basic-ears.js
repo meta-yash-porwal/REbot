@@ -2121,7 +2121,7 @@ module.exports = controller => {
                                                 },
                                                 {
                                                     "type": "mrkdwn",
-                                                    "text": "*Program Member*\n" + pvt_metadata.Status,
+                                                    "text": "*Program Member*\n" + pvt_metadata.Status ? pvt_metadata.Status : ' ' ,
                                                 },
                                                 {
                                                     "type": "mrkdwn",
