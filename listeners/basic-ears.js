@@ -562,32 +562,11 @@ module.exports = controller => {
         'view_closed',
         async (bot, message) => {
             console.log('view_closed EARS');
-
-            try {
-                let existingConn = await connFactory.getConnection(message.team.id, controller);
-                if (!existingConn) {
-                    const authUrl = connFactory.getAuthUrl(message.team);
-                    await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
-                } else {
-                    console.log('IN ELSE CallBackID EARS view_closed', message.view.callback_id);
-
-                    if (message.view.callback_id == 'AD_Modal') {
-                        console.log('in AD_Modal Ears view_closed');
-                        
-                    }
-                    else {
-                        bot.httpBody({
-                            "response_action": "clear"
-                        });
-                    }
-                }
-            }
-            catch (err) {
-                console.log('IN Catch 617 Ears');
-                logger.log(err);
-            }
-            
-    });
+            bot.httpBody({
+                "response_action": "clear"
+            });
+        }
+    );
 
     async function opportunityFlow (bot, message, existingConn, metadata, email, mapval) {//actionName
         let refselected = metadata.refTypes;
@@ -2284,9 +2263,6 @@ module.exports = controller => {
                             });
                         } else if (message.actions[0].action_id == "editContactModal" && message.actions[0].block_id == 'editContactBlock') {
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
-                            pvt_metadata.Phone = pvt_metadata.Phone ? pvt_metadata.Phone : '';
-                            pvt_metadata.Email = pvt_metadata.Email ? pvt_metadata.Email : '';
-                            pvt_metadata.Title = pvt_metadata.Title ? pvt_metadata.Title : '';
 
                             await bot.api.views.push({
                                 trigger_id: message.trigger_id,
@@ -2388,7 +2364,7 @@ module.exports = controller => {
                             });
                         }
                     } catch (err) {
-                        console.log('...exception in getRefUseReqModal ... 1287 EARS');
+                        console.log('...exception in block_actions interactive_message_callback ... 2367 EARS');
                         logger.log(err);
                     }
                 }
