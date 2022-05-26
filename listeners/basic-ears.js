@@ -801,7 +801,10 @@ module.exports = controller => {
         }
     } 
 
-    async function refUseRequestModalWithContactInfo (bot, message) {
+    async function refUseRequestModalWithContactInfo(bot, message) {
+        console.log('VALUES EARS 805 ', message.view.state.values);
+        console.log('CONselect1 EARS 806 ', message.view.state.values.blkCon1.con_select1);
+        console.log('SELECTED Opotion EARS 806 ', message.view.state.values.blkCon1.con_select1.selected_option);
         let selConId = message.view.state.values.blkCon1.con_select1.selected_option ? message.view.state.values.blkCon1.con_select1.selected_option.value :
             message.view.state.values.blkCon2.con_select2.selected_option ? message.view.state.values.blkCon2.con_select2.selected_option.value :
             null;
