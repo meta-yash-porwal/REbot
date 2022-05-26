@@ -906,7 +906,7 @@ module.exports = controller => {
                                 "text": "Select a type",
                                 "emoji": true
                             },
-                            "options": data.activeCons
+                            "options": data.activeContacts
                         },
                         "label": {
                             "type": "plain_text",
@@ -927,7 +927,7 @@ module.exports = controller => {
                                 "text": "Select a type",
                                 "emoji": true
                             },
-                            "options": data.inactiveCons
+                            "options": data.inactiveContacts
                         },
                         "label": {
                             "type": "plain_text",
