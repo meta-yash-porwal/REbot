@@ -2143,7 +2143,7 @@ module.exports = controller => {
                                                 "action_id": "isUpdateableCon",
                                                 "options": [
                                                     {
-                                                        "value": true,
+                                                        "value": "true",
                                                         "text": {
                                                             "type": "plain_text",
                                                             "text": " "
