@@ -1779,9 +1779,14 @@ module.exports = controller => {
                         approveData.notes = pvt_metadata.Notes;
                         approveData.type = 'Approve';
                         approveData.selectedContactId = pvt_metadata.Id;
-                        approveData.isUpdate = false;
-                        submitP2PRequest(existingConn, approveData);
+                        approveData.isUpdate = pvt_metadata.isUpdateable;
 
+                        if (approveData.isUpdate) {
+                            approveData.Title = pvt_metadata.Title;
+                            approveData.Email = pvt_metadata.Email;
+                            approveData.Phone = pvt_metadata.Phone;
+                        }
+                        submitP2PRequest(existingConn, approveData);
                     } else if (message.view.callback_id == 'declineRequest') {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let approveData = {};
@@ -1790,13 +1795,16 @@ module.exports = controller => {
                         approveData.type = 'Decline';
                         submitP2PRequest(existingConn, approveData);
                     } else if (message.view.callback_id == 'refUseReqMainBlockWithContacts') {
-                        console.log('VALUES EARS 1793 ', message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options);
+                        // console.log('VALUES EARS 1793 ', message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options);
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         pvt_metadata.Title = message.view.private_metadata.conTitleBlock.conTitle.value;
                         pvt_metadata.Email = message.view.private_metadata.conEmailBlock.conEmail.value;
                         pvt_metadata.Phone = message.view.private_metadata.conPhoneBlock.conPhone.value;
-                        pvt_metadata.isUpdateable = message.view.private_metadata.isUpdateableConBlock.isUpdateableCon.selected_options;
-                        // await refUseRequestModalWithContactInfo(bot, message);
+                        pvt_metadata.isUpdateable = message.view.private_metadata.isUpdateableConBlock.isUpdateableCon.selected_options ?
+                            message.view.private_metadata.isUpdateableConBlock.isUpdateableCon.selected_options.value :
+                            false;
+                        message.view.private_metadata = JSON.stringify(pvt_metadata);
+                        await refUseRequestModalWithContactInfo(bot, message);
                     }
 
                 }
@@ -2058,6 +2066,7 @@ module.exports = controller => {
                                     },
                                     "type": "modal",
                                     "callback_id": "refUseReqMainBlockWithContacts",
+                                    "private_metadata": JSON.stringify(pvt_metadata),
                                     "close": {
                                         "type": "plain_text",
                                         "text": "Close",
@@ -2134,7 +2143,7 @@ module.exports = controller => {
                                                 "action_id": "isUpdateableCon",
                                                 "options": [
                                                     {
-                                                        "value": "true",
+                                                        "value": true,
                                                         "text": {
                                                             "type": "plain_text",
                                                             "text": " "
