@@ -1733,6 +1733,7 @@ module.exports = controller => {
                                             "emoji": true
                                         },
                                         "type": "modal",
+                                        "notify_on_close": true,
                                         "close": {
                                             "type": "plain_text",
                                             "text": "Close",
