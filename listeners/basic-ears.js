@@ -1789,6 +1789,9 @@ module.exports = controller => {
                         approveData.notes = pvt_metadata.Notes;
                         approveData.type = 'Decline';
                         submitP2PRequest(existingConn, approveData);
+                    } else if (message.view.callback_id == 'refUseReqMainBlockWithContacts') {
+                        console.log('VALUES EARS 1793 ', message.view.state.values);    
+                        // await refUseRequestModalWithContactInfo(bot, message);
                     }
 
                 }
@@ -2049,6 +2052,7 @@ module.exports = controller => {
                                         "emoji": true
                                     },
                                     "type": "modal",
+                                    "callback_id": "refUseReqMainBlockWithContacts",
                                     "close": {
                                         "type": "plain_text",
                                         "text": "Close",
@@ -2071,6 +2075,7 @@ module.exports = controller => {
                                         },
                                         {
                                             "type": "input",
+                                            "block_id": "conEmailBlock",
                                             "label": {
                                                 "type": "plain_text",
                                                 "text": "Email",
@@ -2085,6 +2090,7 @@ module.exports = controller => {
                                         },
                                         {
                                             "type": "input",
+                                            "block_id": "conPhoneBlock",
                                             "label": {
                                                 "type": "plain_text",
                                                 "text": "Phone",
@@ -2098,6 +2104,7 @@ module.exports = controller => {
                                         },
                                         {
                                             "type": "input",
+                                            "block_id": "conTitleBlock",
                                             "label": {
                                                 "type": "plain_text",
                                                 "text": "Title",
@@ -2112,6 +2119,7 @@ module.exports = controller => {
                                         },
                                         {
                                             "type": "section",
+                                            "block_id": "isUpdateableConBlock",
                                             "text": {
                                                 "type": "plain_text",
                                                 "text": "Write these changes back to the Contact record?"
