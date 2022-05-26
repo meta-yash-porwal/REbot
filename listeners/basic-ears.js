@@ -1533,7 +1533,7 @@ module.exports = controller => {
                         console.log('MESSAGE 1281 EARS', message.actions[0].block_id, message.actions[0].action_id);
 
                         if (message.actions[0].block_id == 'refUseReqMainBlock' && message.actions[0].action_id == 'refUseReqMainBlock') {
-                            // await getRefUseReqModal(existingConn, 'a0h1P000007TRDzQAO');
+                            console.log('IN refUseReqMainBlock EARS 1536');
                             console.log('RRAID EARS', message.actions[0].value);
                             let obj = await getRefUseReqModal(existingConn, message.actions[0].value);
 
@@ -1562,9 +1562,9 @@ module.exports = controller => {
                                         inactiveCons.push(entry);
                                     }
                                 });
-                                console.log('Active COntacts 1319 EARCS', activeCons);
-                                console.log('InActive COntacts 1320 EARCS', inactiveCons);
-                                console.log('MEssage Trigger ID 1321 EARCS', message.trigger_id);
+                                // console.log('Active COntacts 1319 EARCS', activeCons);
+                                // console.log('InActive COntacts 1320 EARCS', inactiveCons);
+                                // console.log('MEssage Trigger ID 1321 EARCS', message.trigger_id);
                                 let pvt_metadata = obj;
                                 pvt_metadata.rraId = message.actions[0].value;
                                 await bot.api.views.open({
@@ -1685,6 +1685,7 @@ module.exports = controller => {
                                 });
                             }
                         } else if (message.actions[0].action_id == "additionalModal" && message.actions[0].block_id == 'additionalBlock') {
+                            console.log('In Additional Modal EARS 1688');
                             let obj = await getAdditionalModal(existingConn, message.actions[0].value);
                             if (obj) {
                                 let jsonArray = [];
@@ -1717,7 +1718,7 @@ module.exports = controller => {
                                         jsonArray.push(entry);
                                     }
                                 });
-                                console.log('JSON ARRAY 1519 EARS', jsonArray);
+                                // console.log('JSON ARRAY 1519 EARS', jsonArray);
                                 await bot.api.views.push({
                                     trigger_id: message.trigger_id,
                                     view: {
@@ -1742,6 +1743,7 @@ module.exports = controller => {
                                 });
                             }
                         } else if (message.actions[0].action_id == "con_select1" && message.actions[0].block_id == 'blkCon1') {
+                            console.log('In blkCon1 & con_select1 EARS 1746');
                             let selConId = message.view.state.values.blkCon1.con_select1.selected_option.value;
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
                             let activeCons = [], inactiveCons = [];
@@ -1778,7 +1780,7 @@ module.exports = controller => {
                                 }
                             });
                             // console.log('MESSAGE con1 EARS buttonController', message);
-                            console.log("VIEW_Id EARS block_actions", message.view.id);
+                            // console.log("VIEW_Id EARS block_actions", message.view.id);
 
                             await bot.api.views.update({
                                 // trigger_id: message.trigger_id,
@@ -1981,46 +1983,11 @@ module.exports = controller => {
                                                 }
                                             ]
                                         },
-                                        // {
-                                        //     "type": "divider"
-                                        // },
-                                        // {
-                                        //     "type": "actions",
-                                        //     "block_id": "approveDeclineBlock",
-                                        //     "elements": [
-                                        //         {
-                                        //             "type": "radio_buttons",
-                                        //             "options": [
-                                        //                 {
-                                        //                     "text": {
-                                        //                         "type": "mrkdwn",
-                                        //                         "text": "*Approve*"
-                                        //                     },
-                                        //                     "value": "Approve"
-                                        //                 },
-                                        //                 {
-                                        //                     "text": {
-                                        //                         "type": "mrkdwn",
-                                        //                         "text": "*Decline*"
-                                        //                     },
-                                        //                     "value": "Decline"
-                                        //                 }
-                                        //             ],
-                                        //             "action_id": "approveDeclineRadio",
-                                        //             "initial_option": {
-                                        //                 "value": "Approve",
-                                        //                 "text": {
-                                        //                     "type": "mrkdwn",
-                                        //                     "text": "*Approve*"
-                                        //                 }
-                                        //             }
-                                        //         }
-                                        //     ]
-                                        // }
                                     ]
                                 }
                             });
                         } else if (message.actions[0].action_id == "con_select2" && message.actions[0].block_id == 'blkCon2') {
+                            console.log('In blkCon2 & con_select2 EARS 1990');
                             let selConId = message.view.state.values.blkCon2.con_select2.selected_option.value;
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
                             let activeCons = [], inactiveCons = [];
@@ -2262,6 +2229,7 @@ module.exports = controller => {
                                 }
                             });
                         } else if (message.actions[0].action_id == "editContactModal" && message.actions[0].block_id == 'editContactBlock') {
+                            console.log('In editContactModal & editContactBlock EARS 2232');
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
 
                             await bot.api.views.push({
