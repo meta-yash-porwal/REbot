@@ -1795,13 +1795,13 @@ module.exports = controller => {
                         approveData.type = 'Decline';
                         submitP2PRequest(existingConn, approveData);
                     } else if (message.view.callback_id == 'refUseReqMainBlockWithContacts') {
-                        console.log('VALUES EARS 1793 ', message.view.private_metadata);
+                        console.log('VALUES EARS 1793 ', message.view.state.values);
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
-                        pvt_metadata.Title = message.view.private_metadata.conTitleBlock.conTitle.value;
-                        pvt_metadata.Email = message.view.private_metadata.conEmailBlock.conEmail.value;
-                        pvt_metadata.Phone = message.view.private_metadata.conPhoneBlock.conPhone.value;
-                        pvt_metadata.isUpdateable = message.view.private_metadata.isUpdateableConBlock.isUpdateableCon.selected_options ?
-                            message.view.private_metadata.isUpdateableConBlock.isUpdateableCon.selected_options.value :
+                        pvt_metadata.Title = message.view.state.values.conTitleBlock.conTitle.value;
+                        pvt_metadata.Email = message.view.state.values.conEmailBlock.conEmail.value;
+                        pvt_metadata.Phone = message.view.state.values.conPhoneBlock.conPhone.value;
+                        pvt_metadata.isUpdateable = message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options ?
+                            message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options.value :
                             false;
                         message.view.private_metadata = JSON.stringify(pvt_metadata);
                         await refUseRequestModalWithContactInfo(bot, message);
