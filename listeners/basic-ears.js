@@ -562,6 +562,7 @@ module.exports = controller => {
         'view_closed',
         async (bot, message) => {
             console.log('view_closed EARS');
+            console.log("MESSAGE", message);
             bot.httpBody({
                 "response_action": "clear"
             });
