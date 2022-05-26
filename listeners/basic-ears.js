@@ -1795,7 +1795,7 @@ module.exports = controller => {
                         approveData.type = 'Decline';
                         submitP2PRequest(existingConn, approveData);
                     } else if (message.view.callback_id == 'refUseReqMainBlockWithContacts') {
-                        // console.log('VALUES EARS 1793 ', message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options);
+                        console.log('VALUES EARS 1793 ', message.view.private_metadata);
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         pvt_metadata.Title = message.view.private_metadata.conTitleBlock.conTitle.value;
                         pvt_metadata.Email = message.view.private_metadata.conEmailBlock.conEmail.value;
