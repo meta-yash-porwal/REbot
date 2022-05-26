@@ -558,19 +558,12 @@ module.exports = controller => {
         }
     );
     
-    controller.on(
-        'view_closed',
-        async (bot, message) => {
-            console.log('view_closed EARS');
-            // console.log("MESSAGE", message);
-            message.is_cleared = true;
-            bot.httpBody({
-                is_cleared: true,
-                view_id: message.root_view_id,
-                "response_action": "clear"
-            });
-        }
-    );
+    controller.on('view_closed', async (bot, message) => {
+        bot.httpBody({
+            "response_action": "clear"
+        });
+
+    });
 
     async function opportunityFlow (bot, message, existingConn, metadata, email, mapval) {//actionName
         let refselected = metadata.refTypes;
@@ -1737,7 +1730,7 @@ module.exports = controller => {
                                             "emoji": true
                                         },
                                         "type": "modal",
-                                        "notify_on_close": true,
+                                        // "notify_on_close": true,
                                         "clear_on_close": true,
                                         "close": {
                                             "type": "plain_text",
