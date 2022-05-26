@@ -562,9 +562,10 @@ module.exports = controller => {
         'view_closed',
         async (bot, message) => {
             console.log('view_closed EARS');
-            console.log("MESSAGE", message);
+            // console.log("MESSAGE", message);
             message.is_cleared = true;
             bot.httpBody({
+                is_cleared: true,
                 view_id: message.root_view_id,
                 "response_action": "clear"
             });
@@ -1737,6 +1738,7 @@ module.exports = controller => {
                                         },
                                         "type": "modal",
                                         "notify_on_close": true,
+                                        "clear_on_close": true,
                                         "close": {
                                             "type": "plain_text",
                                             "text": "Close",
