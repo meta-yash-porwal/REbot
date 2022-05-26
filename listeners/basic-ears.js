@@ -1790,7 +1790,12 @@ module.exports = controller => {
                         approveData.type = 'Decline';
                         submitP2PRequest(existingConn, approveData);
                     } else if (message.view.callback_id == 'refUseReqMainBlockWithContacts') {
-                        console.log('VALUES EARS 1793 ', message.view.state.values);    
+                        console.log('VALUES EARS 1793 ', message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options);
+                        let pvt_metadata = JSON.parse(message.view.private_metadata);
+                        pvt_metadata.Title = message.view.private_metadata.conTitleBlock.conTitle.value;
+                        pvt_metadata.Email = message.view.private_metadata.conEmailBlock.conEmail.value;
+                        pvt_metadata.Phone = message.view.private_metadata.conPhoneBlock.conPhone.value;
+                        pvt_metadata.isUpdateable = message.view.private_metadata.isUpdateableConBlock.isUpdateableCon.selected_options;
                         // await refUseRequestModalWithContactInfo(bot, message);
                     }
 
