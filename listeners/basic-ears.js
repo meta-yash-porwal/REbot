@@ -565,7 +565,7 @@ module.exports = controller => {
             console.log("MESSAGE", message);
             message.is_cleared = true;
             bot.httpBody({
-                view_id: 'V03HFKG26SD',
+                view_id: root_view_id,
                 "response_action": "clear"
             });
         }
