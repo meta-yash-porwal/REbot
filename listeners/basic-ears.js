@@ -803,17 +803,18 @@ module.exports = controller => {
 
     async function refUseRequestModalWithContactInfo(bot, message) {
         console.log('VALUES EARS 805 ', message.view.private_metadata);
-        console.log("MESSAGE ERAS 806 ", JSON.stringify(message));
+        // console.log("MESSAGE ERAS 806 ", JSON.stringify(message));
         let pvt_metadata = JSON.parse(message.view.private_metadata);
+        let selConId;
 
         if (message.view.state.values.blkCon1 || message.view.state.values.blkCon2) {
             console.log('In if condition of AD_MODAL');
-            let selConId = message.view.state.values.blkCon1.con_select1.selected_option ? message.view.state.values.blkCon1.con_select1.selected_option.value :
+            selConId = message.view.state.values.blkCon1.con_select1.selected_option ? message.view.state.values.blkCon1.con_select1.selected_option.value :
                 message.view.state.values.blkCon2.con_select2.selected_option ? message.view.state.values.blkCon2.con_select2.selected_option.value :
                     null;
             pvt_metadata.Id = selConId;
         }
-        data = forActiveInactiveCons(pvt_metadata.Contacts, pvt_metadata.Id);
+        data = forActiveInactiveCons(pvt_metadata.Contacts, selConId);
         pvt_metadata.Last_Used = data.Last_Used;
         pvt_metadata.Phone = data.Phone;
         pvt_metadata.Status = data.Status;
@@ -1802,7 +1803,8 @@ module.exports = controller => {
                         approveData.type = 'Decline';
                         submitP2PRequest(existingConn, approveData);
                     } else if (message.view.callback_id == 'refUseReqMainBlockWithContacts') {
-                        console.log('VALUES EARS 1793 ', JSON.stringify(message));
+                        // console.log('VALUES EARS 1793 ', JSON.stringify(message));
+                        
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         pvt_metadata.Title = message.view.state.values.conTitleBlock.conTitle.value;
                         pvt_metadata.Email = message.view.state.values.conEmailBlock.conEmail.value;
