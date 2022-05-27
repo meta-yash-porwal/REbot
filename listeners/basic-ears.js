@@ -813,7 +813,7 @@ module.exports = controller => {
                     null;
             // pvt_metadata.Id = selConId;
         // }
-        data = forActiveInactiveCons(pvt_metadata.Contacts, pvt_metadata.Id);
+        data = forActiveInactiveCons(pvt_metadata.Contacts, selConId);
         pvt_metadata.Last_Used = data.Last_Used;
         pvt_metadata.Phone = data.Phone;
         pvt_metadata.Status = data.Status;
