@@ -805,22 +805,15 @@ module.exports = controller => {
         console.log('VALUES EARS 805 ', message.view.private_metadata);
         // console.log("MESSAGE ERAS 806 ", JSON.stringify(message));
         let pvt_metadata = JSON.parse(message.view.private_metadata);
-        let selConId;
 
         if (message.view.state.values.blkCon1 || message.view.state.values.blkCon2) {
             console.log('In if condition of AD_MODAL');
-            selConId = message.view.state.values.blkCon1.con_select1.selected_option ? message.view.state.values.blkCon1.con_select1.selected_option.value :
+            let selConId = message.view.state.values.blkCon1.con_select1.selected_option ? message.view.state.values.blkCon1.con_select1.selected_option.value :
                 message.view.state.values.blkCon2.con_select2.selected_option ? message.view.state.values.blkCon2.con_select2.selected_option.value :
                     null;
+            pvt_metadata = setSelectedContactInfo(pvt_metadata, selConId);
             pvt_metadata.Id = selConId;
         }
-        data = forActiveInactiveCons(pvt_metadata.Contacts, selConId);
-        pvt_metadata.Last_Used = data.Last_Used;
-        pvt_metadata.Phone = data.Phone;
-        pvt_metadata.Status = data.Status;
-        pvt_metadata.Email = data.Email;
-        pvt_metadata.Title = data.Title;
-        pvt_metadata.Name = data.Name;
 
         await bot.api.views.update({
             view_id: message.view.id,
@@ -914,7 +907,7 @@ module.exports = controller => {
                                 "text": "Select a type",
                                 "emoji": true
                             },
-                            "options": data.activeContacts
+                            "options": pvt_metadata.activeContacts
                         },
                         "label": {
                             "type": "plain_text",
@@ -935,7 +928,7 @@ module.exports = controller => {
                                 "text": "Select a type",
                                 "emoji": true
                             },
-                            "options": data.inactiveContacts
+                            "options": pvt_metadata.inactiveContacts
                         },
                         "label": {
                             "type": "plain_text",
@@ -1078,70 +1071,53 @@ module.exports = controller => {
         return ref;
     }
 
-    function forActiveInactiveCons(contcs, selectedContactId) {
-        let contacts = {};
+    function forActiveInactiveCons(metadata) {
         let activeCons = [], inactiveCons = [];
+
+            metadata.Contacts.forEach(con => {
+
+                if (con.Status == 'Active') {
+                    let entry = {
+                        "text": {
+                            "type": "plain_text",
+                            "text": con.Name
+                        },
+                        "value": con.id
+                    }
+                    activeCons.push(entry);
+                } else {
+                    let entry = {
+                        "text": {
+                            "type": "plain_text",
+                            "text": con.Name
+                        },
+                        "value": con.id
+                    }
+                    inactiveCons.push(entry);
+                }
+            });
+        metadata.activeContacts = activeCons;
+        metadata.inactiveContacts = inactiveCons;
+        return metadata;
+    }
+
+    function setSelectedContactInfo(metadata, selectedContactId) {
 
         if (selectedContactId) {
 
-            contcs.forEach(con => {
+            metadata.Contacts.forEach(con => {
 
                 if (con.id == selectedContactId) {
-                    contacts.Name = con.Name;
-                    contacts.Phone = con.Phone;
-                    contacts.Email = con.Email;
-                    contacts.Title = con.Title;
-                    contacts.Status = con.Status;
-                    contacts.Last_Used = con.Last_Used ? con.Last_Used : ' ';
-                }
-
-                if (con.Status == 'Active') {
-                    let entry = {
-                        "text": {
-                            "type": "plain_text",
-                            "text": con.Name
-                        },
-                        "value": con.id
-                    }
-                    activeCons.push(entry);
-                } else {
-                    let entry = {
-                        "text": {
-                            "type": "plain_text",
-                            "text": con.Name
-                        },
-                        "value": con.id
-                    }
-                    inactiveCons.push(entry);
-                }
-            });
-        } else {
-            contcs.forEach(con => {
-
-                if (con.Status == 'Active') {
-                    let entry = {
-                        "text": {
-                            "type": "plain_text",
-                            "text": con.Name
-                        },
-                        "value": con.id
-                    }
-                    activeCons.push(entry);
-                } else {
-                    let entry = {
-                        "text": {
-                            "type": "plain_text",
-                            "text": con.Name
-                        },
-                        "value": con.id
-                    }
-                    inactiveCons.push(entry);
+                    metadata.Name = con.Name;
+                    metadata.Phone = con.Phone;
+                    metadata.Email = con.Email;
+                    metadata.Title = con.Title;
+                    metadata.Status = con.Status;
+                    metadata.Last_Used = con.Last_Used ? con.Last_Used : ' ';
                 }
             });
         }
-        contacts.activeContacts = activeCons;
-        contacts.inactiveContacts = inactiveCons;
-        return contacts;
+        return metadata;
     }
     
     controller.on(
@@ -1804,7 +1780,7 @@ module.exports = controller => {
                         submitP2PRequest(existingConn, approveData);
                     } else if (message.view.callback_id == 'refUseReqMainBlockWithContacts') {
                         // console.log('VALUES EARS 1793 ', JSON.stringify(message));
-                        
+
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         pvt_metadata.Title = message.view.state.values.conTitleBlock.conTitle.value;
                         pvt_metadata.Email = message.view.state.values.conEmailBlock.conEmail.value;
@@ -1844,34 +1820,10 @@ module.exports = controller => {
                             let obj = await getRefUseReqModal(existingConn, message.actions[0].value);
 
                             if (obj) {
-                                activeCons = [];
-                                inactiveCons = [];
-                                obj.Contacts.forEach(con => {
-                                    
-                                    if (con.Status == 'Active') {
-                                        let entry = {
-                                            "text": {
-                                                "type": "plain_text",
-                                                "text": con.Name
-                                            },
-                                            "value": con.id
-                                        }
-                                        activeCons.push(entry);
-                                    } else {
-                                        let entry = {
-                                            "text": {
-                                                "type": "plain_text",
-                                                "text": con.Name
-                                            },
-                                            "value": con.id
-                                        }
-                                        inactiveCons.push(entry);
-                                    }
-                                });
+                                let pvt_metadata = forActiveInactiveCons(obj);
                                 // console.log('Active COntacts 1319 EARCS', activeCons);
                                 // console.log('InActive COntacts 1320 EARCS', inactiveCons);
                                 // console.log('MEssage Trigger ID 1321 EARCS', message.trigger_id);
-                                let pvt_metadata = obj;
                                 pvt_metadata.rraId = message.actions[0].value;
                                 await bot.api.views.open({
                                     trigger_id: message.trigger_id,
@@ -1929,7 +1881,7 @@ module.exports = controller => {
                                                         "text": "Select a type",
                                                         "emoji": true
                                                     },
-                                                    "options": activeCons
+                                                    "options": obj.activeContacts
                                                 },
                                                 "label": {
                                                     "type": "plain_text",
@@ -1950,7 +1902,7 @@ module.exports = controller => {
                                                         "text": "Select a type",
                                                         "emoji": true
                                                     },
-                                                    "options": inactiveCons
+                                                    "options": obj.inactiveContacts
                                                 },
                                                 "label": {
                                                     "type": "plain_text",
