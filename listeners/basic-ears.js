@@ -822,7 +822,7 @@ module.exports = controller => {
         pvt_metadata.Name = data.Name;
 
         await bot.api.views.update({
-            view_id: message.container.view_id,
+            view_id: message.root_view_id,
             view: {
                 "type": "modal",
                 "callback_id": "AD_Modal",
