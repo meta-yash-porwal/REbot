@@ -802,9 +802,7 @@ module.exports = controller => {
     } 
 
     async function refUseRequestModalWithContactInfo(bot, message) {
-        console.log('VALUES EARS 805 ', message.view.state.values);
-        console.log('CONselect1 EARS 806 ', message);
-        console.log('SELECTED Opotion EARS 806 ', message.view);
+        console.log('VALUES EARS 805 ', message.view.private_metadata);
         let pvt_metadata = JSON.parse(message.view.private_metadata);
 
         if (message.callback_id === "AD_Modal") {
