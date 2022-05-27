@@ -961,7 +961,7 @@ module.exports = controller => {
                                 "emoji": true
                             },
                             "style": "primary",
-                            "value": selConId
+                            "value": pvt_metadata.Id
                         }
                     },
                     {
