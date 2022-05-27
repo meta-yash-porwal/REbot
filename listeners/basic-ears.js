@@ -805,11 +805,15 @@ module.exports = controller => {
         console.log('VALUES EARS 805 ', message.view.state.values);
         console.log('CONselect1 EARS 806 ', message);
         console.log('SELECTED Opotion EARS 806 ', message.view);
-        let selConId = message.view.state.values.blkCon1.con_select1.selected_option ? message.view.state.values.blkCon1.con_select1.selected_option.value :
-            message.view.state.values.blkCon2.con_select2.selected_option ? message.view.state.values.blkCon2.con_select2.selected_option.value :
-            null;
         let pvt_metadata = JSON.parse(message.view.private_metadata);
-        data = forActiveInactiveCons(pvt_metadata.Contacts, selConId);
+
+        if (message.callback_id === "AD_Modal") {
+            let selConId = message.view.state.values.blkCon1.con_select1.selected_option ? message.view.state.values.blkCon1.con_select1.selected_option.value :
+                message.view.state.values.blkCon2.con_select2.selected_option ? message.view.state.values.blkCon2.con_select2.selected_option.value :
+                    null;
+            pvt_metadata.Id = selConId;
+        }
+        data = forActiveInactiveCons(pvt_metadata.Contacts, pvt_metadata.Id);
         pvt_metadata.Last_Used = data.Last_Used;
         pvt_metadata.Phone = data.Phone;
         pvt_metadata.Status = data.Status;
