@@ -806,7 +806,7 @@ module.exports = controller => {
         console.log("MESSAGE ERAS 806 ", JSON.stringify(message));
         let pvt_metadata = JSON.parse(message.view.private_metadata);
 
-        if (message.callback_id === "AD_Modal") {
+        if (message.callback_id == "AD_Modal") {
             console.log('In if condition of AD_MODAL');
             let selConId = message.view.state.values.blkCon1.con_select1.selected_option ? message.view.state.values.blkCon1.con_select1.selected_option.value :
                 message.view.state.values.blkCon2.con_select2.selected_option ? message.view.state.values.blkCon2.con_select2.selected_option.value :
@@ -1811,7 +1811,7 @@ module.exports = controller => {
                             message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options.value :
                             false;
                         message.view.private_metadata = JSON.stringify(pvt_metadata);
-                        await refUseRequestModalWithContactInfo(bot, message);
+                        // await refUseRequestModalWithContactInfo(bot, message);
                     }
 
                 }
