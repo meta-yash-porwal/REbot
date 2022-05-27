@@ -815,8 +815,8 @@ module.exports = controller => {
             pvt_metadata.Id = selConId;
         }
 
-        await bot.api.views.update({
-            view_id: message.view.id,
+        await bot.api.views.push({
+            trigger_id: message.trigger_id,
             view: {
                 "type": "modal",
                 "callback_id": "AD_Modal",
@@ -1825,6 +1825,7 @@ module.exports = controller => {
                                 // console.log('InActive COntacts 1320 EARCS', inactiveCons);
                                 // console.log('MEssage Trigger ID 1321 EARCS', message.trigger_id);
                                 pvt_metadata.rraId = message.actions[0].value;
+                                pvt_metadata.isUpdateable = false;
                                 await bot.api.views.open({
                                     trigger_id: message.trigger_id,
                                     view: {
