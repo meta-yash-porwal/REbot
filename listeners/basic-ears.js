@@ -1998,10 +1998,14 @@ module.exports = controller => {
                             false;
                         // message.view.private_metadata = JSON.stringify(pvt_metadata);
                         // refUseRequestModalWithContactInfo(bot, message);
+                        bot.httpBody({
+                            "response_action": "clear"
+                        });
 
                         if (pvt_metadata.activeContacts && pvt_metadata.inactiveContacts) {
                             console.log('triggerID', message);
-                            await bot.api.views.push({
+
+                            await bot.api.views.open({
                                 trigger_id: message.trigger_id,
                                 view: {
                                     "type": "modal",
@@ -2229,7 +2233,7 @@ module.exports = controller => {
                                 tmpCons = pvt_metadata.inactiveContacts;
                                 label = "or add another contact to the reference program";
                             }
-                            await bot.api.views.push({
+                            await bot.api.views.open({
                                 trigger_id: message.trigger_id,
                                 view: {
                                     "type": "modal",
