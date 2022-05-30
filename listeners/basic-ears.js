@@ -2005,6 +2005,7 @@ module.exports = controller => {
                         if (pvt_metadata.activeContacts && pvt_metadata.inactiveContacts) {
                             console.log('triggerID', message);
 
+
                             await bot.api.views.open({
                                 trigger_id: message.trigger_id,
                                 view: {
@@ -2099,13 +2100,13 @@ module.exports = controller => {
                                                     "emoji": true
                                                 },
                                                 "options": pvt_metadata.activeContacts,
-                                                "initial_option": {
-                                                    "value": pvt_metadata.Id,
-                                                    "text": {
-                                                        "type": "plain_text",
-                                                        "text": pvt_metadata.Name
-                                                    }
-                                                },
+                                                // "initial_option": {
+                                                //     "value": pvt_metadata.Id,
+                                                //     "text": {
+                                                //         "type": "plain_text",
+                                                //         "text": pvt_metadata.Name
+                                                //     }
+                                                // },
                                             },
                                             "label": {
                                                 "type": "plain_text",
