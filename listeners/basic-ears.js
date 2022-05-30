@@ -802,7 +802,7 @@ module.exports = controller => {
     } 
 
     async function refUseRequestModalWithContactInfo(bot, message) {
-        console.log('VALUES EARS 805 ', message);
+        console.log('VALUES EARS 805 ', message.view.private_metadata);
         // console.log("MESSAGE ERAS 806 ", JSON.stringify(message));
         let pvt_metadata = JSON.parse(message.view.private_metadata);
 
@@ -1741,6 +1741,7 @@ module.exports = controller => {
                         });
                     } else if (message.view.callback_id == 'AD_Modal') {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
+                        console.log('PRIVATE data EARS 1744 Approve', message.view.private_metadata);
                         let selCon;
 
                         if (message.view.state.values.blkCon1 || message.view.state.values.blkCon2) {
