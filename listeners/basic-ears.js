@@ -816,6 +816,7 @@ module.exports = controller => {
         }
         
         if (pvt_metadata.activeContacts && pvt_metadata.inactiveContacts) {
+            console.log('pvtDATA ', pvt_metadata);
             await bot.api.views.update({
                 view_id: message.view.id,
                 view: {
