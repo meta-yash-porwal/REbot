@@ -1741,10 +1741,14 @@ module.exports = controller => {
                         });
                     } else if (message.view.callback_id == 'AD_Modal') {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
-                        let selCon = message.view.state?.values?.blkCon1?.con_select1?.selected_option ?
-                            message.view.state.values.blkCon1.con_select1.selected_option.value :
-                            message.view.state?.values?.blkCon2?.con_select2?.selected_option ?
-                                message.view.state.values.blkCon2.con_select2.selected_option.value : '';
+                        let selCon;
+
+                        if (message.view.state.values.blkCon1 || message.view.state.values.blkCon2) {
+                            selCon = message.view.state.values.blkCon1.con_select1.selected_option ?
+                                message.view.state.values.blkCon1.con_select1.selected_option.value :
+                                message.view.state.values.blkCon2.con_select2.selected_option ?
+                                    message.view.state.values.blkCon2.con_select2.selected_option.value : '';
+                        }
                         let requestStatus = message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value;
                         console.log('APPROVED', message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value);
 
