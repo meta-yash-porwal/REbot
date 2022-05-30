@@ -2000,6 +2000,7 @@ module.exports = controller => {
                         // refUseRequestModalWithContactInfo(bot, message);
 
                         if (pvt_metadata.activeContacts && pvt_metadata.inactiveContacts) {
+                            console.log('triggerID', message);
                             await bot.api.views.push({
                                 trigger_id: message.trigger_id,
                                 view: {
