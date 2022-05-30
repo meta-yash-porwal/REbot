@@ -2094,13 +2094,13 @@ module.exports = controller => {
                                                     "emoji": true
                                                 },
                                                 "options": pvt_metadata.activeContacts,
-                                                "initial_options": [{
+                                                "initial_option": {
                                                     "value": pvt_metadata.Id,
                                                     "text": {
                                                         "type": "plain_text",
                                                         "text": pvt_metadata.Name
                                                     }
-                                                }],
+                                                },
                                             },
                                             "label": {
                                                 "type": "plain_text",
@@ -2122,13 +2122,13 @@ module.exports = controller => {
                                                     "emoji": true
                                                 },
                                                 "options": pvt_metadata.inactiveContacts,
-                                                "initial_options": [{
+                                                "initial_option": {
                                                     "value": pvt_metadata.Id,
                                                     "text": {
                                                         "type": "plain_text",
                                                         "text": pvt_metadata.Name
                                                     }
-                                                }],
+                                                },
                                             },
                                             "label": {
                                                 "type": "plain_text",
@@ -2322,13 +2322,13 @@ module.exports = controller => {
                                                     "emoji": true
                                                 },
                                                 "options": tmpCons,
-                                                "initial_options": [{
+                                                "initial_option": {
                                                     "value": pvt_metadata.Id,
                                                     "text": {
                                                         "type": "plain_text",
                                                         "text": pvt_metadata.Name
                                                     }
-                                                }],
+                                                },
                                             },
                                             "label": {
                                                 "type": "plain_text",
