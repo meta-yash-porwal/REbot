@@ -2002,9 +2002,8 @@ module.exports = controller => {
                         if (pvt_metadata.activeContacts && pvt_metadata.inactiveContacts) {
                             console.log('triggerID', message);
 
-
-                            await bot.api.views.push({
-                                trigger_id: message.trigger_id,
+                            bot.httpBody({
+                                response_action: 'update',
                                 view: {
                                     "type": "modal",
                                     "callback_id": "AD_Modal",
@@ -2231,8 +2230,8 @@ module.exports = controller => {
                                 tmpCons = pvt_metadata.inactiveContacts;
                                 label = "or add another contact to the reference program";
                             }
-                            await bot.api.views.open({
-                                trigger_id: message.trigger_id,
+                            bot.httpBody({
+                                response_action: 'update',
                                 view: {
                                     "type": "modal",
                                     "callback_id": "AD_Modal",
