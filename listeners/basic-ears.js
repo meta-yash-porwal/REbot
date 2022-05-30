@@ -839,7 +839,7 @@ module.exports = controller => {
                         "text": "Reference Use Request",
                         "emoji": true
                     },
-                    "submit_disabled": true,
+                    // "submit_disabled": true,
                     "blocks": [
                         {
                             "type": "section",
@@ -1038,7 +1038,7 @@ module.exports = controller => {
                     "notify_on_close": true,
                     "clear_on_close": true,
                     "private_metadata": JSON.stringify(pvt_metadata),
-                    "submit_disabled": true,
+                    // "submit_disabled": true,
                     "submit": {
                         "type": "plain_text",
                         "text": "Next",
@@ -2040,7 +2040,7 @@ module.exports = controller => {
                                                 "callback_id": "AD_Modal",
                                                 "notify_on_close": true,
                                                 "clear_on_close": true,
-                                                "submit_disabled": true,
+                                                // "submit_disabled": true,
                                                 "private_metadata": JSON.stringify(pvt_metadata),
                                                 "submit": {
                                                     "type": "plain_text",
@@ -2168,7 +2168,7 @@ module.exports = controller => {
                                                 "notify_on_close": true,
                                                 "clear_on_close": true,
                                                 "private_metadata": JSON.stringify(pvt_metadata),
-                                                "submit_disabled": true,
+                                                // "submit_disabled": true,
                                                 "submit": {
                                                     "type": "plain_text",
                                                     "text": "Next",
