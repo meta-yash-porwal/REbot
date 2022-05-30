@@ -817,7 +817,7 @@ module.exports = controller => {
         
         if (pvt_metadata.activeContacts && pvt_metadata.inactiveContacts) {
             await bot.api.views.update({
-                view_id: message.container.view_id,
+                view_id: message.view.id,
                 view: {
                     "type": "modal",
                     "callback_id": "AD_Modal",
@@ -1031,7 +1031,7 @@ module.exports = controller => {
                 label = "or add another contact to the reference program";
             }
             await bot.api.views.update({
-                view_id: message.container.view_id,
+                view_id: message.view.id,
                 view: {
                     "type": "modal",
                     "callback_id": "AD_Modal",
