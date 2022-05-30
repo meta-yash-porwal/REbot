@@ -1998,15 +1998,12 @@ module.exports = controller => {
                             false;
                         // message.view.private_metadata = JSON.stringify(pvt_metadata);
                         // refUseRequestModalWithContactInfo(bot, message);
-                        bot.httpBody({
-                            "response_action": "clear"
-                        });
 
                         if (pvt_metadata.activeContacts && pvt_metadata.inactiveContacts) {
                             console.log('triggerID', message);
 
 
-                            await bot.api.views.open({
+                            await bot.api.views.push({
                                 trigger_id: message.trigger_id,
                                 view: {
                                     "type": "modal",
