@@ -2331,7 +2331,7 @@ module.exports = controller => {
                                             ]
                                         }
                                     });
-                                }
+                                } 
                             }
                         } else if (message.actions[0].action_id == "additionalModal" && message.actions[0].block_id == 'additionalBlock') {
                             console.log('In Additional Modal EARS 1688');
