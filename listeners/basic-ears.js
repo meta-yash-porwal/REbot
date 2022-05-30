@@ -2124,13 +2124,13 @@ module.exports = controller => {
                                                     "emoji": true
                                                 },
                                                 "options": pvt_metadata.inactiveContacts,
-                                                "initial_option": {
-                                                    "value": pvt_metadata.Id,
-                                                    "text": {
-                                                        "type": "plain_text",
-                                                        "text": pvt_metadata.Name
-                                                    }
-                                                },
+                                                // "initial_option": {
+                                                //     "value": pvt_metadata.Id,
+                                                //     "text": {
+                                                //         "type": "plain_text",
+                                                //         "text": pvt_metadata.Name
+                                                //     }
+                                                // },
                                             },
                                             "label": {
                                                 "type": "plain_text",
