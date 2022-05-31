@@ -1880,7 +1880,7 @@ module.exports = controller => {
                             bot.httpBody({
                                 "response_action": "errors",
                                 "errors": {
-                                    "blkCon1": "You may not select a due date in the past"
+                                    "blkCon1": "Please select a contact"
                                 }
                             });
                         }
@@ -2806,7 +2806,6 @@ module.exports = controller => {
                                                 "notify_on_close": true,
                                                 "clear_on_close": true,
                                                 "private_metadata": JSON.stringify(pvt_metadata),
-                                                // "submit_disabled": true,
                                                 "submit": {
                                                     "type": "plain_text",
                                                     "text": "Next",
@@ -2844,7 +2843,7 @@ module.exports = controller => {
                                                     },
                                                     {
                                                         "type": "input",
-                                                        "optional": true,
+                                                        "optional": false,
                                                         "block_id": "blkCon1",
                                                         "dispatch_action": true,
                                                         "element": {
@@ -2894,8 +2893,9 @@ module.exports = controller => {
                                                 ]
                                             }
                                         });
-                                    }
+                                    } 
                                 } else {
+                                    let pvt_metadata = obj;
                                     pvt_metadata.rraId = message.actions[0].value;
                                     pvt_metadata.isUpdateable = false;
 
