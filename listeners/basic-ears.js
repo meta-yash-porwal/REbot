@@ -1758,7 +1758,7 @@ module.exports = controller => {
                         }
                         let requestStatus;
 
-                        if (message.view.state.values.approveDeclineBlock && message.view.state.values.approveDeclineBlock.approveDeclineRadio) {
+                        if (message.view.state.values.approveDeclineBlock && message.view.state.values.approveDeclineBlock.approveDeclineRadio && message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option) {
                             requestStatus = message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value;
                         }
                         console.log('APPROVED', message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value);
