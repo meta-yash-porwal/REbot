@@ -2946,6 +2946,42 @@ module.exports = controller => {
                                                     "type": "divider"
                                                 },
                                                 {
+                                                    "type": "actions",
+                                                    "block_id": "approveDeclineBlock",
+                                                    "elements": [
+                                                        {
+                                                            "type": "radio_buttons",
+                                                            "options": [
+                                                                {
+                                                                    "text": {
+                                                                        "type": "mrkdwn",
+                                                                        "text": "*Approve*"
+                                                                    },
+                                                                    "value": "Approve"
+                                                                },
+                                                                {
+                                                                    "text": {
+                                                                        "type": "mrkdwn",
+                                                                        "text": "*Decline*"
+                                                                    },
+                                                                    "value": "Decline"
+                                                                }
+                                                            ],
+                                                            "action_id": "approveDeclineRadio",
+                                                            "initial_option": {
+                                                                "value": "Approve",
+                                                                "text": {
+                                                                    "type": "mrkdwn",
+                                                                    "text": "*Approve*"
+                                                                }
+                                                            }
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "divider"
+                                                },
+                                                {
                                                     "type": "section",
                                                     "fields": [
                                                         {
