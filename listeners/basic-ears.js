@@ -1754,7 +1754,7 @@ module.exports = controller => {
                         let requestStatus = message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value;
                         console.log('APPROVED', message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value);
 
-                        if ((selCon || pvt_metadata.ApproveWithoutContact) && requestStatus === "Approve") {
+                        if (selCon && requestStatus === "Approve") {
                             pvt_metadata.Id = selCon;
                             bot.httpBody({
                                 response_action: 'update',
@@ -1834,8 +1834,10 @@ module.exports = controller => {
                                     ]
                                 }
                             });
-                        } else if ((selCon || pvt_metadata.ApproveWithoutContact) && requestStatus === "Decline") {
+                        } else if ((selCon || pvt_metadata.ApproveWithoutContact) && (requestStatus === "Decline" || requestStatus === "Approve")) {
                             console.log('In DECLINE NOTES MODAL ears 1389');
+                            let popup = requestStatus === "Approve" ? "approvePopup" : "declinePopup";
+                            let text = requestStatus === "Approve" ? "Approve" : "Decline";
                             pvt_metadata.Id = selCon;
                             bot.httpBody({
                                 response_action: 'update',
@@ -1847,12 +1849,12 @@ module.exports = controller => {
                                     },
                                     "submit": {
                                         "type": "plain_text",
-                                        "text": "Decline",
+                                        "text": text,
                                         "emoji": true
                                     },
                                     "type": "modal",
                                     "private_metadata": JSON.stringify(pvt_metadata),
-                                    "callback_id": "declinePopup",
+                                    "callback_id": popup,
                                     "close": {
                                         "type": "plain_text",
                                         "text": "Cancel",
