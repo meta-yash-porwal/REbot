@@ -1756,9 +1756,11 @@ module.exports = controller => {
                                 message.view.state.values.blkCon2.con_select2.selected_option ?
                                     message.view.state.values.blkCon2.con_select2.selected_option.value : '';
                         }
-                        let requestStatus = message.view.state.values.approveDeclineBlock.approveDeclineRadio ?
-                            message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value :
-                            '';
+                        let requestStatus;
+
+                        if (message.view.state.values.approveDeclineBlock && message.view.state.values.approveDeclineBlock.approveDeclineRadio) {
+                            requestStatus = message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value;
+                        }
                         console.log('APPROVED', message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value);
 
                         if (selCon && requestStatus === "Approve") {
