@@ -2015,7 +2015,7 @@ module.exports = controller => {
                         pvt_metadata.Phone = message.view.state.values.conPhoneBlock && message.view.state.values.conPhoneBlock.conPhone
                             ? message.view.state.values.conPhoneBlock.conPhone.value : pvt_metadata.Phone;
                         console.log('Before isUpdateable in EARS with COntact Section', message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options);
-                        pvt_metadata.isUpdateable = message.view.state.values.isUpdateableConBlock.isUpdateableCon && message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options ?
+                        pvt_metadata.isUpdateable = message.view.state.values.isUpdateableConBlock.isUpdateableCon && message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options[0] ?
                             message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options[0].value :
                             false;
                         console.log('pvt_metadata.isUpdateable', pvt_metadata.isUpdateable);
