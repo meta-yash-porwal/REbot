@@ -1756,11 +1756,8 @@ module.exports = controller => {
                                 message.view.state.values.blkCon2.con_select2.selected_option ?
                                     message.view.state.values.blkCon2.con_select2.selected_option.value : '';
                         }
-                        let requestStatus;
-
-                        if (message.view.state.values.approveDeclineBlock && message.view.state.values.approveDeclineBlock.approveDeclineRadio) {
-                            requestStatus = message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value;
-                        }
+                        let requestStatus = message.view.state.values.approveDeclineBlock && message.view.state.values.approveDeclineBlock.approveDeclineRadio
+                            ? message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value : "";
                         // console.log('APPROVED', message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value);
 
                         if (selCon && requestStatus === "Approve") {
@@ -2008,9 +2005,9 @@ module.exports = controller => {
                         // console.log('VALUES EARS 1793 ', JSON.stringify(message));
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         console.log('HELLO MetaData', pvt_metadata.isUpdateable);
-                        pvt_metadata.Title = message.view.state.values.conTitleBlock.conTitle.value;
-                        pvt_metadata.Email = message.view.state.values.conEmailBlock.conEmail.value;
-                        pvt_metadata.Phone = message.view.state.values.conPhoneBlock.conPhone.value;
+                        pvt_metadata.Title = message.view.state.values.conTitleBlock ? message.view.state.values.conTitleBlock.conTitle.value : pvt_metadata.Title;
+                        pvt_metadata.Email = message.view.state.values.conEmailBlock ? message.view.state.values.conEmailBlock.conEmail.value : pvt_metadata.Email;
+                        pvt_metadata.Phone = message.view.state.values.conPhoneBlock ? message.view.state.values.conPhoneBlock.conPhone.value : pvt_metadata.Phone;
                         pvt_metadata.isUpdateable = message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options ?
                             message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options[0].value :
                             false;
