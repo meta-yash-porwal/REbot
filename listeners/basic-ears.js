@@ -1991,6 +1991,9 @@ module.exports = controller => {
                             }
                         }
                         submitP2PRequest(existingConn, approveData);
+                        bot.httpBody({
+                            "response_action": "clear"
+                        });
                     } else if (message.view.callback_id == 'declineRequest') {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let approveData = {};
@@ -1998,6 +2001,9 @@ module.exports = controller => {
                         approveData.notes = pvt_metadata.Notes;
                         approveData.type = 'Decline';
                         submitP2PRequest(existingConn, approveData);
+                        bot.httpBody({
+                            "response_action": "clear"
+                        });
                     } else if (message.view.callback_id == 'refUseReqMainBlockWithContacts') {
                         // console.log('VALUES EARS 1793 ', JSON.stringify(message));
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
