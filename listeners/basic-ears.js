@@ -2013,7 +2013,7 @@ module.exports = controller => {
                         pvt_metadata.isUpdateable = message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options ?
                             message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options.value :
                             false;
-                        console.log("MEssage view EARS 2016 ", message.view);
+                        console.log("MEssage view EARS 2016 ", message.view.state.values.isUpdateableConBlock);
                         // message.view.private_metadata = JSON.stringify(pvt_metadata);
                         // refUseRequestModalWithContactInfo(bot, message);
 
