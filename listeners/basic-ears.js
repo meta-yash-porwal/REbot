@@ -2005,9 +2005,12 @@ module.exports = controller => {
                         // console.log('VALUES EARS 1793 ', JSON.stringify(message));
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         console.log('HELLO MetaData', pvt_metadata.isUpdateable);
-                        pvt_metadata.Title = message.view.state.values.conTitleBlock ? message.view.state.values.conTitleBlock.conTitle.value : pvt_metadata.Title;
-                        pvt_metadata.Email = message.view.state.values.conEmailBlock ? message.view.state.values.conEmailBlock.conEmail.value : pvt_metadata.Email;
-                        pvt_metadata.Phone = message.view.state.values.conPhoneBlock ? message.view.state.values.conPhoneBlock.conPhone.value : pvt_metadata.Phone;
+                        pvt_metadata.Title = message.view.state.values.conTitleBlock && message.view.state.values.conTitleBlock.conTitle
+                            ? message.view.state.values.conTitleBlock.conTitle.value : pvt_metadata.Title;
+                        pvt_metadata.Email = message.view.state.values.conEmailBlock && message.view.state.values.conEmailBlock.conEmail
+                            ? message.view.state.values.conEmailBlock.conEmail.value : pvt_metadata.Email;
+                        pvt_metadata.Phone = message.view.state.values.conPhoneBlock && message.view.state.values.conPhoneBlock.conPhone
+                            ? message.view.state.values.conPhoneBlock.conPhone.value : pvt_metadata.Phone;
                         pvt_metadata.isUpdateable = message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options ?
                             message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options[0].value :
                             false;
