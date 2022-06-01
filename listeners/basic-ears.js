@@ -2007,13 +2007,14 @@ module.exports = controller => {
                     } else if (message.view.callback_id == 'refUseReqMainBlockWithContacts') {
                         // console.log('VALUES EARS 1793 ', JSON.stringify(message));
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
+                        console.log('HELLO MetaData', pvt_metadata);
                         pvt_metadata.Title = message.view.state.values.conTitleBlock.conTitle.value;
                         pvt_metadata.Email = message.view.state.values.conEmailBlock.conEmail.value;
                         pvt_metadata.Phone = message.view.state.values.conPhoneBlock.conPhone.value;
                         pvt_metadata.isUpdateable = message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options ?
                             message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options.value :
                             false;
-                        console.log("MEssage view EARS 2016 ", message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options);
+                        console.log("MEssage view EARS 2016 ", message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options.value);
                         console.log('pvt_metadata.isUpdateable', pvt_metadata);
                         // message.view.private_metadata = JSON.stringify(pvt_metadata);
                         // refUseRequestModalWithContactInfo(bot, message);
