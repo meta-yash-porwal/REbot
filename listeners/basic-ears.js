@@ -3099,20 +3099,8 @@ module.exports = controller => {
                         } else if (message.actions[0].action_id == "editContactModal" && message.actions[0].block_id == 'editContactBlock') {
                             console.log('In editContactModal & editContactBlock EARS 2232');
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
-                            let initOpt = [];
 
                             if (pvt_metadata.isUpdateable === "true") {
-                                let entry = {
-                                    "value": "true",
-                                    "text": {
-                                        "type": "plain_text",
-                                        "text": " "
-                                    }
-                                };
-                                initOpt.push(entry);
-                            }
-
-                            if (initOpt) {
                                 await bot.api.views.push({
                                     trigger_id: message.trigger_id,
                                     view: {
@@ -3212,7 +3200,13 @@ module.exports = controller => {
                                                             }
                                                         },
                                                     ],
-                                                    "initial_options": initOpt,
+                                                    "initial_options": [{
+                                                        "value": "true",
+                                                        "text": {
+                                                            "type": "plain_text",
+                                                            "text": " "
+                                                        }
+                                                    }],
                                                 }
                                             }
                                         ]
