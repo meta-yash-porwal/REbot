@@ -2011,7 +2011,7 @@ module.exports = controller => {
                             ? message.view.state.values.conEmailBlock.conEmail.value : pvt_metadata.Email;
                         pvt_metadata.Phone = message.view.state.values.conPhoneBlock && message.view.state.values.conPhoneBlock.conPhone
                             ? message.view.state.values.conPhoneBlock.conPhone.value : pvt_metadata.Phone;
-                        pvt_metadata.isUpdateable = message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options ?
+                        pvt_metadata.isUpdateable = message.view.state.values.isUpdateableConBlock.isUpdateableCon && message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options ?
                             message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options[0].value :
                             false;
                         console.log('pvt_metadata.isUpdateable', pvt_metadata.isUpdateable);
