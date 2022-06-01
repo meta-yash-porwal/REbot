@@ -1,7 +1,7 @@
 const connFactory = require('../util/connection-factory');
 const logger = require('../common/logger');
 
-const { getRefTypes, getOpp, getOppfromName, getOppfromAcc, saveTeamId, checkOrgSettingAndGetData, getRefUseReqModal, getAdditionalModal, submitP2PRequest} = require('../util/refedge');
+const { getRefTypes, getOpp, getOppfromName, getOppfromAcc, saveTeamId, checkOrgSettingAndGetData, getRefUseReqModal, getAdditionalModal, submitP2PRequest } = require('../util/refedge');
 
 const { checkTeamMigration } = require('../listeners/middleware/migration-filter');
 const text = require('body-parser/lib/types/text');
@@ -11,61 +11,61 @@ module.exports = controller => {
     /**
      * Controller for Direct Message like Hello, Help & Connect to sf 
      */
-    controller.on('direct_message,direct_mention', 
-    async (bot, message) => {
+    controller.on('direct_message,direct_mention',
+        async (bot, message) => {
 
-        try {
-            console.log('------direct mention---');
-            const supportUrl = `https://www.point-of-reference.com/contact/`;
-            let messageText = message.text ? message.text.toLowerCase() : '';
-            
-            if (messageText.includes('hello')) {
-                console.log('IN Hello section');
-                await bot.replyEphemeral(message, `Hi, you can invite me to the channel for Customer Reference Team to receive updates!`);
-                console.log('End of Hello Section');
-            } else if (messageText == 'connect to a salesforce instance' || messageText == 'connect to sf'  
-                || (messageText.includes('connect') && messageText.includes('salesforce'))) {//|| message.intent === 'connect_to_sf'
-                console.log('In connect to sf section');
-                let existingConn = await connFactory.getConnection(message.team, controller);
+            try {
+                console.log('------direct mention---');
+                const supportUrl = `https://www.point-of-reference.com/contact/`;
+                let messageText = message.text ? message.text.toLowerCase() : '';
 
-                if (!existingConn) {
-                    console.log('For New Connection to SF-Slack 28 EARS');
-                    const authUrl = connFactory.getAuthUrl(message.team);
-                    await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
-                } else {
-                    console.log('For Existing Connection');
+                if (messageText.includes('hello')) {
+                    console.log('IN Hello section');
+                    await bot.replyEphemeral(message, `Hi, you can invite me to the channel for Customer Reference Team to receive updates!`);
+                    console.log('End of Hello Section');
+                } else if (messageText == 'connect to a salesforce instance' || messageText == 'connect to sf'
+                    || (messageText.includes('connect') && messageText.includes('salesforce'))) {//|| message.intent === 'connect_to_sf'
+                    console.log('In connect to sf section');
+                    let existingConn = await connFactory.getConnection(message.team, controller);
+
+                    if (!existingConn) {
+                        console.log('For New Connection to SF-Slack 28 EARS');
+                        const authUrl = connFactory.getAuthUrl(message.team);
+                        await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
+                    } else {
+                        console.log('For Existing Connection');
                         /* await controller.plugins.database.orgs.delete(message.team);
                         const authUrl = connFactory.getAuthUrl(message.team);
                         await bot.reply(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`); */
                         await bot.beginDialog('sf_auth');
-                 }
-            } else if (messageText.includes('help')) {
-                console.log('IN help SECTION');
-                await bot.replyEphemeral(message, 
-                `Hello, Referencebot here. I can help you find customer references, and deliver messages related to your customer reference requests. \n`
-                +`Use the /references command to start a search for reference accounts or reference content. \n`
-                + `Are you an administrator? I can connect you to a Salesforce instance. Just type "connect to a Salesforce instance" to get started. \n`
-                + `Please visit the <${supportUrl}|support page> if you have any further questions.`);
-            } else {
-                console.log('NONE OF the aBOVe section');
-                await bot.replyEphemeral(message, `Sorry, I didn't understand that.`);
+                    }
+                } else if (messageText.includes('help')) {
+                    console.log('IN help SECTION');
+                    await bot.replyEphemeral(message,
+                        `Hello, Referencebot here. I can help you find customer references, and deliver messages related to your customer reference requests. \n`
+                        + `Use the /references command to start a search for reference accounts or reference content. \n`
+                        + `Are you an administrator? I can connect you to a Salesforce instance. Just type "connect to a Salesforce instance" to get started. \n`
+                        + `Please visit the <${supportUrl}|support page> if you have any further questions.`);
+                } else {
+                    console.log('NONE OF the aBOVe section');
+                    await bot.replyEphemeral(message, `Sorry, I didn't understand that.`);
+                }
+            } catch (err) {
+                console.log('CATCh of direct-mention');
+                logger.log(err);
             }
-        } catch (err) {
-            console.log('CATCh of direct-mention');
-            logger.log(err);
-        }
-    });
+        });
 
     controller.on('post-message', reqBody => {
         console.log('posting message for org----', reqBody.orgId);
-        
+
         reqBody.messages.forEach(async msg => {
             console.log('Message EARS LINE 63', msg);
 
             try {
                 let teamIdsArray = reqBody.teamId.split(',');
                 const teams = await controller.plugins.database.teams.find({ id: { $in: teamIdsArray } });
-                
+
                 if (!teams) {
                     return logger.log('team not found for id:', reqBody.teamId);
                 }
@@ -82,10 +82,10 @@ module.exports = controller => {
                             console.log('...getting userData...');
 
                             // try {
-                                const userData = await bot.api.users.lookupByEmail({//Bot token - users:read.email
-                                    token: teams[index].bot.token,
-                                    email: msg.userEmail
-                                });
+                            const userData = await bot.api.users.lookupByEmail({//Bot token - users:read.email
+                                token: teams[index].bot.token,
+                                email: msg.userEmail
+                            });
                             // } catch (err) {
                             //     console.log('Error in lookupByEmail EARS 88');
                             //     logger.log(err);
@@ -162,40 +162,40 @@ module.exports = controller => {
         });
     });
 
-    controller.on('app_home_opened', async (bot, event) =>{
+    controller.on('app_home_opened', async (bot, event) => {
         console.log('----------App-home-opened---------');
         console.log('bot information');
-        
+
         try {
             // Call the conversations.history method.
             const result = await bot.api.conversations.history({//im:history
                 channel: event.channel
             });
-            
+
             let conversationHistory = result.messages;
             console.log('----------messages----------------');
-            
+
             if (conversationHistory.length <= 0) {
                 console.log('....posting first msg for new user......');
                 const support_page = 'https://www.point-of-reference.com/contact/';
                 await bot.say(`Hello, I'm Referencebot. I'm here to assist you with finding customer references, and to help deliver messages related to your reference requests from ReferenceEdge to you. \n`
-                + `Use the /references command to request reference accounts or reference content. \n` 
-                + `Are you an administrator? I can connect you to a Salesforce instance. Just type 'connect to a Salesforce instance' to get started.\n`
-                +`Please visit the <${support_page}|support page> if you have any further questions.`
+                    + `Use the /references command to request reference accounts or reference content. \n`
+                    + `Are you an administrator? I can connect you to a Salesforce instance. Just type 'connect to a Salesforce instance' to get started.\n`
+                    + `Please visit the <${support_page}|support page> if you have any further questions.`
                 );
                 console.log('.....message posted.....');
             }
-        }catch (error) {
+        } catch (error) {
             console.log('--error in app home opened event--');
             console.error(error);
         }
-        
+
     });
 
     controller.on('app_uninstalled', async (ctrl, event) => {
 
         try {
-        	const channels = await controller.plugins.database.channels.find({ team_id: event.team });
+            const channels = await controller.plugins.database.channels.find({ team_id: event.team });
 
             if (channels && channels.length > 0) {
                 await controller.plugins.database.channels.delete(channels[0].id);
@@ -217,14 +217,14 @@ module.exports = controller => {
             console.dir(deletion_result);
         } catch (err) {
             console.log('error occured during uninstall...');
-        	logger.log(err);
+            logger.log(err);
         }
     });
 
     controller.on('oauth_success', async authData => {
         console.log('******************-----/oauth_success/-----******************');
         console.log('-----/authData/-----')
-        
+
         try {
             let existingTeam = await controller.plugins.database.teams.get(authData.team.id);
 
@@ -238,19 +238,19 @@ module.exports = controller => {
                     name: authData.team.name,
                     is_migrating: false
                 };
-            }else{
+            } else {
                 console.log('found existing team...');
             }
             existingTeam.bot = {
-                token : authData.access_token,
-                user_id : authData.bot_user_id,
+                token: authData.access_token,
+                user_id: authData.bot_user_id,
                 created_by: authData.authed_user.id
             };
             console.log('....saving team....');
             const savedTeam = await controller.plugins.database.teams.save(existingTeam);
             console.log('saved team');
             console.dir(savedTeam);
-			if (isNew) {
+            if (isNew) {
                 console.log('....creation of crp channel.....');
                 let bot = await controller.spawn(authData.team.id);
                 controller.trigger('create_channel', bot, authData);
@@ -263,16 +263,16 @@ module.exports = controller => {
 
     controller.on('onboard', async (bot, params) => {
         console.log('....onboarding message.....');
-        const internal_url = 'slack://channel?team='+ params.teamId +'&id='+ params.channelId;
+        const internal_url = 'slack://channel?team=' + params.teamId + '&id=' + params.channelId;
         const support_page = 'https://www.point-of-reference.com/contact/';
-        
+
         await bot.startPrivateConversation(params.userId);
         await bot.say(`Hello, Referencebot here. I have joined your workspace. I deliver messages from ReferenceEdge to your Customer Reference Program (CRP) team and individual users, and assist users with finding customer references.\n`
-                + `I have created a public channel with the name <${internal_url}|crp_team> for the CRP Team. All updates for the CRP Team will be posted in this channel. `
-                + `You should add the members of the Customer Reference Team to this channel to ensure they receive these updates. `
-                + `You can do this by selecting the crp_team channel then clicking the add people icon. `
-                + `To connect your workspace to ReferenceEdge you can type "connect to a salesforce instance". `
-                + `Please visit the <${support_page}|support page> if you have any further questions.`);
+            + `I have created a public channel with the name <${internal_url}|crp_team> for the CRP Team. All updates for the CRP Team will be posted in this channel. `
+            + `You should add the members of the Customer Reference Team to this channel to ensure they receive these updates. `
+            + `You can do this by selecting the crp_team channel then clicking the add people icon. `
+            + `To connect your workspace to ReferenceEdge you can type "connect to a salesforce instance". `
+            + `Please visit the <${support_page}|support page> if you have any further questions.`);
     });
 
     controller.on('create_channel', async (bot, authData) => {
@@ -291,11 +291,11 @@ module.exports = controller => {
             console.log('-----/ saving crpTeamChannel/-----');
             const savedData = await controller.plugins.database.channels.save(crpTeamChannel);
             console.log('savedData');
-            
+
             const params = {
-                userId : authData.authed_user.id,
-                channelId : crpTeamChannel.id,
-                teamId : crpTeamChannel.team_id
+                userId: authData.authed_user.id,
+                channelId: crpTeamChannel.id,
+                teamId: crpTeamChannel.team_id
             };
             controller.trigger('onboard', bot, params);
 
@@ -312,24 +312,26 @@ module.exports = controller => {
         async (bot, message) => {
             try {
                 console.log('slash_command');
-                let pvt_metadata = {'email':'', 'isContentType':false, 'isRefType':false, 
-                'isBoth':false, 'actionName':'', 'contentTypes': '', 'refTypes':'', 
-                'searchURL':'', 'pkg_version':0};
+                let pvt_metadata = {
+                    'email': '', 'isContentType': false, 'isRefType': false,
+                    'isBoth': false, 'actionName': '', 'contentTypes': '', 'refTypes': '',
+                    'searchURL': '', 'pkg_version': 0
+                };
                 console.log('PVT_DATA 249 Ears');
-                
-                if(message.text && message.text.toLowerCase()  == 'help'){
+
+                if (message.text && message.text.toLowerCase() == 'help') {
                     await bot.replyEphemeral(message,
                         `This command allows you to start a search for customer reference resources, without being in Salesforce.\n`
                         + `You’ll be taken to the Reference Search page where you can refine your search, request the use of an account, and, if enabled, share content.`
                     );
-                }else{
+                } else {
                     let existingConn = await connFactory.getConnection(message.team, controller);
                     console.log('EXistingCONn 258 Ears');
-                    
+
                     if (existingConn) {
                         const userProfile = await bot.api.users.info({//users.read scope
-                            token : bot.api.token,
-                            user : message.user
+                            token: bot.api.token,
+                            user: message.user
                         });
                         console.log('USER PROFILE 265 Ears', userProfile.user.profile.email);
                         console.log('.......checking org settings ....');
@@ -339,31 +341,31 @@ module.exports = controller => {
                             response = await checkOrgSettingAndGetData(existingConn, userProfile.user.profile.email);
                             console.log('RESponse 270 Ears', response);
 
-                            if(response !== 'both') {
+                            if (response !== 'both') {
 
                                 let temp = JSON.parse(response);
-                                if(temp.hasOwnProperty('action')) {//added in 2.26 release.
+                                if (temp.hasOwnProperty('action')) {//added in 2.26 release.
                                     response = temp.action;
                                     pvt_metadata.pkg_version = parseFloat(temp.pkg_version);
                                 }
                             }
-                        }catch(err) {
+                        } catch (err) {
                             response = 'both';
                             console.log('...exception in checking org... 286 EARS');
                             logger.log(err);
                         }
-                        
+
                         if (response != 'false' && response != 'both') {
-                            
+
                             response = JSON.parse(response);
-                            
-                            if(!response.hasOwnProperty('account_search')) {
+
+                            if (!response.hasOwnProperty('account_search')) {
                                 let content_search = '';
-                                if(!response.hasOwnProperty('pkg_version')) {
+                                if (!response.hasOwnProperty('pkg_version')) {
                                     let contentData = processContentResponse(response);
                                     await opportunityFlow(bot, message, existingConn, pvt_metadata, userProfile.user.profile.email, contentData);
-                                } else{
-                                    if(response.hasOwnProperty('pkg_version')) {
+                                } else {
+                                    if (response.hasOwnProperty('pkg_version')) {
                                         pvt_metadata.pkg_version = response.pkg_version;
                                         content_search = JSON.parse(response.content_search);
                                     } else {
@@ -374,14 +376,14 @@ module.exports = controller => {
                                     pvt_metadata.email = userProfile.user.profile.email;
                                     pvt_metadata.actionName = 'content_search';
                                     pvt_metadata.isContentType = true;
-                                    
+
                                     await bot.api.views.open({
                                         trigger_id: message.trigger_id,
                                         view: {
                                             "type": "modal",
-                                            "notify_on_close" : true,
+                                            "notify_on_close": true,
                                             "callback_id": "oppselect",
-                                            "private_metadata" : JSON.stringify(pvt_metadata),
+                                            "private_metadata": JSON.stringify(pvt_metadata),
                                             "submit": {
                                                 "type": "plain_text",
                                                 "text": "Next",
@@ -395,7 +397,7 @@ module.exports = controller => {
                                             "blocks": [
                                                 {
                                                     "type": "input",
-                                                    "optional" : true,
+                                                    "optional": true,
                                                     "block_id": "blkref",
                                                     "element": {
                                                         "type": "multi_static_select",
@@ -415,12 +417,12 @@ module.exports = controller => {
                                                 }
                                             ]
                                         }
-                                    }); 
+                                    });
                                 }
                             } else {
                                 console.log('...Reftype flow...');
                                 let account_search = '';
-                                if(response.hasOwnProperty('pkg_version')) {
+                                if (response.hasOwnProperty('pkg_version')) {
                                     pvt_metadata.pkg_version = response.pkg_version;
                                     account_search = JSON.parse(response.account_search);
                                 } else {
@@ -434,9 +436,9 @@ module.exports = controller => {
                                     trigger_id: message.trigger_id,
                                     view: {
                                         "type": "modal",
-                                        "notify_on_close" : true,
+                                        "notify_on_close": true,
                                         "callback_id": "oppselect",
-                                        "private_metadata" : JSON.stringify(pvt_metadata),
+                                        "private_metadata": JSON.stringify(pvt_metadata),
                                         "submit": {
                                             "type": "plain_text",
                                             "text": "Next",
@@ -473,7 +475,7 @@ module.exports = controller => {
 
                             }
                         }
-                        if(response == 'both') {
+                        if (response == 'both') {
                             console.log('...opening both view...');
                             pvt_metadata.email = userProfile.user.profile.email;
                             pvt_metadata.actionName = 'both';
@@ -482,9 +484,9 @@ module.exports = controller => {
                                 trigger_id: message.trigger_id,
                                 view: {
                                     "type": "modal",
-                                    "notify_on_close" : true,
-                                    "callback_id" : "actionSelectionView",
-                                    "private_metadata" : JSON.stringify(pvt_metadata),
+                                    "notify_on_close": true,
+                                    "callback_id": "actionSelectionView",
+                                    "private_metadata": JSON.stringify(pvt_metadata),
                                     "title": {
                                         "type": "plain_text",
                                         "text": "Reference Assistant",
@@ -500,7 +502,7 @@ module.exports = controller => {
                                         "text": "Cancel",
                                         "emoji": true
                                     },
-                                    
+
                                     "blocks": [
                                         {
                                             "type": "input",
@@ -540,12 +542,12 @@ module.exports = controller => {
                                         }
                                     ]
                                 }
-                                
+
                             });
                         }
-                        
+
                         console.log('open view');
-                        
+
                     } else if (!existingConn) {
                         const authUrl = connFactory.getAuthUrl(message.team);
                         await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
@@ -557,7 +559,7 @@ module.exports = controller => {
             }
         }
     );
-    
+
     controller.on('view_closed', async (bot, message) => {
         bot.httpBody({
             "response_action": "clear"
@@ -565,16 +567,16 @@ module.exports = controller => {
 
     });
 
-    async function opportunityFlow (bot, message, existingConn, metadata, email, mapval) {//actionName
+    async function opportunityFlow(bot, message, existingConn, metadata, email, mapval) {//actionName
         let refselected = metadata.refTypes;
         let contentTypeSelected = metadata.contentTypes;
         console.log('oppo flow..');
-        
-        if(metadata.actionName == 'content_search' && metadata.pkg_version >= 2.26) {
-            contentTypeSelected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null 
+
+        if (metadata.actionName == 'content_search' && metadata.pkg_version >= 2.26) {
+            contentTypeSelected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null
                 ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
             let selectedValues = [];
-            contentTypeSelected.forEach(function(ref) {
+            contentTypeSelected.forEach(function (ref) {
                 selectedValues.push(ref.value);
             });
             contentTypeSelected = selectedValues.join(',');
@@ -584,13 +586,13 @@ module.exports = controller => {
         }
         let openView = false;
         let viewObject = {};
-        
-        if(!mapval){
-            if(metadata.actionName == 'account_search' && contentTypeSelected) {
+
+        if (!mapval) {
+            if (metadata.actionName == 'account_search' && contentTypeSelected) {
                 metadata.actionName = 'both';
             }
-            mapval = await getOpp(existingConn,email,metadata.actionName);
-        } else{
+            mapval = await getOpp(existingConn, email, metadata.actionName);
+        } else {
             console.log('map val exists.');
             openView = true;
         }
@@ -601,17 +603,17 @@ module.exports = controller => {
             let pvt_metadata = {};
             metadata.searchURL = searchURL;
             metadata.refTypes = refselected;
-            
-            if(contentTypeSelected) {
+
+            if (contentTypeSelected) {
                 metadata.contentTypes = contentTypeSelected;
-            } 
+            }
             pvt_metadata = metadata;
             viewObject = {
                 view: {
                     "type": "modal",
-                    "notify_on_close" : true,
+                    "notify_on_close": true,
                     "callback_id": "searchselect",
-                    "private_metadata" : JSON.stringify(pvt_metadata),
+                    "private_metadata": JSON.stringify(pvt_metadata),
                     "submit": {
                         "type": "plain_text",
                         "text": "Next",
@@ -650,17 +652,17 @@ module.exports = controller => {
             metadata.searchURL = searchURL;
             metadata.refTypes = refselected;
             metadata.email = email;
-            
-            if(contentTypeSelected) {
+
+            if (contentTypeSelected) {
                 metadata.contentTypes = contentTypeSelected;
-            } 
+            }
             pvt_metadata = metadata;
             viewObject = {
                 view: {
                     "type": "modal",
-                    "notify_on_close" : true,
+                    "notify_on_close": true,
                     "callback_id": "searchselectopplarge",
-                    "private_metadata" : JSON.stringify(pvt_metadata),
+                    "private_metadata": JSON.stringify(pvt_metadata),
                     "submit": {
                         "type": "plain_text",
                         "text": "Next",
@@ -709,7 +711,7 @@ module.exports = controller => {
                         {
                             "type": "input",
                             "optional": true,
-                            "block_id" : "accblock",
+                            "block_id": "accblock",
                             "element": {
                                 "type": "plain_text_input",
                                 "action_id": "account_name",
@@ -735,7 +737,7 @@ module.exports = controller => {
                         {
                             "type": "input",
                             "optional": true,
-                            "block_id" : "oppblock",
+                            "block_id": "oppblock",
                             "element": {
                                 "type": "plain_text_input",
                                 "action_id": "opp_name",
@@ -758,16 +760,16 @@ module.exports = controller => {
 
             if (refselected && refselected != 'NONE' && refselected != '' && refselected != null) {
                 searchURL += '&type=' + refselected;
-            } 
-            if(contentTypeSelected) {
+            }
+            if (contentTypeSelected) {
                 searchURL += '&contype=' + contentTypeSelected;
             }
-            
+
             searchURL = 'Thanks! Please <' + searchURL + '|click to complete your request in Salesforce.>';
             viewObject = {
                 view: {
                     "type": "modal",
-                    "notify_on_close" : true,
+                    "notify_on_close": true,
                     "close": {
                         "type": "plain_text",
                         "text": "Close",
@@ -790,7 +792,8 @@ module.exports = controller => {
                 }
             };
         }
-        if(openView) {
+
+        if (openView) {
             console.log('in open view.');
             viewObject.trigger_id = message.trigger_id;
             await bot.api.views.open(viewObject);////no scope required.
@@ -799,7 +802,7 @@ module.exports = controller => {
             viewObject.response_action = 'update';
             bot.httpBody(viewObject);
         }
-    } 
+    }
 
     async function refUseRequestModalWithContactInfo(bot, message) {
         try {
@@ -815,7 +818,7 @@ module.exports = controller => {
                 pvt_metadata = setSelectedContactInfo(pvt_metadata, selConId);
                 pvt_metadata.Id = selConId;
             }
-            
+
             if (pvt_metadata.activeContacts && pvt_metadata.inactiveContacts) {
                 // console.log('pvtDATA ', pvt_metadata);
                 await bot.api.views.update({
@@ -1223,12 +1226,12 @@ module.exports = controller => {
     }
 
     function processContentResponse(response) {
-        
+
         let ref = [];
         let opp = [];
         let returnVal = {};
-        if(!response.hasOwnProperty('searchURL')) {
-            Object.keys(response).forEach(function(k){
+        if (!response.hasOwnProperty('searchURL')) {
+            Object.keys(response).forEach(function (k) {
                 let entry = {
                     "text": {
                         "type": "plain_text",
@@ -1242,7 +1245,7 @@ module.exports = controller => {
         } else if (response != 'false') {
             let oppList = response['opp'];
             returnVal['searchURL'] = response['searchURL'];
-            oppList.forEach(function(oppWrapper){
+            oppList.forEach(function (oppWrapper) {
                 let entry = {
                     "text": {
                         "type": "plain_text",
@@ -1260,7 +1263,7 @@ module.exports = controller => {
     function processRefTypeResponse(response) {
         console.log('RESPONSE IN processRefTypeResponse ', response);
         let ref = [];
-        Object.keys(response).forEach(function(k){
+        Object.keys(response).forEach(function (k) {
             let entry = {
                 "text": {
                     "type": "plain_text",
@@ -1276,28 +1279,28 @@ module.exports = controller => {
     function forActiveInactiveCons(metadata) {
         let activeCons = [], inactiveCons = [];
 
-            metadata.Contacts.forEach(con => {
+        metadata.Contacts.forEach(con => {
 
-                if (con.Status == 'Active') {
-                    let entry = {
-                        "text": {
-                            "type": "plain_text",
-                            "text": con.Name
-                        },
-                        "value": con.id
-                    }
-                    activeCons.push(entry);
-                } else {
-                    let entry = {
-                        "text": {
-                            "type": "plain_text",
-                            "text": con.Name
-                        },
-                        "value": con.id
-                    }
-                    inactiveCons.push(entry);
+            if (con.Status == 'Active') {
+                let entry = {
+                    "text": {
+                        "type": "plain_text",
+                        "text": con.Name
+                    },
+                    "value": con.id
                 }
-            });
+                activeCons.push(entry);
+            } else {
+                let entry = {
+                    "text": {
+                        "type": "plain_text",
+                        "text": con.Name
+                    },
+                    "value": con.id
+                }
+                inactiveCons.push(entry);
+            }
+        });
         metadata.activeContacts = activeCons;
         metadata.inactiveContacts = inactiveCons;
         return metadata;
@@ -1321,7 +1324,7 @@ module.exports = controller => {
         }
         return metadata;
     }
-    
+
     controller.on(
         'view_submission',
         async (bot, message) => {
@@ -1339,7 +1342,7 @@ module.exports = controller => {
                     // When Account Name entered
                     if (message.view.callback_id == 'actionSelectionView') {
                         let actionName = 'account_search';
-                        
+
                         if (message.view.state.values.accblock) {
                             // retrieved what we select in the 1st modal 
                             actionName = message.view.state.values.accblock.searchid.selected_option.value;
@@ -1361,7 +1364,7 @@ module.exports = controller => {
                             pvt_metadata.contentTypes = refselected;
                             console.log('PVT Metadata COntent Type');
                         }
-                        
+
                         if (actionName == 'content_search') {
                             if (pvt_metadata.pkg_version < 2.26) {
                                 await opportunityFlow(bot, message, existingConn, pvt_metadata, pvt_metadata.email, null);
@@ -1569,7 +1572,7 @@ module.exports = controller => {
                         let metdata = JSON.parse(message.view.private_metadata);
                         const email = metdata.email;
                         await opportunityFlow(bot, message, existingConn, metdata, email, null);
-                        
+
                     } else if (message.view.callback_id == 'searchselectopplarge') {
                         console.log('searchselectopplarge Ears');
                         let metadata = JSON.parse(message.view.private_metadata);
@@ -1698,12 +1701,12 @@ module.exports = controller => {
                             });
                         }
                     } else if (message.view.callback_id == 'searchselect') {
-                        
+
                         console.log('Search Selected EARS');
                         let metadata = JSON.parse(message.view.private_metadata);
                         const refselected = metadata.refTypes;
                         let contentTypeSelected = metadata.contentTypes;
-                        
+
                         let oppSelected = message.view.state.values.blkselectopp != null ? message.view.state.values.blkselectopp.opp_select.selected_option.value :
                             (message.view.state.values.blkselectoppFinal != null ? message.view.state.values.blkselectoppFinal.opp_select.selected_option.value : '');
                         let searchURL = metadata.searchURL;
@@ -1713,7 +1716,7 @@ module.exports = controller => {
                             searchURL += '&type=';
                             searchURL += refselected;
                         }
-                        
+
                         if (contentTypeSelected) {
                             searchURL += '&contype=';
                             searchURL += contentTypeSelected;
@@ -1980,7 +1983,7 @@ module.exports = controller => {
                         if (!approveData.ApproveWithoutContact) {
                             approveData.selectedContactId = pvt_metadata.Id;
                             approveData.isUpdate = pvt_metadata.isUpdateable;
-                            
+
                             if (approveData.isUpdate) {
                                 approveData.Title = pvt_metadata.Title;
                                 approveData.Email = pvt_metadata.Email;
@@ -2011,6 +2014,7 @@ module.exports = controller => {
                             ? message.view.state.values.conEmailBlock.conEmail.value : pvt_metadata.Email;
                         pvt_metadata.Phone = message.view.state.values.conPhoneBlock && message.view.state.values.conPhoneBlock.conPhone
                             ? message.view.state.values.conPhoneBlock.conPhone.value : pvt_metadata.Phone;
+                        console.log('Before isUpdateable in EARS with COntact Section', message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options);
                         pvt_metadata.isUpdateable = message.view.state.values.isUpdateableConBlock.isUpdateableCon && message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options ?
                             message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options[0].value :
                             false;
@@ -2451,7 +2455,7 @@ module.exports = controller => {
                                         ]
                                     }
                                 });
-                            } 
+                            }
                         } else if (pvt_metadata.activeContacts || pvt_metadata.inactiveContacts) {
                             let tmpCons, label;
 
@@ -2655,7 +2659,7 @@ module.exports = controller => {
                         }
                     }
                 }
-                    
+
             } catch (err) {
                 console.log('IN Catch 1152 Ears');
                 logger.log(err);
@@ -2668,7 +2672,7 @@ module.exports = controller => {
             console.log('interactive_message_callback, block_actions');
             try {
                 let existingConn = await connFactory.getConnection(message.team.id, controller);
-                
+
                 if (existingConn) {
                     // const userProfile = await bot.api.users.info({//users.read scope
                     //     token: bot.api.token,
@@ -2912,7 +2916,7 @@ module.exports = controller => {
                                                 ]
                                             }
                                         });
-                                    } 
+                                    }
                                 } else {
                                     let pvt_metadata = obj;
                                     pvt_metadata.rraId = message.actions[0].value;
@@ -3028,7 +3032,7 @@ module.exports = controller => {
                                             ]
                                         }
                                     });
-                                } 
+                                }
                             }
                         } else if (message.actions[0].action_id == "additionalModal" && message.actions[0].block_id == 'additionalBlock') {
                             console.log('In Additional Modal EARS 1688');
@@ -3043,14 +3047,14 @@ module.exports = controller => {
                                         "text": "*Requester Notes*\n" + obj["Requester Notes"]
                                     }
                                 },
-                                {
-                                    "type": "section",
-                                    "text": {
-                                        "type": "mrkdwn",
-                                        "text": " "
-                                    }
-                                }); 
-                                
+                                    {
+                                        "type": "section",
+                                        "text": {
+                                            "type": "mrkdwn",
+                                            "text": " "
+                                        }
+                                    });
+
                                 Object.keys(obj).forEach(con => {
 
                                     if (con != "Requester Notes") {
