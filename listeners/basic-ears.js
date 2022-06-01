@@ -2007,15 +2007,14 @@ module.exports = controller => {
                     } else if (message.view.callback_id == 'refUseReqMainBlockWithContacts') {
                         // console.log('VALUES EARS 1793 ', JSON.stringify(message));
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
-                        console.log('HELLO MetaData', pvt_metadata);
+                        console.log('HELLO MetaData', pvt_metadata.isUpdateable);
                         pvt_metadata.Title = message.view.state.values.conTitleBlock.conTitle.value;
                         pvt_metadata.Email = message.view.state.values.conEmailBlock.conEmail.value;
                         pvt_metadata.Phone = message.view.state.values.conPhoneBlock.conPhone.value;
                         pvt_metadata.isUpdateable = message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options ?
                             message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options[0].value :
                             false;
-                        console.log("MEssage view EARS 2016 ", message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options);
-                        console.log('pvt_metadata.isUpdateable', pvt_metadata);
+                        console.log('pvt_metadata.isUpdateable', pvt_metadata.isUpdateable);
                         // message.view.private_metadata = JSON.stringify(pvt_metadata);
                         // refUseRequestModalWithContactInfo(bot, message);
 
@@ -3100,6 +3099,18 @@ module.exports = controller => {
                         } else if (message.actions[0].action_id == "editContactModal" && message.actions[0].block_id == 'editContactBlock') {
                             console.log('In editContactModal & editContactBlock EARS 2232');
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
+                            let initOpt = [];
+
+                            if (pvt_metadata.isUpdateable === "true") {
+                                let entry = {
+                                    "value": "true",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": " "
+                                    }
+                                };
+                                initOpt.push(entry);
+                            }
 
                             await bot.api.views.push({
                                 trigger_id: message.trigger_id,
@@ -3199,7 +3210,8 @@ module.exports = controller => {
                                                             "text": " "
                                                         }
                                                     },
-                                                ]
+                                                ],
+                                                "initial_options": initOpt,
                                             }
                                         }
                                     ]
