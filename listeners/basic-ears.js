@@ -3112,111 +3112,218 @@ module.exports = controller => {
                                 initOpt.push(entry);
                             }
 
-                            await bot.api.views.push({
-                                trigger_id: message.trigger_id,
-                                view: {
-                                    "title": {
-                                        "type": "plain_text",
-                                        "text": "Reference Use Request",
-                                        "emoji": true
-                                    },
-                                    "submit": {
-                                        "type": "plain_text",
-                                        "text": "Back",
-                                        "emoji": true
-                                    },
-                                    "type": "modal",
-                                    "callback_id": "refUseReqMainBlockWithContacts",
-                                    "private_metadata": JSON.stringify(pvt_metadata),
-                                    "close": {
-                                        "type": "plain_text",
-                                        "text": "Close",
-                                        "emoji": true
-                                    },
-                                    "blocks": [
-                                        {
-                                            "type": "section",
-                                            "text": {
-                                                "type": "mrkdwn",
-                                                "text": "*Selected Contact Info*"
-                                            },
+                            if (initOpt) {
+                                await bot.api.views.push({
+                                    trigger_id: message.trigger_id,
+                                    view: {
+                                        "title": {
+                                            "type": "plain_text",
+                                            "text": "Reference Use Request",
+                                            "emoji": true
                                         },
-                                        {
-                                            "type": "section",
-                                            "text": {
-                                                "type": "mrkdwn",
-                                                "text": "*Name*\n" + pvt_metadata.Name
-                                            },
+                                        "submit": {
+                                            "type": "plain_text",
+                                            "text": "Back",
+                                            "emoji": true
                                         },
-                                        {
-                                            "type": "input",
-                                            "block_id": "conEmailBlock",
-                                            "label": {
-                                                "type": "plain_text",
-                                                "text": "Email",
-                                                "emoji": true
+                                        "type": "modal",
+                                        "callback_id": "refUseReqMainBlockWithContacts",
+                                        "private_metadata": JSON.stringify(pvt_metadata),
+                                        "close": {
+                                            "type": "plain_text",
+                                            "text": "Close",
+                                            "emoji": true
+                                        },
+                                        "blocks": [
+                                            {
+                                                "type": "section",
+                                                "text": {
+                                                    "type": "mrkdwn",
+                                                    "text": "*Selected Contact Info*"
+                                                },
                                             },
-                                            "element": {
-                                                "type": "plain_text_input",
-                                                "action_id": "conEmail",
-                                                "initial_value": pvt_metadata.Email
-                                            }
+                                            {
+                                                "type": "section",
+                                                "text": {
+                                                    "type": "mrkdwn",
+                                                    "text": "*Name*\n" + pvt_metadata.Name
+                                                },
+                                            },
+                                            {
+                                                "type": "input",
+                                                "block_id": "conEmailBlock",
+                                                "label": {
+                                                    "type": "plain_text",
+                                                    "text": "Email",
+                                                    "emoji": true
+                                                },
+                                                "element": {
+                                                    "type": "plain_text_input",
+                                                    "action_id": "conEmail",
+                                                    "initial_value": pvt_metadata.Email
+                                                }
 
-                                        },
-                                        {
-                                            "type": "input",
-                                            "block_id": "conPhoneBlock",
-                                            "label": {
-                                                "type": "plain_text",
-                                                "text": "Phone",
-                                                "emoji": true
                                             },
-                                            "element": {
-                                                "type": "plain_text_input",
-                                                "action_id": "conPhone",
-                                                "initial_value": pvt_metadata.Phone
-                                            }
-                                        },
-                                        {
-                                            "type": "input",
-                                            "block_id": "conTitleBlock",
-                                            "label": {
-                                                "type": "plain_text",
-                                                "text": "Title",
-                                                "emoji": true
+                                            {
+                                                "type": "input",
+                                                "block_id": "conPhoneBlock",
+                                                "label": {
+                                                    "type": "plain_text",
+                                                    "text": "Phone",
+                                                    "emoji": true
+                                                },
+                                                "element": {
+                                                    "type": "plain_text_input",
+                                                    "action_id": "conPhone",
+                                                    "initial_value": pvt_metadata.Phone
+                                                }
                                             },
-                                            "element": {
-                                                "type": "plain_text_input",
-                                                "action_id": "conTitle",
-                                                "initial_value": pvt_metadata.Title
-                                            }
+                                            {
+                                                "type": "input",
+                                                "block_id": "conTitleBlock",
+                                                "label": {
+                                                    "type": "plain_text",
+                                                    "text": "Title",
+                                                    "emoji": true
+                                                },
+                                                "element": {
+                                                    "type": "plain_text_input",
+                                                    "action_id": "conTitle",
+                                                    "initial_value": pvt_metadata.Title
+                                                }
 
-                                        },
-                                        {
-                                            "type": "section",
-                                            "block_id": "isUpdateableConBlock",
-                                            "text": {
-                                                "type": "plain_text",
-                                                "text": "Write these changes back to the Contact record?"
                                             },
-                                            "accessory": {
-                                                "type": "checkboxes",
-                                                "action_id": "isUpdateableCon",
-                                                "options": [
-                                                    {
-                                                        "value": "true",
-                                                        "text": {
-                                                            "type": "plain_text",
-                                                            "text": " "
-                                                        }
-                                                    },
-                                                ],
-                                                "initial_options": initOpt,
+                                            {
+                                                "type": "section",
+                                                "block_id": "isUpdateableConBlock",
+                                                "text": {
+                                                    "type": "plain_text",
+                                                    "text": "Write these changes back to the Contact record?"
+                                                },
+                                                "accessory": {
+                                                    "type": "checkboxes",
+                                                    "action_id": "isUpdateableCon",
+                                                    "options": [
+                                                        {
+                                                            "value": "true",
+                                                            "text": {
+                                                                "type": "plain_text",
+                                                                "text": " "
+                                                            }
+                                                        },
+                                                    ],
+                                                    "initial_options": initOpt,
+                                                }
                                             }
-                                        }
-                                    ]
-                                }
-                            });
+                                        ]
+                                    }
+                                });
+                            } else {
+                                await bot.api.views.push({
+                                    trigger_id: message.trigger_id,
+                                    view: {
+                                        "title": {
+                                            "type": "plain_text",
+                                            "text": "Reference Use Request",
+                                            "emoji": true
+                                        },
+                                        "submit": {
+                                            "type": "plain_text",
+                                            "text": "Back",
+                                            "emoji": true
+                                        },
+                                        "type": "modal",
+                                        "callback_id": "refUseReqMainBlockWithContacts",
+                                        "private_metadata": JSON.stringify(pvt_metadata),
+                                        "close": {
+                                            "type": "plain_text",
+                                            "text": "Close",
+                                            "emoji": true
+                                        },
+                                        "blocks": [
+                                            {
+                                                "type": "section",
+                                                "text": {
+                                                    "type": "mrkdwn",
+                                                    "text": "*Selected Contact Info*"
+                                                },
+                                            },
+                                            {
+                                                "type": "section",
+                                                "text": {
+                                                    "type": "mrkdwn",
+                                                    "text": "*Name*\n" + pvt_metadata.Name
+                                                },
+                                            },
+                                            {
+                                                "type": "input",
+                                                "block_id": "conEmailBlock",
+                                                "label": {
+                                                    "type": "plain_text",
+                                                    "text": "Email",
+                                                    "emoji": true
+                                                },
+                                                "element": {
+                                                    "type": "plain_text_input",
+                                                    "action_id": "conEmail",
+                                                    "initial_value": pvt_metadata.Email
+                                                }
+
+                                            },
+                                            {
+                                                "type": "input",
+                                                "block_id": "conPhoneBlock",
+                                                "label": {
+                                                    "type": "plain_text",
+                                                    "text": "Phone",
+                                                    "emoji": true
+                                                },
+                                                "element": {
+                                                    "type": "plain_text_input",
+                                                    "action_id": "conPhone",
+                                                    "initial_value": pvt_metadata.Phone
+                                                }
+                                            },
+                                            {
+                                                "type": "input",
+                                                "block_id": "conTitleBlock",
+                                                "label": {
+                                                    "type": "plain_text",
+                                                    "text": "Title",
+                                                    "emoji": true
+                                                },
+                                                "element": {
+                                                    "type": "plain_text_input",
+                                                    "action_id": "conTitle",
+                                                    "initial_value": pvt_metadata.Title
+                                                }
+
+                                            },
+                                            {
+                                                "type": "section",
+                                                "block_id": "isUpdateableConBlock",
+                                                "text": {
+                                                    "type": "plain_text",
+                                                    "text": "Write these changes back to the Contact record?"
+                                                },
+                                                "accessory": {
+                                                    "type": "checkboxes",
+                                                    "action_id": "isUpdateableCon",
+                                                    "options": [
+                                                        {
+                                                            "value": "true",
+                                                            "text": {
+                                                                "type": "plain_text",
+                                                                "text": " "
+                                                            }
+                                                        },
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                });
+                            }
                         }
                     } catch (err) {
                         console.log('...exception in block_actions interactive_message_callback ... 2367 EARS');
