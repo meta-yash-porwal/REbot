@@ -55,7 +55,10 @@ module.exports = controller => {
                 logger.log(err);
             }
         });
-
+    
+    /**
+     * controller which is call when post message to chat/bot from Salesforce (like)
+     */
     controller.on('post-message', reqBody => {
         console.log('posting message for org----', reqBody.orgId);
 
@@ -305,7 +308,7 @@ module.exports = controller => {
     });
 
     /**
-     * First dialog box in Slack when we first use /slash command
+     * First dialog box(Modal) in Slack when we first use /slash command
      */
     controller.on(
         'slash_command',
@@ -560,6 +563,9 @@ module.exports = controller => {
         }
     );
 
+    /**
+     * called this controller when click on close button on Modal which has 'notify_on_close' set to true
+     */
     controller.on('view_closed', async (bot, message) => {
         bot.httpBody({
             "response_action": "clear"
@@ -804,6 +810,13 @@ module.exports = controller => {
         }
     }
 
+    /**
+     * 
+     * @param {*} bot 
+     * @param {*} message 
+     * used in updating Reference Use Request Main modal when user clicks on Contact from Dropdown;
+     * Use this in both dropdown of contact (active or inactive)
+     */
     async function refUseRequestModalWithContactInfo(bot, message) {
         try {
             console.log('VALUES EARS 805 ', message.view.private_metadata);
@@ -1276,6 +1289,13 @@ module.exports = controller => {
         return ref;
     }
 
+    /**
+     * 
+     * @param {*} metadata get private metadata
+     * @returns private metadata after some updation
+     * update private metadata as per Slack requirement to print Active/Inactive Contacts in dropdown;
+     * These are used to print contacts in dropdown as per Active Inactive Contacts
+     */
     function forActiveInactiveCons(metadata) {
         let activeCons = [], inactiveCons = [];
 
@@ -1306,25 +1326,34 @@ module.exports = controller => {
         return metadata;
     }
 
+    /**
+     * 
+     * @param {*} metadata get private metadata
+     * @param {*} selectedContactId require Id of selected contact from dropdown (both - Active/Inactive)
+     * @returns updated private metadata
+     * add Name, Phone, Email, Title, Status, Last_Used as per Contact detail, getting from Salesforce and
+     * update these in private metadata (object).
+     */
     function setSelectedContactInfo(metadata, selectedContactId) {
 
-        if (selectedContactId) {
+        metadata.Contacts.forEach(con => {
 
-            metadata.Contacts.forEach(con => {
-
-                if (con.id == selectedContactId) {
-                    metadata.Name = con.Name;
-                    metadata.Phone = con.Phone;
-                    metadata.Email = con.Email;
-                    metadata.Title = con.Title;
-                    metadata.Status = con.Status;
-                    metadata.Last_Used = con.Last_Used ? con.Last_Used : ' ';
-                }
-            });
-        }
+            if (con.id == selectedContactId) {
+                metadata.Name = con.Name;
+                metadata.Phone = con.Phone;
+                metadata.Email = con.Email;
+                metadata.Title = con.Title;
+                metadata.Status = con.Status;
+                metadata.Last_Used = con.Last_Used ? con.Last_Used : ' ';
+            }
+        });
         return metadata;
     }
 
+    /**
+     * when user clicks on submit button of Modal then this controller is called;
+     * then it works as per callback_id of Modal
+     */
     controller.on(
         'view_submission',
         async (bot, message) => {
@@ -1749,10 +1778,15 @@ module.exports = controller => {
                             }
                         });
                     } else if (message.view.callback_id == 'AD_Modal') {
+                        /* this callbackId is called when user click on submit button of Reference Use Request Main Block
+                           then open Approve Modal or Decline Modal whichever option the user select 
+                        */
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         console.log('PRIVATE data EARS 1744 Approve', message.view.private_metadata);
                         let selCon;
 
+                        // this condition is use to check for select contact block & selected contact id is store in selCon;
+                        // as this Modal is also use in Approve Without Contact
                         if (message.view.state.values.blkCon1 || message.view.state.values.blkCon2) {
                             selCon = message.view.state.values.blkCon1.con_select1.selected_option ?
                                 message.view.state.values.blkCon1.con_select1.selected_option.value :
@@ -1761,8 +1795,8 @@ module.exports = controller => {
                         }
                         let requestStatus = message.view.state.values.approveDeclineBlock && message.view.state.values.approveDeclineBlock.approveDeclineRadio
                             ? message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value : "";
-                        // console.log('APPROVED', message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value);
 
+                        // selCon is not null & empty 
                         if (selCon && requestStatus === "Approve") {
                             pvt_metadata.Id = selCon;
                             bot.httpBody({
@@ -1844,6 +1878,7 @@ module.exports = controller => {
                                 }
                             });
                         } else if ((selCon || pvt_metadata.ApproveWithoutContact) && (requestStatus === "Decline" || requestStatus === "Approve")) {
+                            // this block is use in Decline Request & Approve Without Request (both - Approve/Decline)
                             console.log('In DECLINE NOTES MODAL ears 1389');
                             let popup = requestStatus === "Approve" ? "approvePopup" : "declinePopup";
                             let text = requestStatus === "Approve" ? "Approve" : "Decline";
@@ -1888,6 +1923,7 @@ module.exports = controller => {
                                 }
                             });
                         } else {
+                            //display error if user click submit button without selecting any Contact from select boxes in Main Block (Reference Use Request)
                             bot.httpBody({
                                 "response_action": "errors",
                                 "errors": {
@@ -1896,6 +1932,7 @@ module.exports = controller => {
                             });
                         }
                     } else if (message.view.callback_id == 'approvePopup') {
+                        //this is the final popup to confirm that user want to approve the Request
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let notes = message.view.state.values.noteBlock.contactnotes.value;
                         pvt_metadata.Notes = notes;
@@ -1933,7 +1970,7 @@ module.exports = controller => {
                             }
                         });
                     } else if (message.view.callback_id == 'declinePopup') {
-                        // console.log('In Decline Popup EARS BEfore 1473 ', message);
+                        //this is the final popup to confirm that user want to Decline the Request
                         console.log('In Decline Popup EARS BEfore 1473 ', message.view);
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let notes = message.view.state.values.noteBlock.contactnotes.value;
@@ -1973,6 +2010,10 @@ module.exports = controller => {
                             }
                         });
                     } else if (message.view.callback_id == 'approveRequest') {
+                        /* it sends(post) data to Salesforce from refedge.js function of 
+                        rraId(Reference Request Id), Notes, type, ApproveWithoutContact & Contact details
+                        Use in Approving Request
+                        */
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let approveData = {};
                         approveData.rraId = pvt_metadata.rraId;
@@ -1983,18 +2024,20 @@ module.exports = controller => {
                         if (!approveData.ApproveWithoutContact) {
                             approveData.selectedContactId = pvt_metadata.Id;
                             approveData.isUpdate = pvt_metadata.isUpdateable;
-
-                            if (approveData.isUpdate) {
-                                approveData.Title = pvt_metadata.Title;
-                                approveData.Email = pvt_metadata.Email;
-                                approveData.Phone = pvt_metadata.Phone;
-                            }
+                            approveData.Title = pvt_metadata.Title;
+                            approveData.Email = pvt_metadata.Email;
+                            approveData.Phone = pvt_metadata.Phone;
                         }
                         submitP2PRequest(existingConn, approveData);
+                        //then clear the screen
                         bot.httpBody({
                             "response_action": "clear"
                         });
                     } else if (message.view.callback_id == 'declineRequest') {
+                        /* it sends(post) data to Salesforce from refedge.js function of
+                        rraId(Reference Request Id), Notes, type
+                        Use in Declining Request
+                        */
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let approveData = {};
                         approveData.rraId = pvt_metadata.rraId;
@@ -2005,7 +2048,10 @@ module.exports = controller => {
                             "response_action": "clear"
                         });
                     } else if (message.view.callback_id == 'refUseReqMainBlockWithContacts') {
-                        // console.log('VALUES EARS 1793 ', JSON.stringify(message));
+                        /* this part use in when user click on submit button of Edit Contact Modal
+                        then we update the values of Title, Email & Phone of Contact if user change
+                        it also check that these values are use for this Request only or update in Salesforce contact section also
+                        */
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         console.log('HELLO MetaData', pvt_metadata.isUpdateable);
                         pvt_metadata.Title = message.view.state.values.conTitleBlock && message.view.state.values.conTitleBlock.conTitle
@@ -2022,6 +2068,8 @@ module.exports = controller => {
                         // message.view.private_metadata = JSON.stringify(pvt_metadata);
                         // refUseRequestModalWithContactInfo(bot, message);
 
+                        // this is for to check that this RR Account has both Active & Inactive Contacts 
+                        // as we display them in different select box.
                         if (pvt_metadata.activeContacts && pvt_metadata.inactiveContacts) {
                             let state;
                             pvt_metadata.Contacts.forEach(con => {
@@ -2031,6 +2079,12 @@ module.exports = controller => {
                                 }
                             })
 
+                            /**
+                             * this is for inital options selected by user as user comes from Edit Contact Modal to here
+                             * so as we have difference select box of Contact - Active, Inactive
+                             * we need to check selected contact is in Active select box or in Inactive box 
+                             * to automatically display that selected contact from these select box
+                             */
                             if (state == "Active") {
                                 bot.httpBody({
                                     response_action: 'update',
@@ -2457,6 +2511,8 @@ module.exports = controller => {
                                 });
                             }
                         } else if (pvt_metadata.activeContacts || pvt_metadata.inactiveContacts) {
+                            // this is for only one type Contacts - Active/Inactive in RR Account 
+                            // so we need to display only one select box
                             let tmpCons, label;
 
                             if (pvt_metadata.activeContact) {
@@ -2667,6 +2723,9 @@ module.exports = controller => {
         }
     );
 
+    /**
+     * this controller called when we click on button in Slack
+     */
     controller.on('interactive_message_callback,block_actions',
         async (bot, message) => {
             console.log('interactive_message_callback, block_actions');
@@ -2682,6 +2741,9 @@ module.exports = controller => {
                         console.log('MESSAGE 1281 EARS', message.actions[0].block_id, message.actions[0].action_id);
 
                         if (message.actions[0].block_id == 'refUseReqMainBlock' && message.actions[0].action_id == 'refUseReqMainBlock') {
+                            /**
+                             * this is from where our main modal of p2p request display as user Click on Approve/Decline button in chat 
+                             */
                             console.log('IN refUseReqMainBlock EARS 1536');
                             console.log('RRAID EARS', message.actions[0].value);
                             let obj = await getRefUseReqModal(existingConn, message.actions[0].value);
@@ -3105,6 +3167,10 @@ module.exports = controller => {
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
 
                             if (pvt_metadata.isUpdateable === "true") {
+                                /**
+                                 * this is to display already selected option of to Update Contact by User
+                                 * so we pass initial value of that checkbox
+                                 */
                                 await bot.api.views.push({
                                     trigger_id: message.trigger_id,
                                     view: {
@@ -3217,6 +3283,7 @@ module.exports = controller => {
                                     }
                                 });
                             } else {
+                                // this is for not selected checkbox
                                 await bot.api.views.push({
                                     trigger_id: message.trigger_id,
                                     view: {
