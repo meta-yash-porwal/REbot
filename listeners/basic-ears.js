@@ -2753,7 +2753,7 @@ module.exports = controller => {
                                     pvt_metadata.rraId = message.actions[0].value;
                                     pvt_metadata.isUpdateable = false;
 
-                                    if (pvt_metadata.activeContacts && pvt_metadata.inactiveContacts) {
+                                    if (pvt_metadata.activeContacts.length && pvt_metadata.inactiveContacts.length) {
                                         await bot.api.views.open({
                                             trigger_id: message.trigger_id,
                                             view: {
@@ -2871,7 +2871,7 @@ module.exports = controller => {
                                                 ]
                                             }
                                         });
-                                    } else if (pvt_metadata.activeContacts || pvt_metadata.inactiveContacts) {
+                                    } else if (pvt_metadata.activeContacts.length || pvt_metadata.inactiveContacts.length) {
                                         let tmpCons, label;
 
                                         if (pvt_metadata.activeContact) {
