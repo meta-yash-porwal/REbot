@@ -830,7 +830,7 @@ module.exports = controller => {
                 pvt_metadata.Id = selConId;
             }
 
-            if (pvt_metadata.activeContacts && pvt_metadata.inactiveContacts) {
+            if (pvt_metadata.activeContacts.length && pvt_metadata.inactiveContacts.length) {
                 // console.log('pvtDATA ', pvt_metadata);
                 await bot.api.views.update({
                     view_id: message.view.id,
@@ -1036,13 +1036,13 @@ module.exports = controller => {
                         ]
                     }
                 });
-            } else if (pvt_metadata.activeContacts || pvt_metadata.inactiveContacts) {
+            } else if (pvt_metadata.activeContacts.length || pvt_metadata.inactiveContacts.length) {
                 let tmpCons, label;
 
-                if (pvt_metadata.activeContact) {
+                if (pvt_metadata.activeContact.length) {
                     tmpCons = pvt_metadata.activeContact;
                     label = "Select an existing program member....";
-                } else if (pvt_metadata.inactiveContacts) {
+                } else if (pvt_metadata.inactiveContacts.length) {
                     tmpCons = pvt_metadata.inactiveContacts;
                     label = "or add another contact to the reference program";
                 }
@@ -2068,7 +2068,7 @@ module.exports = controller => {
 
                         // this is for to check that this RR Account has both Active & Inactive Contacts 
                         // as we display them in different select box.
-                        if (pvt_metadata.activeContacts && pvt_metadata.inactiveContacts) {
+                        if (pvt_metadata.activeContacts.length && pvt_metadata.inactiveContacts.length) {
                             let state;
                             pvt_metadata.Contacts.forEach(con => {
 
@@ -2508,15 +2508,15 @@ module.exports = controller => {
                                     }
                                 });
                             }
-                        } else if (pvt_metadata.activeContacts || pvt_metadata.inactiveContacts) {
+                        } else if (pvt_metadata.activeContacts.length || pvt_metadata.inactiveContacts.length) {
                             // this is for only one type Contacts - Active/Inactive in RR Account 
                             // so we need to display only one select box
                             let tmpCons, label;
 
-                            if (pvt_metadata.activeContact) {
+                            if (pvt_metadata.activeContacts.length) {
                                 tmpCons = pvt_metadata.activeContact;
                                 label = "Select an existing program member....";
-                            } else if (pvt_metadata.inactiveContacts) {
+                            } else if (pvt_metadata.inactiveContacts.length) {
                                 tmpCons = pvt_metadata.inactiveContacts;
                                 label = "or add another contact to the reference program";
                             }
