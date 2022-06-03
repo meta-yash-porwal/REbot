@@ -1037,12 +1037,14 @@ module.exports = controller => {
                     }
                 });
             } else if (pvt_metadata.activeContacts.length || pvt_metadata.inactiveContacts.length) {
+                console.log('In this if of ONE');
                 let tmpCons, label;
 
-                if (pvt_metadata.activeContact.length) {
+                if (pvt_metadata.activeContacts.length) {
                     tmpCons = pvt_metadata.activeContact;
                     label = "Select an existing program member....";
                 } else if (pvt_metadata.inactiveContacts.length) {
+                    console.log('In this if of ONE 2');
                     tmpCons = pvt_metadata.inactiveContacts;
                     label = "or add another contact to the reference program";
                 }
