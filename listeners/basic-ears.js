@@ -1041,7 +1041,7 @@ module.exports = controller => {
                 let tmpCons, label;
 
                 if (pvt_metadata.activeContacts.length) {
-                    tmpCons = pvt_metadata.activeContact;
+                    tmpCons = pvt_metadata.activeContacts;
                     label = "Select an existing program member....";
                 } else if (pvt_metadata.inactiveContacts.length) {
                     console.log('In this if of ONE 2');
@@ -2516,7 +2516,7 @@ module.exports = controller => {
                             let tmpCons, label;
 
                             if (pvt_metadata.activeContacts.length) {
-                                tmpCons = pvt_metadata.activeContact;
+                                tmpCons = pvt_metadata.activeContacts;
                                 label = "Select an existing program member....";
                             } else if (pvt_metadata.inactiveContacts.length) {
                                 tmpCons = pvt_metadata.inactiveContacts;
@@ -2876,10 +2876,10 @@ module.exports = controller => {
                                     } else if (pvt_metadata.activeContacts.length || pvt_metadata.inactiveContacts.length) {
                                         let tmpCons, label;
 
-                                        if (pvt_metadata.activeContact) {
-                                            tmpCons = pvt_metadata.activeContact;
+                                        if (pvt_metadata.activeContacts.length) {
+                                            tmpCons = pvt_metadata.activeContacts;
                                             label = "Select an existing program member....";
-                                        } else if (pvt_metadata.inactiveContacts) {
+                                        } else if (pvt_metadata.inactiveContacts.length) {
                                             tmpCons = pvt_metadata.inactiveContacts;
                                             label = "or add another contact to the reference program";
                                         }
