@@ -85,7 +85,11 @@ module.exports = controller => {
 
                         if (msg.userEmail) {
                             console.log('...getting userData...');
-
+                            const userList = await bot.api.users.list({
+                                token: teams[index].bot.token
+                            });
+                            console.log("List", userList);
+                            
                             const userData = await bot.api.users.lookupByEmail({//Bot token - users:read.email
                                 token: teams[index].bot.token,
                                 email: msg.userEmail
