@@ -80,16 +80,18 @@ module.exports = controller => {
                     if (!isTeamMigrating) {
                         console.log('...spawning bot...');
                         const bot = await controller.spawn(teams[index].id);
-                        console.log(".......... ", bot.api.users);
+                        // console.log(".......... ", bot.api.users);
+
+                        const userList = await bot.api.users.list({
+                            token: teams[index].bot.token
+                        });
+                        console.log("List", userList);
+                        
                         console.log('...spawning bot2...');
 
                         if (msg.userEmail) {
                             console.log('...getting userData...');
-                            const userList = await bot.api.users.list({
-                                token: teams[index].bot.token
-                            });
-                            console.log("List", userList);
-                            
+
                             const userData = await bot.api.users.lookupByEmail({//Bot token - users:read.email
                                 token: teams[index].bot.token,
                                 email: msg.userEmail
