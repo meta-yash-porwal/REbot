@@ -68,6 +68,7 @@ module.exports = controller => {
             try {
                 let teamIdsArray = reqBody.teamId.split(',');
                 const teams = await controller.plugins.database.teams.find({ id: { $in: teamIdsArray } });
+                console.log('TEAMS ', teams);
 
                 if (!teams) {
                     return logger.log('team not found for id:', reqBody.teamId);
@@ -84,7 +85,7 @@ module.exports = controller => {
 
                         if (msg.userEmail) {
                             console.log('...getting userData...');
-                            
+
                             const userData = await bot.api.users.lookupByEmail({//Bot token - users:read.email
                                 token: teams[index].bot.token,
                                 email: msg.userEmail
