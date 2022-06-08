@@ -79,20 +79,16 @@ module.exports = controller => {
                     if (!isTeamMigrating) {
                         console.log('...spawning bot...');
                         const bot = await controller.spawn(teams[index].id);
+                        console.log(".......... ", bot.api.users);
                         console.log('...spawning bot2...');
 
                         if (msg.userEmail) {
                             console.log('...getting userData...');
-
-                            // try {
+                            
                             const userData = await bot.api.users.lookupByEmail({//Bot token - users:read.email
                                 token: teams[index].bot.token,
                                 email: msg.userEmail
                             });
-                            // } catch (err) {
-                            //     console.log('Error in lookupByEmail EARS 88');
-                            //     logger.log(err);
-                            // }
 
                             if (!userData || !userData.user) {
                                 return logger.log('user not found in team ' + teams[index].id + ' for email:', msg.userEmail);
