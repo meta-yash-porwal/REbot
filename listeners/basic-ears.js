@@ -68,7 +68,6 @@ module.exports = controller => {
             try {
                 let teamIdsArray = reqBody.teamId.split(',');
                 const teams = await controller.plugins.database.teams.find({ id: { $in: teamIdsArray } });
-                console.log('TEAMS ', teams);
 
                 if (!teams) {
                     return logger.log('team not found for id:', reqBody.teamId);
@@ -80,12 +79,10 @@ module.exports = controller => {
                     if (!isTeamMigrating) {
                         console.log('...spawning bot...');
                         const bot = await controller.spawn(teams[index].id);
-                        // console.log(".......... ", bot.api.users);
 
                         const userList = await bot.api.users.list({
                             token: teams[index].bot.token
                         });
-                        console.log("List", userList);
                         
                         console.log('...spawning bot2...');
 
@@ -1799,6 +1796,11 @@ module.exports = controller => {
                         let requestStatus = message.view.state.values.approveDeclineBlock && message.view.state.values.approveDeclineBlock.approveDeclineRadio
                             ? message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value : "";
 
+                        // validation for contact - email & phone number
+                        if (selCon && requestStatus !== "Decline") {
+                            requestStatus = pvt_metadata.Email && pvt_metadata.Phone ? requestStatus : "";
+                        }
+
                         // selCon is not null & empty 
                         if (selCon && requestStatus === "Approve") {
                             pvt_metadata.Id = selCon;
@@ -1926,13 +1928,30 @@ module.exports = controller => {
                                 }
                             });
                         } else {
-                            //display error if user click submit button without selecting any Contact from select boxes in Main Block (Reference Use Request)
-                            bot.httpBody({
-                                "response_action": "errors",
-                                "errors": {
-                                    "blkCon1": "Please select a contact"
-                                }
-                            });
+
+                            if (!selCon) {
+                                //display error if user click submit button without selecting any Contact from select boxes in Main Block (Reference Use Request)
+                                bot.httpBody({
+                                    "response_action": "errors",
+                                    "errors": {
+                                        "blkCon1": "A contact must be selected before approving a request."
+                                    }
+                                });
+                            } else if (message.view.state.values.blkCon2) {
+                                bot.httpBody({
+                                    "response_action": "errors",
+                                    "errors": {
+                                        "blkCon2": "Email and Phone number must be provided when you approve a request."
+                                    }
+                                });
+                            } else {
+                                bot.httpBody({
+                                    "response_action": "errors",
+                                    "errors": {
+                                        "blkCon1": "Email and Phone number must be provided when you approve a request."
+                                    }
+                                });
+                            }
                         }
                     } else if (message.view.callback_id == 'approvePopup') {
                         //this is the final popup to confirm that user want to approve the Request
