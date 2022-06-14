@@ -1133,7 +1133,7 @@ module.exports = controller => {
                             },
                             {
                                 "type": "input",
-                                "optional": true,
+                                "optional": false,
                                 "block_id": "blkCon1",
                                 "dispatch_action": true,
                                 "element": {
@@ -2753,7 +2753,35 @@ module.exports = controller => {
 
                             if (obj) {
 
-                                if (!obj.ApproveWithoutContact) {
+                                if (obj.Approved_Declined) {
+                                    await bot.api.views.open({
+                                        trigger_id: message.trigger_id,
+                                        view: {
+                                            "type": "modal",
+                                            "notify_on_close": true,
+                                            "clear_on_close": true,
+                                            "close": {
+                                                "type": "plain_text",
+                                                "text": "Close",
+                                                "emoji": true
+                                            },
+                                            "title": {
+                                                "type": "plain_text",
+                                                "text": "Reference Use Request",
+                                                "emoji": true
+                                            },
+                                            "blocks": [
+                                                {
+                                                    "type": "section",
+                                                    "text": {
+                                                        "text": "The approve/decline action has already been processed for this request OR the deadline for response has passed. No further modification is possible at this time.",
+                                                        "type": "plain_text"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    });
+                                } else if (!obj.ApproveWithoutContact) {
                                     let pvt_metadata = forActiveInactiveCons(obj);
                                     pvt_metadata.rraId = message.actions[0].value;
                                     pvt_metadata.isUpdateable = false;
