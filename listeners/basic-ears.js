@@ -3174,11 +3174,6 @@ module.exports = controller => {
                                             "text": {
                                                 "type": "mrkdwn",
                                                 "text": "*" + con + "*\n" + obj[con]
-                                            },
-                                            "type": "section",
-                                            "text": {
-                                                "type": "mrkdwn",
-                                                    "text": " "
                                             }
                                         };
                                         jsonArray.push(entry);
