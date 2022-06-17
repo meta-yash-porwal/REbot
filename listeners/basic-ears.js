@@ -2052,9 +2052,9 @@ module.exports = controller => {
                         }
                         submitP2PRequest(existingConn, approveData);
                         //then clear the screen
-                        bot.httpBody({
+                        /* bot.httpBody({
                             "response_action": "clear"
-                        });
+                        }); */
                     } else if (message.view.callback_id == 'declineRequest') {
                         /* it sends(post) data to Salesforce from refedge.js function of
                         rraId(Reference Request Id), Notes, type
@@ -2066,9 +2066,9 @@ module.exports = controller => {
                         approveData.notes = pvt_metadata.Notes;
                         approveData.type = 'Decline';
                         submitP2PRequest(existingConn, approveData);
-                        bot.httpBody({
+                        /* bot.httpBody({
                             "response_action": "clear"
-                        });
+                        }); */
                     } else if (message.view.callback_id == 'refUseReqMainBlockWithContacts') {
                         /* this part use in when user click on submit button of Edit Contact Modal
                         then we update the values of Title, Email & Phone of Contact if user change
@@ -2113,7 +2113,7 @@ module.exports = controller => {
                                     view: {
                                         "type": "modal",
                                         "callback_id": "AD_Modal",
-                                        "notify_on_close": true,
+                                        // "notify_on_close": true,
                                         "clear_on_close": true,
                                         "private_metadata": JSON.stringify(pvt_metadata),
                                         "submit": {
@@ -2325,7 +2325,7 @@ module.exports = controller => {
                                     view: {
                                         "type": "modal",
                                         "callback_id": "AD_Modal",
-                                        "notify_on_close": true,
+                                        // "notify_on_close": true,
                                         "clear_on_close": true,
                                         "private_metadata": JSON.stringify(pvt_metadata),
                                         "submit": {
@@ -2549,7 +2549,7 @@ module.exports = controller => {
                                 view: {
                                     "type": "modal",
                                     "callback_id": "AD_Modal",
-                                    "notify_on_close": true,
+                                    // "notify_on_close": true,
                                     "clear_on_close": true,
                                     "private_metadata": JSON.stringify(pvt_metadata),
                                     // "submit_disabled": true,
@@ -2777,7 +2777,7 @@ module.exports = controller => {
                                         trigger_id: message.trigger_id,
                                         view: {
                                             "type": "modal",
-                                            "notify_on_close": true,
+                                            // "notify_on_close": true,
                                             "clear_on_close": true,
                                             "close": {
                                                 "type": "plain_text",
@@ -2811,9 +2811,8 @@ module.exports = controller => {
                                             view: {
                                                 "type": "modal",
                                                 "callback_id": "AD_Modal",
-                                                "notify_on_close": true,
+                                                // "notify_on_close": true,
                                                 "clear_on_close": true,
-                                                // "submit_disabled": true,
                                                 "private_metadata": JSON.stringify(pvt_metadata),
                                                 "submit": {
                                                     "type": "plain_text",
@@ -2938,7 +2937,7 @@ module.exports = controller => {
                                             view: {
                                                 "type": "modal",
                                                 "callback_id": "AD_Modal",
-                                                "notify_on_close": true,
+                                                // "notify_on_close": true,
                                                 "clear_on_close": true,
                                                 "private_metadata": JSON.stringify(pvt_metadata),
                                                 "submit": {
@@ -3039,7 +3038,7 @@ module.exports = controller => {
                                         view: {
                                             "type": "modal",
                                             "callback_id": "AD_Modal",
-                                            "notify_on_close": true,
+                                            // "notify_on_close": true,
                                             "clear_on_close": true,
                                             "private_metadata": JSON.stringify(pvt_metadata),
                                             "submit": {
@@ -3175,6 +3174,11 @@ module.exports = controller => {
                                             "text": {
                                                 "type": "mrkdwn",
                                                 "text": "*" + con + "*\n" + obj[con]
+                                            },
+                                            "type": "section",
+                                            "text": {
+                                                "type": "mrkdwn",
+                                                    "text": " "
                                             }
                                         };
                                         jsonArray.push(entry);
@@ -3195,7 +3199,6 @@ module.exports = controller => {
                                             "emoji": true
                                         },
                                         "type": "modal",
-                                        // "notify_on_close": true,
                                         "clear_on_close": true,
                                         "close": {
                                             "type": "plain_text",
