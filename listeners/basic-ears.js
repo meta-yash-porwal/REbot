@@ -1830,7 +1830,7 @@ module.exports = controller => {
                                     "private_metadata": JSON.stringify(pvt_metadata),
                                     "close": {
                                         "type": "plain_text",
-                                        "text": "Cancel",
+                                        "text": "Close",
                                         "emoji": true
                                     },
                                     "blocks": [
@@ -1914,7 +1914,7 @@ module.exports = controller => {
                                     "callback_id": popup,
                                     "close": {
                                         "type": "plain_text",
-                                        "text": "Cancel",
+                                        "text": "Close",
                                         "emoji": true
                                     },
                                     "blocks": [
