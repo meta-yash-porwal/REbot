@@ -1797,7 +1797,7 @@ module.exports = controller => {
                         }
                         let requestStatus;
 
-                        if (metadata.Contacts.length) {
+                        if (pvt_metadata.Contacts.length) {
                             requestStatus = message.view.state.values.approveDeclineBlock && message.view.state.values.approveDeclineBlock.approveDeclineRadio
                                 ? message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value : "";
                         } else {
