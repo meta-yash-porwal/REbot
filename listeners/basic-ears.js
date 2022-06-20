@@ -2080,6 +2080,8 @@ module.exports = controller => {
                         console.log('HELLO MetaData', pvt_metadata.isUpdateable);
                         pvt_metadata.Title = message.view.state.values.conTitleBlock && message.view.state.values.conTitleBlock.conTitle
                             ? message.view.state.values.conTitleBlock.conTitle.value : pvt_metadata.Title;
+                        // as title is showing null on Modal.
+                        pvt_metadata.Title = pvt_metadata.Title ? pvt_metadata.Title : "";
                         pvt_metadata.Email = message.view.state.values.conEmailBlock && message.view.state.values.conEmailBlock.conEmail
                             ? message.view.state.values.conEmailBlock.conEmail.value : pvt_metadata.Email;
                         pvt_metadata.Phone = message.view.state.values.conPhoneBlock && message.view.state.values.conPhoneBlock.conPhone
