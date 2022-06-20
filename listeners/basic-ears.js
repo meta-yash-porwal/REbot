@@ -1038,15 +1038,13 @@ module.exports = controller => {
                 });
             } else if (pvt_metadata.activeContacts.length || pvt_metadata.inactiveContacts.length) {
                 console.log('In this if of ONE');
-                let tmpCons, label;
+                let tmpCons, label = "Select a contact";
 
                 if (pvt_metadata.activeContacts.length) {
                     tmpCons = pvt_metadata.activeContacts;
-                    label = "Select an existing program member....";
                 } else if (pvt_metadata.inactiveContacts.length) {
                     console.log('In this if of ONE 2');
                     tmpCons = pvt_metadata.inactiveContacts;
-                    label = "or add another contact to the reference program";
                 }
                 await bot.api.views.update({
                     view_id: message.view.id,
@@ -2550,14 +2548,12 @@ module.exports = controller => {
                         } else if (pvt_metadata.activeContacts.length || pvt_metadata.inactiveContacts.length) {
                             // this is for only one type Contacts - Active/Inactive in RR Account 
                             // so we need to display only one select box
-                            let tmpCons, label;
+                            let tmpCons, label = "Select a contact";
 
                             if (pvt_metadata.activeContacts.length) {
                                 tmpCons = pvt_metadata.activeContacts;
-                                label = "Select an existing program member....";
                             } else if (pvt_metadata.inactiveContacts.length) {
                                 tmpCons = pvt_metadata.inactiveContacts;
-                                label = "or add another contact to the reference program";
                             }
                             bot.httpBody({
                                 response_action: 'update',
@@ -2938,14 +2934,12 @@ module.exports = controller => {
                                                 }
                                             });
                                         } else if (pvt_metadata.activeContacts.length || pvt_metadata.inactiveContacts.length) {
-                                            let tmpCons, label;
+                                            let tmpCons, label = "Select a contact";
     
                                             if (pvt_metadata.activeContacts.length) {
                                                 tmpCons = pvt_metadata.activeContacts;
-                                                label = "Select an existing program member....";
                                             } else if (pvt_metadata.inactiveContacts.length) {
                                                 tmpCons = pvt_metadata.inactiveContacts;
-                                                label = "or add another contact to the reference program";
                                             }
                                             await bot.api.views.open({
                                                 trigger_id: message.trigger_id,
@@ -3199,14 +3193,12 @@ module.exports = controller => {
                                             }
                                         });
                                     } else if (pvt_metadata.activeContacts.length || pvt_metadata.inactiveContacts.length) {
-                                        let tmpCons, label;
+                                        let tmpCons, label = "Select a contact";
 
                                         if (pvt_metadata.activeContacts.length) {
                                             tmpCons = pvt_metadata.activeContacts;
-                                            label = "Select an existing program member....";
                                         } else if (pvt_metadata.inactiveContacts.length) {
                                             tmpCons = pvt_metadata.inactiveContacts;
-                                            label = "or add another contact to the reference program";
                                         }
                                         await bot.api.views.open({
                                             trigger_id: message.trigger_id,
@@ -3639,6 +3631,10 @@ module.exports = controller => {
                             console.log('In editContactModal & editContactBlock EARS 2232');
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
 
+                            /**
+                             * this if condition is to check that isUpdate checked or not 
+                             * if checked then display check on modal and vice-versa.
+                             */
                             if (pvt_metadata.isUpdateable === "true") {
                                 /**
                                  * this is to display already selected option of to Update Contact by User
