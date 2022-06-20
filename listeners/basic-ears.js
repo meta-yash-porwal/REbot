@@ -3395,6 +3395,7 @@ module.exports = controller => {
                                                     },
                                                     {
                                                         "type": "actions",
+                                                        "dispatch_action": true,
                                                         "block_id": "approveDeclineBlock",
                                                         "elements": [
                                                             {
@@ -3961,7 +3962,7 @@ module.exports = controller => {
                                 });
                             } else if (requestStatus == "Approve") {
                                 let pvt_metadata = JSON.parse(message.view.private_metadata);
-                                
+
                                 if (pvt_metadata.activeContacts.length && pvt_metadata.inactiveContacts.length) {
                                     await bot.api.views.open({
                                         view_id: message.view.id,
