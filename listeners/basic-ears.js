@@ -3342,6 +3342,11 @@ module.exports = controller => {
                                                     "text": "Close",
                                                     "emoji": true
                                                 },
+                                                "submit": {
+                                                    "type": "plain_text",
+                                                    "text": "Next",
+                                                    "emoji": true
+                                                },
                                                 "title": {
                                                     "type": "plain_text",
                                                     "text": "Reference Use Request",
