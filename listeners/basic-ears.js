@@ -3981,7 +3981,6 @@ module.exports = controller => {
                                     view_id: message.view.id,
                                     view: {
                                         "type": "modal",
-                                        "callback_id": "AD_Modal",
                                         // "notify_on_close": true,
                                         "clear_on_close": true,
                                         "private_metadata": JSON.stringify(pvt_metadata),
@@ -4065,7 +4064,7 @@ module.exports = controller => {
                                                                 "value": "Decline"
                                                             }
                                                         ],
-                                                        "action_id": "approveDeclineBlockForNoContacts",
+                                                        "action_id": "approveDeclineRadioForNoContacts",
                                                         "initial_option": {
                                                             "value": "Approve",
                                                             "text": {
