@@ -1795,8 +1795,14 @@ module.exports = controller => {
                                 message.view.state.values.blkCon2.con_select2.selected_option ?
                                     message.view.state.values.blkCon2.con_select2.selected_option.value : '';
                         }
-                        let requestStatus = message.view.state.values.approveDeclineBlock && message.view.state.values.approveDeclineBlock.approveDeclineRadio
-                            ? message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value : "";
+                        let requestStatus;
+
+                        if (metadata.Contacts.length) {
+                            requestStatus = message.view.state.values.approveDeclineBlock && message.view.state.values.approveDeclineBlock.approveDeclineRadio
+                                ? message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value : "";
+                        } else {
+                            requestStatus = message.view.state.values.approveDeclineBlockForNoContacts.approveDeclineRadioForNoContacts.selected_option.value;
+                        }
 
                         // validation for contact - email & phone number
                         if (selCon && requestStatus !== "Decline") {
@@ -3333,18 +3339,12 @@ module.exports = controller => {
                                             trigger_id: message.trigger_id,
                                             view: {
                                                 "type": "modal",
-                                                "callback_id": "AD_Modal",
                                                 // "notify_on_close": true,
                                                 "clear_on_close": true,
                                                 "private_metadata": JSON.stringify(pvt_metadata),
                                                 "close": {
                                                     "type": "plain_text",
                                                     "text": "Close",
-                                                    "emoji": true
-                                                },
-                                                "submit": {
-                                                    "type": "plain_text",
-                                                    "text": "Next",
                                                     "emoji": true
                                                 },
                                                 "title": {
@@ -3861,8 +3861,10 @@ module.exports = controller => {
                                 });
                             }
                         } else if (message.actions[0].block_id == 'approveDeclineBlockForNoContacts' && message.actions[0].action_id == 'approveDeclineRadioForNoContacts') {
+                            console.log('In ApproveDeclineBlockForNoContacts & approveDeclineRadioForNoContacts');
                             
                             let requestStatus = message.view.state.values.approveDeclineBlockForNoContacts.approveDeclineRadioForNoContacts.selected_option.value;
+                            console.log('REQUEST status -', requestStatus);
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
 
                             if (requestStatus == "Decline") {
