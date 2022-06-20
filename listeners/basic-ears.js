@@ -3395,7 +3395,6 @@ module.exports = controller => {
                                                     },
                                                     {
                                                         "type": "actions",
-                                                        "dispatch_action": true,
                                                         "block_id": "approveDeclineBlock",
                                                         "elements": [
                                                             {
