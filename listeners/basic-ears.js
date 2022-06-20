@@ -837,7 +837,7 @@ module.exports = controller => {
                     view: {
                         "type": "modal",
                         "callback_id": "AD_Modal",
-                        "notify_on_close": true,
+                        // "notify_on_close": true,
                         "clear_on_close": true,
                         "private_metadata": JSON.stringify(pvt_metadata),
                         "submit": {
@@ -1053,7 +1053,7 @@ module.exports = controller => {
                     view: {
                         "type": "modal",
                         "callback_id": "AD_Modal",
-                        "notify_on_close": true,
+                        // "notify_on_close": true,
                         "clear_on_close": true,
                         "private_metadata": JSON.stringify(pvt_metadata),
                         // "submit_disabled": true,
@@ -1826,6 +1826,7 @@ module.exports = controller => {
                                         "emoji": true
                                     },
                                     "type": "modal",
+                                    "clear_on_close": true,
                                     "callback_id": "approvePopup",
                                     "private_metadata": JSON.stringify(pvt_metadata),
                                     "close": {
@@ -1910,6 +1911,7 @@ module.exports = controller => {
                                         "emoji": true
                                     },
                                     "type": "modal",
+                                    "clear_on_close": true,
                                     "private_metadata": JSON.stringify(pvt_metadata),
                                     "callback_id": popup,
                                     "close": {
@@ -1980,6 +1982,7 @@ module.exports = controller => {
                                     "emoji": true
                                 },
                                 "type": "modal",
+                                "clear_on_close": true,
                                 "private_metadata": JSON.stringify(pvt_metadata),
                                 "callback_id": "approveRequest",
                                 "close": {
@@ -2020,6 +2023,7 @@ module.exports = controller => {
                                     "emoji": true
                                 },
                                 "type": "modal",
+                                "clear_on_close": true,
                                 "private_metadata": JSON.stringify(pvt_metadata),
                                 "callback_id": "declineRequest",
                                 "close": {
@@ -2662,7 +2666,6 @@ module.exports = controller => {
                                         },
                                         {
                                             "type": "input",
-                                            "optional": true,
                                             "block_id": "blkCon1",
                                             "dispatch_action": true,
                                             "element": {
@@ -3048,7 +3051,7 @@ module.exports = controller => {
                                             view: {
                                                 "type": "modal",
                                                 "callback_id": "AD_Modal",
-                                                "notify_on_close": true,
+                                                // "notify_on_close": true,
                                                 "clear_on_close": true,
                                                 "private_metadata": JSON.stringify(pvt_metadata),
                                                 "submit": {
@@ -3655,6 +3658,7 @@ module.exports = controller => {
                                             "emoji": true
                                         },
                                         "type": "modal",
+                                        "clear_on_close": true,
                                         "callback_id": "refUseReqMainBlockWithContacts",
                                         "private_metadata": JSON.stringify(pvt_metadata),
                                         "close": {
@@ -3768,6 +3772,7 @@ module.exports = controller => {
                                             "emoji": true
                                         },
                                         "type": "modal",
+                                        "clear_on_close": true,
                                         "callback_id": "refUseReqMainBlockWithContacts",
                                         "private_metadata": JSON.stringify(pvt_metadata),
                                         "close": {
