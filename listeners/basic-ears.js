@@ -2368,6 +2368,31 @@ module.exports = controller => {
                                                 }
                                             },
                                             {
+                                                "type": "section",
+                                                "fields": [
+                                                    {
+                                                        "type": "mrkdwn",
+                                                        "text": "*Reference Account*\n" + pvt_metadata["Account Name"]
+                                                    },
+                                                    {
+                                                        "type": "mrkdwn",
+                                                        "text": "*Opportunity Account*\n" + pvt_metadata["Opportunity Account Name"]
+                                                    },
+                                                    {
+                                                        "type": "mrkdwn",
+                                                        "text": "*Reference Type*\n" + pvt_metadata["Reference Type"]
+                                                    },
+                                                    {
+                                                        "type": "mrkdwn",
+                                                        "text": "*Opportunity Name*\n" + pvt_metadata["Opportunity Name"]
+                                                    },
+                                                    {
+                                                        "type": "mrkdwn",
+                                                        "text": "*Requester*\n" + pvt_metadata["Requester Name"]
+                                                    }
+                                                ]
+                                            },
+                                            {
                                                 "type": "actions",
                                                 "block_id": "approveDeclineBlock",
                                                 "elements": [
@@ -2506,31 +2531,6 @@ module.exports = controller => {
                                             {
                                                 "type": "divider"
                                             },
-                                            {
-                                                "type": "section",
-                                                "fields": [
-                                                    {
-                                                        "type": "mrkdwn",
-                                                        "text": "*Reference Account*\n" + pvt_metadata["Account Name"]
-                                                    },
-                                                    {
-                                                        "type": "mrkdwn",
-                                                        "text": "*Opportunity Account*\n" + pvt_metadata["Opportunity Account Name"]
-                                                    },
-                                                    {
-                                                        "type": "mrkdwn",
-                                                        "text": "*Reference Type*\n" + pvt_metadata["Reference Type"]
-                                                    },
-                                                    {
-                                                        "type": "mrkdwn",
-                                                        "text": "*Opportunity Name*\n" + pvt_metadata["Opportunity Name"]
-                                                    },
-                                                    {
-                                                        "type": "mrkdwn",
-                                                        "text": "*Requester*\n" + pvt_metadata["Requester Name"]
-                                                    }
-                                                ]
-                                            },
                                         ]
                                     }
                                 });
@@ -2590,6 +2590,31 @@ module.exports = controller => {
                                                 "style": "primary",
                                                 "value": pvt_metadata.rraId
                                             }
+                                        },
+                                        {
+                                            "type": "section",
+                                            "fields": [
+                                                {
+                                                    "type": "mrkdwn",
+                                                    "text": "*Reference Account*\n" + pvt_metadata["Account Name"]
+                                                },
+                                                {
+                                                    "type": "mrkdwn",
+                                                    "text": "*Opportunity Account*\n" + pvt_metadata["Opportunity Account Name"]
+                                                },
+                                                {
+                                                    "type": "mrkdwn",
+                                                    "text": "*Reference Type*\n" + pvt_metadata["Reference Type"]
+                                                },
+                                                {
+                                                    "type": "mrkdwn",
+                                                    "text": "*Opportunity Name*\n" + pvt_metadata["Opportunity Name"]
+                                                },
+                                                {
+                                                    "type": "mrkdwn",
+                                                    "text": "*Requester*\n" + pvt_metadata["Requester Name"]
+                                                }
+                                            ]
                                         },
                                         {
                                             "type": "actions",
@@ -2708,31 +2733,6 @@ module.exports = controller => {
                                         },
                                         {
                                             "type": "divider"
-                                        },
-                                        {
-                                            "type": "section",
-                                            "fields": [
-                                                {
-                                                    "type": "mrkdwn",
-                                                    "text": "*Reference Account*\n" + pvt_metadata["Account Name"]
-                                                },
-                                                {
-                                                    "type": "mrkdwn",
-                                                    "text": "*Opportunity Account*\n" + pvt_metadata["Opportunity Account Name"]
-                                                },
-                                                {
-                                                    "type": "mrkdwn",
-                                                    "text": "*Reference Type*\n" + pvt_metadata["Reference Type"]
-                                                },
-                                                {
-                                                    "type": "mrkdwn",
-                                                    "text": "*Opportunity Name*\n" + pvt_metadata["Opportunity Name"]
-                                                },
-                                                {
-                                                    "type": "mrkdwn",
-                                                    "text": "*Requester*\n" + pvt_metadata["Requester Name"]
-                                                }
-                                            ]
                                         },
                                     ]
                                 }
