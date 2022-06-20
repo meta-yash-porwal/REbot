@@ -3858,8 +3858,8 @@ module.exports = controller => {
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
 
                             if (requestStatus == "Decline") {
-                                bot.httpBody({
-                                    response_action: 'update',
+                                await bot.api.views.update({
+                                    view_id: message.view.id,
                                     view: {
                                         "type": "modal",
                                         "callback_id": "AD_Modal",
@@ -3967,8 +3967,8 @@ module.exports = controller => {
                                 });
                             } else if (requestStatus == "Approve") {
 
-                                bot.httpBody({
-                                    response_action: 'update',
+                                await bot.api.views.update({
+                                    view_id: message.view.id,
                                     view: {
                                         "type": "modal",
                                         "callback_id": "AD_Modal",
