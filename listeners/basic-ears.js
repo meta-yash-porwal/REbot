@@ -1877,14 +1877,14 @@ module.exports = controller => {
                                             },
                                             "label": {
                                                 "type": "plain_text",
-                                                "text": "*Notes*",
+                                                "text": "Add a Note",
                                                 "emoji": true
                                             }
                                         }
                                     ]
                                 }
                             });
-                        } else if ((selCon || pvt_metadata.ApproveWithoutContact) && (requestStatus === "Decline" || requestStatus === "Approve")) {
+                        } else if (requestStatus === "Decline" || (requestStatus === "Approve" && (selCon || pvt_metadata.ApproveWithoutContact))) {
                             // this block is use in Decline Request & Approve Without Request (both - Approve/Decline)
                             console.log('In DECLINE NOTES MODAL ears 1389');
                             let popup = requestStatus === "Approve" ? "approvePopup" : "declinePopup";
@@ -1922,7 +1922,7 @@ module.exports = controller => {
                                             },
                                             "label": {
                                                 "type": "plain_text",
-                                                "text": "*Notes*",
+                                                "text": "Add a Note",
                                                 "emoji": true
                                             }
                                         }
