@@ -4083,9 +4083,6 @@ module.exports = controller => {
                                                 ]
                                             },
                                             {
-                                                "type": "divider"
-                                            },
-                                            {
                                                 "type": "section",
                                                 "text": {
                                                     "type": "mrkdwn",
