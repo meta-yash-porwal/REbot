@@ -2020,8 +2020,8 @@ module.exports = controller =>
                                                 "action_id": "contactnotes"
                                             },
                                             "label": {
-                                                "type": "mrkdwn",
-                                                "text": "*Add a Note*",
+                                                "type": "plain_text",
+                                                "text": "Add a Note",
                                                 "emoji": true
                                             }
                                         }
@@ -2067,8 +2067,8 @@ module.exports = controller =>
                                                 "action_id": "contactnotes"
                                             },
                                             "label": {
-                                                "type": "mrkdwn",
-                                                "text": "*Add a Note*",
+                                                "type": "plain_text",
+                                                "text": "Add a Note",
                                                 "emoji": true
                                             }
                                         }
