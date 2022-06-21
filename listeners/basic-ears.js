@@ -87,7 +87,7 @@ module.exports = controller => {
                         console.log('...spawning bot2...');
 
                         if (msg.userEmail) {
-                            console.log('...getting userData...');
+                            // console.log('...getting userData...');
 
                             const userData = await bot.api.users.lookupByEmail({//Bot token - users:read.email
                                 token: teams[index].bot.token,
@@ -97,15 +97,12 @@ module.exports = controller => {
                             if (!userData || !userData.user) {
                                 return logger.log('user not found in team ' + teams[index].id + ' for email:', msg.userEmail);
                             }
-                            console.log("msg.packageVersion", msg.packageVersion);
 
                             if (msg.packageVersion >= 2.29  && msg.text) {
-                                console.log('In NEW if with Package Version');
                                 let mestxt = msg.text.split("\n<https://");
                                 let url = mestxt[1];
                                 url = url.split('|Approve/Decline')[0];
                                 url = 'https://' + url;
-                                console.log('NEW url', url);
                                 url = new URL(url);
                                 let rraID = url.searchParams.get("id");
                                 await bot.startPrivateConversation(userData.user.id);
@@ -902,6 +899,9 @@ module.exports = controller => {
                                 ]
                             },
                             {
+                                "type": "divider"
+                            }, 
+                            {
                                 "type": "actions",
                                 "block_id": "approveDeclineBlock",
                                 "elements": [
@@ -1030,9 +1030,6 @@ module.exports = controller => {
                                     },
                                 ]
                             },
-                            {
-                                "type": "divider"
-                            }, 
                         ]
                     }
                 });
@@ -1114,6 +1111,9 @@ module.exports = controller => {
                                         "text": "*Requester*\n" + pvt_metadata["Requester Name"]
                                     }
                                 ]
+                            },
+                            {
+                                "type": "divider"
                             },
                             {
                                 "type": "actions",
@@ -1222,10 +1222,7 @@ module.exports = controller => {
                                         "text": "*Last Used*\n" + pvt_metadata.Last_Used,
                                     },
                                 ]
-                            },
-                            {
-                                "type": "divider"
-                            },
+                            }
                         ]
                     }
                 });
@@ -2062,9 +2059,12 @@ module.exports = controller => {
                         }
                         submitP2PRequest(existingConn, approveData);
                         //then clear the screen
-                        /* bot.httpBody({
+                        /**
+                         * to clear all modal which are in stack so that user does not get any modal which are in stack
+                         */
+                        bot.httpBody({
                             "response_action": "clear"
-                        }); */
+                        });
                     } else if (message.view.callback_id == 'declineRequest') {
                         /* it sends(post) data to Salesforce from refedge.js function of
                         rraId(Reference Request Id), Notes, type
@@ -2076,9 +2076,13 @@ module.exports = controller => {
                         approveData.notes = pvt_metadata.Notes;
                         approveData.type = 'Decline';
                         submitP2PRequest(existingConn, approveData);
-                        /* bot.httpBody({
+
+                        /**
+                         * to clear all modal which are in stack so that user does not get any modal which are in stack
+                         */
+                        bot.httpBody({
                             "response_action": "clear"
-                        }); */
+                        });
                     } else if (message.view.callback_id == 'refUseReqMainBlockWithContacts') {
                         /* this part use in when user click on submit button of Edit Contact Modal
                         then we update the values of Title, Email & Phone of Contact if user change
@@ -2189,6 +2193,9 @@ module.exports = controller => {
                                                     }
                                                 ]
                                             },
+                                            {
+                                                "type": "divider"
+                                            }, 
                                             {
                                                 "type": "actions",
                                                 "block_id": "approveDeclineBlock",
@@ -2324,11 +2331,7 @@ module.exports = controller => {
                                                         "text": "*Last Used*\n" + pvt_metadata.Last_Used,
                                                     },
                                                 ]
-                                            },
-                                            {
-                                                "type": "divider"
-                                            },
-                                            
+                                            }
                                         ]
                                     }
                                 });
@@ -2402,6 +2405,9 @@ module.exports = controller => {
                                                     }
                                                 ]
                                             },
+                                            {
+                                                "type": "divider"
+                                            }, 
                                             {
                                                 "type": "actions",
                                                 "block_id": "approveDeclineBlock",
@@ -2537,10 +2543,7 @@ module.exports = controller => {
                                                         "text": "*Last Used*\n" + pvt_metadata.Last_Used,
                                                     },
                                                 ]
-                                            },
-                                            {
-                                                "type": "divider"
-                                            },
+                                            }
                                         ]
                                     }
                                 });
@@ -2624,6 +2627,9 @@ module.exports = controller => {
                                                 }
                                             ]
                                         },
+                                        {
+                                            "type": "divider"
+                                        }, 
                                         {
                                             "type": "actions",
                                             "block_id": "approveDeclineBlock",
@@ -2737,10 +2743,7 @@ module.exports = controller => {
                                                     "text": "*Last Used*\n" + pvt_metadata.Last_Used,
                                                 },
                                             ]
-                                        },
-                                        {
-                                            "type": "divider"
-                                        },
+                                        }
                                     ]
                                 }
                             });
@@ -3494,6 +3497,31 @@ module.exports = controller => {
                                                     }
                                                 },
                                                 {
+                                                    "type": "section",
+                                                    "fields": [
+                                                        {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Reference Account*\n" + obj["Account Name"]
+                                                        },
+                                                        {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Opportunity Account*\n" + obj["Opportunity Account Name"]
+                                                        },
+                                                        {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Reference Type*\n" + obj["Reference Type"]
+                                                        },
+                                                        {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Opportunity Name*\n" + obj["Opportunity Name"]
+                                                        },
+                                                        {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Requester*\n" + obj["Requester Name"]
+                                                        }
+                                                    ]
+                                                },
+                                                {
                                                     "type": "divider"
                                                 },
                                                 {
@@ -3526,34 +3554,6 @@ module.exports = controller => {
                                                                     "text": "*Approve*"
                                                                 }
                                                             }
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "type": "divider"
-                                                },
-                                                {
-                                                    "type": "section",
-                                                    "fields": [
-                                                        {
-                                                            "type": "mrkdwn",
-                                                            "text": "*Reference Account*\n" + obj["Account Name"]
-                                                        },
-                                                        {
-                                                            "type": "mrkdwn",
-                                                            "text": "*Opportunity Account*\n" + obj["Opportunity Account Name"]
-                                                        },
-                                                        {
-                                                            "type": "mrkdwn",
-                                                            "text": "*Reference Type*\n" + obj["Reference Type"]
-                                                        },
-                                                        {
-                                                            "type": "mrkdwn",
-                                                            "text": "*Opportunity Name*\n" + obj["Opportunity Name"]
-                                                        },
-                                                        {
-                                                            "type": "mrkdwn",
-                                                            "text": "*Requester*\n" + obj["Requester Name"]
                                                         }
                                                     ]
                                                 }
