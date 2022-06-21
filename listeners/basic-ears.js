@@ -1878,8 +1878,8 @@ module.exports = controller => {
                                                 "action_id": "contactnotes"
                                             },
                                             "label": {
-                                                "type": "plain_text",
-                                                "text": "Add a Note",
+                                                "type": "mrkdwn",
+                                                "text": "*Add a Note*",
                                                 "emoji": true
                                             }
                                         }
@@ -1924,8 +1924,8 @@ module.exports = controller => {
                                                 "action_id": "contactnotes"
                                             },
                                             "label": {
-                                                "type": "plain_text",
-                                                "text": "Add a Note",
+                                                "type": "mrkdwn",
+                                                "text": "*Add a Note*",
                                                 "emoji": true
                                             }
                                         }
@@ -3308,6 +3308,9 @@ module.exports = controller => {
                                                         ]
                                                     },
                                                     {
+                                                        "type": "divider"
+                                                    },
+                                                    {
                                                         "type": "input",
                                                         "optional": false,
                                                         "block_id": "blkCon1",
@@ -3432,12 +3435,15 @@ module.exports = controller => {
                                                         ]
                                                     },
                                                     {
+                                                        "type": "divider"
+                                                    },
+                                                    {
                                                         "type": "section",
                                                         "text": {
                                                             "type": "mrkdwn",
                                                             "text": "The requested Account, " + obj["Account Name"] + ", does not have any associated Contacts."
                                                                      + "\nTo approve this request, please \n"
-                                                                     + "<http://www.example.com|add a contact to this Account in Salesforce> \n"
+                                                                     + "<" + pvt_metadata.ContactURL + "|add a contact to this Account in Salesforce> \n"
                                                                      + "then return here to complete the process."
                                                         }
                                                     }
@@ -4075,6 +4081,9 @@ module.exports = controller => {
                                                         }
                                                     }
                                                 ]
+                                            },
+                                            {
+                                                "type": "divider"
                                             },
                                             {
                                                 "type": "section",
