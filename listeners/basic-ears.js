@@ -116,11 +116,14 @@ module.exports = controller =>
                                 return logger.log('user not found in team ' + teams[index].id + ' for email:', msg.userEmail);
                             }
 
-                            if (msg.packageVersion >= 2.29 && msg.text)
+                            if (msg.packageVersion >= 2.30 && msg.text)
                             {
                                 let mestxt = msg.text.split("\n<https://");
+                                console.log('URL1', mestxt);
                                 let url = mestxt[1];
+                                console.log('URL2', url);
                                 url = url.split('|Approve/Decline')[0];
+                                console.log('URL3', url);
                                 url = 'https://' + url;
                                 url = new URL(url);
                                 let rraID = url.searchParams.get("id");
@@ -3618,8 +3621,7 @@ module.exports = controller =>
                                                             "type": "mrkdwn",
                                                             "text": "The requested Account, " + obj["Account Name"] + ", does not have any associated Contacts."
                                                                 + "\nTo approve this request, please \n"
-                                                                + "<" + pvt_metadata.ContactURL + "|add a contact to this Account in Salesforce> \n"
-                                                                + "then return here to complete the process."
+                                                                + "<" + pvt_metadata.ContactURL + "|add a contact to this Account in Salesforce>."
                                                         }
                                                     }
                                                 ]
