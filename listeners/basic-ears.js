@@ -2955,7 +2955,7 @@ module.exports = controller =>
                             console.log('RRAID EARS', message.actions[0].value);
                             let obj = await getRefUseReqModal(existingConn, message.actions[0].value);
 
-                            if (obj && Object.keys(obj).length === 0 && Object.getPrototypeOf(obj) === Object.prototype)
+                            if (obj && Object.keys(obj).length > 0 /* && Object.getPrototypeOf(obj) === Object.prototype */)
                             {
 
                                 if (obj.Approved_Declined)
