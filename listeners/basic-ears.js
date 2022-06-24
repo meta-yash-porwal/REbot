@@ -116,48 +116,50 @@ module.exports = controller =>
                                 return logger.log('user not found in team ' + teams[index].id + ' for email:', msg.userEmail);
                             }
 
-                            if (msg.packageVersion >= 2.30 && msg.text)
+                            if (msg.packageVersion >= 2.30 && msg.text && msg.text.includes("selectreferenceusecontact"))
                             {
                                 let mestxt = msg.text.split("\n<https://");
                                 console.log('URL1', mestxt);
                                 let url = mestxt[1];
                                 console.log('URL2', url);
-                                url = url.split('|Approve/Decline')[0];
+                                urlList = url.split('|');
+                                url = urlList[0];
+                                buttonText = urlList[1].slice(0, -1);
                                 console.log('URL3', url);
                                 url = 'https://' + url;
                                 url = new URL(url);
                                 let rraID = url.searchParams.get("id");
                                 await bot.startPrivateConversation(userData.user.id);
                                 await bot.say(
-                                    {
-                                        // "channel": "",
-                                        // "text": msg.text,
-                                        "blocks": [
-                                            {
-                                                "type": "section",
-                                                "text": {
-                                                    "type": "mrkdwn",
-                                                    "text": mestxt[0]
-                                                }
-                                            },
-                                            {
-                                                "type": "actions",
-                                                "block_id": "refUseReqMainBlock",
-                                                "elements": [
-                                                    {
-                                                        "type": "button",
-                                                        "text": {
-                                                            "type": "plain_text",
-                                                            "text": "Approve/Decline",
-                                                            "emoji": true
-                                                        },
-                                                        "value": rraID,
-                                                        "action_id": "refUseReqMainBlock"
-                                                    }
-                                                ]
+                                {
+                                    // "channel": "",
+                                    // "text": msg.text,
+                                    "blocks": [
+                                        {
+                                            "type": "section",
+                                            "text": {
+                                                "type": "mrkdwn",
+                                                "text": mestxt[0]
                                             }
-                                        ]
-                                    });
+                                        },
+                                        {
+                                            "type": "actions",
+                                            "block_id": "refUseReqMainBlock",
+                                            "elements": [
+                                                {
+                                                    "type": "button",
+                                                    "text": {
+                                                        "type": "plain_text",
+                                                        "text": buttonText,
+                                                        "emoji": true
+                                                    },
+                                                    "value": rraID,
+                                                    "action_id": "refUseReqMainBlock"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                });
                             } else
                             {
                                 console.log('...starting conversation...');
@@ -2953,7 +2955,7 @@ module.exports = controller =>
                             console.log('RRAID EARS', message.actions[0].value);
                             let obj = await getRefUseReqModal(existingConn, message.actions[0].value);
 
-                            if (obj)
+                            if (obj && Object.keys(obj).length === 0 && Object.getPrototypeOf(obj) === Object.prototype)
                             {
 
                                 if (obj.Approved_Declined)
