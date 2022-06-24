@@ -3752,7 +3752,7 @@ module.exports = controller =>
                         {
                             console.log('In Additional Modal EARS 1688');
                             let obj = await getAdditionalModal(existingConn, message.actions[0].value);
-                            if (obj)
+                            if (obj && Object.keys(obj).length > 0)
                             {
                                 let jsonArray = [];
                                 obj["Requester Notes"] = obj["Requester Notes"] ? obj["Requester Notes"] : '';
@@ -3801,7 +3801,6 @@ module.exports = controller =>
                                             "emoji": true
                                         },
                                         "type": "modal",
-                                        "clear_on_close": true,
                                         "close": {
                                             "type": "plain_text",
                                             "text": "Close",
@@ -3848,7 +3847,6 @@ module.exports = controller =>
                                             "emoji": true
                                         },
                                         "type": "modal",
-                                        "clear_on_close": true,
                                         "callback_id": "refUseReqMainBlockWithContacts",
                                         "private_metadata": JSON.stringify(pvt_metadata),
                                         "close": {
@@ -3963,7 +3961,6 @@ module.exports = controller =>
                                             "emoji": true
                                         },
                                         "type": "modal",
-                                        "clear_on_close": true,
                                         "callback_id": "refUseReqMainBlockWithContacts",
                                         "private_metadata": JSON.stringify(pvt_metadata),
                                         "close": {
