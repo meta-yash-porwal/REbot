@@ -899,42 +899,6 @@ module.exports = controller => {
                                 "type": "divider"
                             },
                             {
-                                "type": "actions",
-                                "block_id": "approveDeclineBlock",
-                                "elements": [
-                                    {
-                                        "type": "radio_buttons",
-                                        "options": [
-                                            {
-                                                "text": {
-                                                    "type": "mrkdwn",
-                                                    "text": "*Approve*"
-                                                },
-                                                "value": "Approve"
-                                            },
-                                            {
-                                                "text": {
-                                                    "type": "mrkdwn",
-                                                    "text": "*Decline*"
-                                                },
-                                                "value": "Decline"
-                                            }
-                                        ],
-                                        "action_id": "approveDeclineRadio",
-                                        "initial_option": {
-                                            "value": "Approve",
-                                            "text": {
-                                                "type": "mrkdwn",
-                                                "text": "*Approve*"
-                                            }
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "divider"
-                            },
-                            {
                                 "type": "input",
                                 "optional": true,
                                 "block_id": "blkCon1",
@@ -1027,6 +991,44 @@ module.exports = controller => {
                                     },
                                 ]
                             },
+                            {
+                                "type": "divider"
+                            },
+                            {
+                                "type": "actions",
+                                "block_id": "approveDeclineBlock",
+                                "elements": [
+                                    {
+                                        "type": "radio_buttons",
+                                        "options": [
+                                            {
+                                                "text": {
+                                                    "type": "mrkdwn",
+                                                    "text": "*Approve*"
+                                                },
+                                                "value": "Approve"
+                                            },
+                                            {
+                                                "text": {
+                                                    "type": "mrkdwn",
+                                                    "text": "*Decline*"
+                                                },
+                                                "value": "Decline"
+                                            }
+                                        ],
+                                        "action_id": "approveDeclineRadio",
+                                        "initial_option": {
+                                            "value": "Approve",
+                                            "text": {
+                                                "type": "mrkdwn",
+                                                "text": "*Approve*"
+                                            }
+                                        },
+                                        "focus_on_load": true 
+                                    }
+                                ]
+                            },
+
                         ]
                     }
                 });
@@ -1844,7 +1846,7 @@ module.exports = controller => {
                                     ]
                                 }
                             });
-                        } else if (requestStatus === "Decline" || (requestStatus === "Approve" && (selCon || pvt_metadata.ApproveWithoutContact))) {
+                        } else if (requestStatus === "Decline" || (requestStatus === "Approve" && pvt_metadata.ApproveWithoutContact)) {
                             // this block is use in Decline Request & Approve Without Request (both - Approve/Decline)
                             console.log('In DECLINE NOTES MODAL ears 1389');
                             let popup = requestStatus === "Approve" ? "approvePopup" : "declinePopup";
