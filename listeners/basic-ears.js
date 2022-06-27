@@ -6,61 +6,51 @@ const { getRefTypes, getOpp, getOppfromName, getOppfromAcc, saveTeamId, checkOrg
 const { checkTeamMigration } = require('../listeners/middleware/migration-filter');
 const text = require('body-parser/lib/types/text');
 
-module.exports = controller =>
-{
+module.exports = controller => {
 
     /**
      * Controller for Direct Message like Hello, Help & Connect to sf 
      */
     controller.on('direct_message,direct_mention',
-        async (bot, message) =>
-        {
+        async (bot, message) => {
 
-            try
-            {
+            try {
                 console.log('------direct mention---');
                 const supportUrl = `https://www.point-of-reference.com/contact/`;
                 let messageText = message.text ? message.text.toLowerCase() : '';
 
-                if (messageText.includes('hello'))
-                {
+                if (messageText.includes('hello')) {
                     console.log('IN Hello section');
                     await bot.replyEphemeral(message, `Hi, you can invite me to the channel for Customer Reference Team to receive updates!`);
                     console.log('End of Hello Section');
                 } else if (messageText == 'connect to a salesforce instance' || messageText == 'connect to sf'
-                    || (messageText.includes('connect') && messageText.includes('salesforce')))
-                {//|| message.intent === 'connect_to_sf'
+                    || (messageText.includes('connect') && messageText.includes('salesforce'))) {//|| message.intent === 'connect_to_sf'
                     console.log('In connect to sf section');
                     let existingConn = await connFactory.getConnection(message.team, controller);
 
-                    if (!existingConn)
-                    {
+                    if (!existingConn) {
                         console.log('For New Connection to SF-Slack 28 EARS');
                         const authUrl = connFactory.getAuthUrl(message.team);
                         await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
-                    } else
-                    {
+                    } else {
                         console.log('For Existing Connection');
                         /* await controller.plugins.database.orgs.delete(message.team);
                         const authUrl = connFactory.getAuthUrl(message.team);
                         await bot.reply(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`); */
                         await bot.beginDialog('sf_auth');
                     }
-                } else if (messageText.includes('help'))
-                {
+                } else if (messageText.includes('help')) {
                     console.log('IN help SECTION');
                     await bot.replyEphemeral(message,
                         `Hello, Referencebot here. I can help you find customer references, and deliver messages related to your customer reference requests. \n`
                         + `Use the /references command to start a search for reference accounts or reference content. \n`
                         + `Are you an administrator? I can connect you to a Salesforce instance. Just type "connect to a Salesforce instance" to get started. \n`
                         + `Please visit the <${supportUrl}|support page> if you have any further questions.`);
-                } else
-                {
+                } else {
                     console.log('NONE OF the aBOVe section');
                     await bot.replyEphemeral(message, `Sorry, I didn't understand that.`);
                 }
-            } catch (err)
-            {
+            } catch (err) {
                 console.log('CATCh of direct-mention');
                 logger.log(err);
             }
@@ -69,30 +59,24 @@ module.exports = controller =>
     /**
      * controller which is call when post message to chat/bot from Salesforce (like)
      */
-    controller.on('post-message', reqBody =>
-    {
+    controller.on('post-message', reqBody => {
         console.log('posting message for org----', reqBody.orgId);
 
-        reqBody.messages.forEach(async msg =>
-        {
+        reqBody.messages.forEach(async msg => {
             console.log('Message EARS LINE 63', msg);
 
-            try
-            {
+            try {
                 let teamIdsArray = reqBody.teamId.split(',');
                 const teams = await controller.plugins.database.teams.find({ id: { $in: teamIdsArray } });
 
-                if (!teams)
-                {
+                if (!teams) {
                     return logger.log('team not found for id:', reqBody.teamId);
                 }
 
-                for (let index = 0, len = teams.length; index < len; index++)
-                {
+                for (let index = 0, len = teams.length; index < len; index++) {
                     console.log('...checking migration...');
                     const isTeamMigrating = await checkTeamMigration(teams[index].id, controller);
-                    if (!isTeamMigrating)
-                    {
+                    if (!isTeamMigrating) {
                         console.log('...spawning bot...');
                         const bot = await controller.spawn(teams[index].id);
 
@@ -102,8 +86,7 @@ module.exports = controller =>
 
                         console.log('...spawning bot2...');
 
-                        if (msg.userEmail)
-                        {
+                        if (msg.userEmail) {
                             // console.log('...getting userData...');
 
                             const userData = await bot.api.users.lookupByEmail({//Bot token - users:read.email
@@ -111,13 +94,11 @@ module.exports = controller =>
                                 email: msg.userEmail
                             });
 
-                            if (!userData || !userData.user)
-                            {
+                            if (!userData || !userData.user) {
                                 return logger.log('user not found in team ' + teams[index].id + ' for email:', msg.userEmail);
                             }
 
-                            if (msg.packageVersion >= 2.30 && msg.text && msg.text.includes("selectreferenceusecontact"))
-                            {
+                            if (parseFloat(msg.packageVersion) >= 2.30 && msg.text && msg.text.includes("selectreferenceusecontact")) {
                                 let mestxt = msg.text.split("\n<https://");
                                 console.log('URL1', mestxt);
                                 let url = mestxt[1];
@@ -131,71 +112,64 @@ module.exports = controller =>
                                 let rraID = url.searchParams.get("id");
                                 await bot.startPrivateConversation(userData.user.id);
                                 await bot.say(
-                                {
-                                    // "channel": "",
-                                    // "text": msg.text,
-                                    "blocks": [
-                                        {
-                                            "type": "section",
-                                            "text": {
-                                                "type": "mrkdwn",
-                                                "text": mestxt[0]
-                                            }
-                                        },
-                                        {
-                                            "type": "actions",
-                                            "block_id": "refUseReqMainBlock",
-                                            "elements": [
-                                                {
-                                                    "type": "button",
-                                                    "text": {
-                                                        "type": "plain_text",
-                                                        "text": buttonText,
-                                                        "emoji": true
-                                                    },
-                                                    "value": rraID,
-                                                    "action_id": "refUseReqMainBlock"
+                                    {
+                                        // "channel": "",
+                                        // "text": msg.text,
+                                        "blocks": [
+                                            {
+                                                "type": "section",
+                                                "text": {
+                                                    "type": "mrkdwn",
+                                                    "text": mestxt[0]
                                                 }
-                                            ]
-                                        }
-                                    ]
-                                });
-                            } else
-                            {
+                                            },
+                                            {
+                                                "type": "actions",
+                                                "block_id": "refUseReqMainBlock",
+                                                "elements": [
+                                                    {
+                                                        "type": "button",
+                                                        "text": {
+                                                            "type": "plain_text",
+                                                            "text": buttonText,
+                                                            "emoji": true
+                                                        },
+                                                        "value": rraID,
+                                                        "action_id": "refUseReqMainBlock"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    });
+                            } else {
                                 console.log('...starting conversation...');
                                 await bot.startPrivateConversation(userData.user.id);
                                 await bot.say(msg.text);
                             }
-                        } else
-                        {
+                        } else {
                             console.log('....getting channels...');
                             const channels = await controller.plugins.database.channels.find({ team_id: teams[index].id });
-                            if (channels && channels.length > 0)
-                            {
+                            if (channels && channels.length > 0) {
                                 console.log('posting message in channel');
                                 await bot.startConversationInChannel(channels[0].id);
                                 await bot.say(msg.text);
                             }
                         }
-                    } else
-                    {
+                    } else {
                         logger.log(`cannot post message for team id ${teams[index].id}, this team is in migration `);
                     }
                 }
-            } catch (err)
-            {
+            } catch (err) {
                 logger.log(err);
             }
         });
     });
 
-    controller.on('app_home_opened', async (bot, event) =>
-    {
+    controller.on('app_home_opened', async (bot, event) => {
         console.log('----------App-home-opened---------');
         console.log('bot information');
 
-        try
-        {
+        try {
             // Call the conversations.history method.
             const result = await bot.api.conversations.history({//im:history
                 channel: event.channel
@@ -204,8 +178,7 @@ module.exports = controller =>
             let conversationHistory = result.messages;
             console.log('----------messages----------------');
 
-            if (conversationHistory.length <= 0)
-            {
+            if (conversationHistory.length <= 0) {
                 console.log('....posting first msg for new user......');
                 const support_page = 'https://www.point-of-reference.com/contact/';
                 await bot.say(`Hello, I'm Referencebot. I'm here to assist you with finding customer references, and to help deliver messages related to your reference requests from ReferenceEdge to you. \n`
@@ -215,29 +188,24 @@ module.exports = controller =>
                 );
                 console.log('.....message posted.....');
             }
-        } catch (error)
-        {
+        } catch (error) {
             console.log('--error in app home opened event--');
             console.error(error);
         }
 
     });
 
-    controller.on('app_uninstalled', async (ctrl, event) =>
-    {
+    controller.on('app_uninstalled', async (ctrl, event) => {
 
-        try
-        {
+        try {
             const channels = await controller.plugins.database.channels.find({ team_id: event.team });
 
-            if (channels && channels.length > 0)
-            {
+            if (channels && channels.length > 0) {
                 await controller.plugins.database.channels.delete(channels[0].id);
             }
             //controller.plugins.database.teams.delete(event.team_id); uncomment it if any issue.
             const existingConn = await connFactory.getConnection(event.team, controller);
-            if (existingConn)
-            {
+            if (existingConn) {
                 let teamData = { removeTeam: event.team };
                 saveTeamId(existingConn, teamData);
                 const revokeResult = await connFactory.revoke({
@@ -250,26 +218,22 @@ module.exports = controller =>
             const deletion_result = await controller.plugins.database.teams.delete(event.team);
             console.log('deletion result------');
             console.dir(deletion_result);
-        } catch (err)
-        {
+        } catch (err) {
             console.log('error occured during uninstall...');
             logger.log(err);
         }
     });
 
-    controller.on('oauth_success', async authData =>
-    {
+    controller.on('oauth_success', async authData => {
         console.log('******************-----/oauth_success/-----******************');
         console.log('-----/authData/-----')
 
-        try
-        {
+        try {
             let existingTeam = await controller.plugins.database.teams.get(authData.team.id);
 
             let isNew = false;
 
-            if (!existingTeam)
-            {
+            if (!existingTeam) {
                 console.log('....creating new team....');
                 isNew = true;
                 existingTeam = {
@@ -277,8 +241,7 @@ module.exports = controller =>
                     name: authData.team.name,
                     is_migrating: false
                 };
-            } else
-            {
+            } else {
                 console.log('found existing team...');
             }
             existingTeam.bot = {
@@ -290,21 +253,18 @@ module.exports = controller =>
             const savedTeam = await controller.plugins.database.teams.save(existingTeam);
             console.log('saved team');
             console.dir(savedTeam);
-            if (isNew)
-            {
+            if (isNew) {
                 console.log('....creation of crp channel.....');
                 let bot = await controller.spawn(authData.team.id);
                 controller.trigger('create_channel', bot, authData);
             }
-        } catch (err)
-        {
+        } catch (err) {
             console.log('-------error-----------');
             console.log(err);
         }
     });
 
-    controller.on('onboard', async (bot, params) =>
-    {
+    controller.on('onboard', async (bot, params) => {
         console.log('....onboarding message.....');
         const internal_url = 'slack://channel?team=' + params.teamId + '&id=' + params.channelId;
         const support_page = 'https://www.point-of-reference.com/contact/';
@@ -318,11 +278,9 @@ module.exports = controller =>
             + `Please visit the <${support_page}|support page> if you have any further questions.`);
     });
 
-    controller.on('create_channel', async (bot, authData) =>
-    {
+    controller.on('create_channel', async (bot, authData) => {
         console.log('******************-----/create_channel/-----******************');
-        try
-        {
+        try {
             let result = await bot.api.conversations.create({ //channels:manage
                 token: authData.access_token,
                 name: 'crp_team'
@@ -344,8 +302,7 @@ module.exports = controller =>
             };
             controller.trigger('onboard', bot, params);
 
-        } catch (err)
-        {
+        } catch (err) {
             console.log('error setting up crp_team channel:', err);
         }
     });
@@ -355,10 +312,8 @@ module.exports = controller =>
      */
     controller.on(
         'slash_command',
-        async (bot, message) =>
-        {
-            try
-            {
+        async (bot, message) => {
+            try {
                 console.log('slash_command');
                 let pvt_metadata = {
                     'email': '', 'isContentType': false, 'isRefType': false,
@@ -367,19 +322,16 @@ module.exports = controller =>
                 };
                 console.log('PVT_DATA 249 Ears');
 
-                if (message.text && message.text.toLowerCase() == 'help')
-                {
+                if (message.text && message.text.toLowerCase() == 'help') {
                     await bot.replyEphemeral(message,
                         `This command allows you to start a search for customer reference resources, without being in Salesforce.\n`
                         + `You’ll be taken to the Reference Search page where you can refine your search, request the use of an account, and, if enabled, share content.`
                     );
-                } else
-                {
+                } else {
                     let existingConn = await connFactory.getConnection(message.team, controller);
                     console.log('EXistingCONn 258 Ears');
 
-                    if (existingConn)
-                    {
+                    if (existingConn) {
                         const userProfile = await bot.api.users.info({//users.read scope
                             token: bot.api.token,
                             user: message.user
@@ -387,49 +339,39 @@ module.exports = controller =>
                         console.log('USER PROFILE 265 Ears', userProfile.user.profile.email);
                         console.log('.......checking org settings ....');
                         let response = null;
-                        try
-                        {
+                        try {
                             await getRefUseReqModal(existingConn, 'a0h1P000007TRDzQAO');
                             response = await checkOrgSettingAndGetData(existingConn, userProfile.user.profile.email);
                             console.log('RESponse 270 Ears', response);
 
-                            if (response !== 'both')
-                            {
+                            if (response !== 'both') {
 
                                 let temp = JSON.parse(response);
-                                if (temp.hasOwnProperty('action'))
-                                {//added in 2.26 release.
+                                if (temp.hasOwnProperty('action')) {//added in 2.26 release.
                                     response = temp.action;
                                     pvt_metadata.pkg_version = parseFloat(temp.pkg_version);
                                 }
                             }
-                        } catch (err)
-                        {
+                        } catch (err) {
                             response = 'both';
                             console.log('...exception in checking org... 286 EARS');
                             logger.log(err);
                         }
 
-                        if (response != 'false' && response != 'both')
-                        {
+                        if (response != 'false' && response != 'both') {
 
                             response = JSON.parse(response);
 
-                            if (!response.hasOwnProperty('account_search'))
-                            {
+                            if (!response.hasOwnProperty('account_search')) {
                                 let content_search = '';
-                                if (!response.hasOwnProperty('pkg_version'))
-                                {
+                                if (!response.hasOwnProperty('pkg_version')) {
                                     let contentData = processContentResponse(response);
                                     await opportunityFlow(bot, message, existingConn, pvt_metadata, userProfile.user.profile.email, contentData);
-                                } else
-                                {
-                                    if (response.hasOwnProperty('pkg_version'))
-                                    {
+                                } else {
+                                    if (response.hasOwnProperty('pkg_version')) {
                                         pvt_metadata.pkg_version = response.pkg_version;
                                         content_search = JSON.parse(response.content_search);
-                                    } else
-                                    {
+                                    } else {
                                         content_search = response.content_search;
                                     }
                                     let contentData = processContentResponse(content_search);
@@ -480,16 +422,13 @@ module.exports = controller =>
                                         }
                                     });
                                 }
-                            } else
-                            {
+                            } else {
                                 console.log('...Reftype flow...');
                                 let account_search = '';
-                                if (response.hasOwnProperty('pkg_version'))
-                                {
+                                if (response.hasOwnProperty('pkg_version')) {
                                     pvt_metadata.pkg_version = response.pkg_version;
                                     account_search = JSON.parse(response.account_search);
-                                } else
-                                {
+                                } else {
                                     account_search = response.account_search;
                                 }
                                 pvt_metadata.email = userProfile.user.profile.email;
@@ -539,8 +478,7 @@ module.exports = controller =>
 
                             }
                         }
-                        if (response == 'both')
-                        {
+                        if (response == 'both') {
                             console.log('...opening both view...');
                             pvt_metadata.email = userProfile.user.profile.email;
                             pvt_metadata.actionName = 'both';
@@ -613,14 +551,12 @@ module.exports = controller =>
 
                         console.log('open view');
 
-                    } else if (!existingConn)
-                    {
+                    } else if (!existingConn) {
                         const authUrl = connFactory.getAuthUrl(message.team);
                         await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
                     }
                 }
-            } catch (err)
-            {
+            } catch (err) {
                 console.log('...exception in opening view 1 ....');
                 logger.log(err);
             }
@@ -630,61 +566,51 @@ module.exports = controller =>
     /**
      * called this controller when click on close button on Modal which has 'notify_on_close' set to true
      */
-    controller.on('view_closed', async (bot, message) =>
-    {
+    controller.on('view_closed', async (bot, message) => {
         bot.httpBody({
             "response_action": "clear"
         });
 
     });
 
-    async function opportunityFlow(bot, message, existingConn, metadata, email, mapval)
-    {//actionName
+    async function opportunityFlow(bot, message, existingConn, metadata, email, mapval) {//actionName
         let refselected = metadata.refTypes;
         let contentTypeSelected = metadata.contentTypes;
         console.log('oppo flow..');
 
-        if (metadata.actionName == 'content_search' && metadata.pkg_version >= 2.26)
-        {
+        if (metadata.actionName == 'content_search' && metadata.pkg_version >= 2.26) {
             contentTypeSelected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null
                 ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
             let selectedValues = [];
-            contentTypeSelected.forEach(function (ref)
-            {
+            contentTypeSelected.forEach(function (ref) {
                 selectedValues.push(ref.value);
             });
             contentTypeSelected = selectedValues.join(',');
-        } else
-        {
+        } else {
             refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_option != null ? message.view.state.values.blkref.reftype_select.selected_option : 'NONE';
             refselected = refselected && refselected != 'NONE' && refselected != '' && refselected != null ? (refselected.value.indexOf('::') > -1 ? refselected.value.split('::')[1] : refselected.value) : '';
         }
         let openView = false;
         let viewObject = {};
 
-        if (!mapval)
-        {
-            if (metadata.actionName == 'account_search' && contentTypeSelected)
-            {
+        if (!mapval) {
+            if (metadata.actionName == 'account_search' && contentTypeSelected) {
                 metadata.actionName = 'both';
             }
             mapval = await getOpp(existingConn, email, metadata.actionName);
-        } else
-        {
+        } else {
             console.log('map val exists.');
             openView = true;
         }
         let searchURL = mapval['searchURL'];
         let opps = mapval['opp'];
 
-        if (opps != null && opps.length > 0 && opps.length < 10)
-        {
+        if (opps != null && opps.length > 0 && opps.length < 10) {
             let pvt_metadata = {};
             metadata.searchURL = searchURL;
             metadata.refTypes = refselected;
 
-            if (contentTypeSelected)
-            {
+            if (contentTypeSelected) {
                 metadata.contentTypes = contentTypeSelected;
             }
             pvt_metadata = metadata;
@@ -727,15 +653,13 @@ module.exports = controller =>
                     ]
                 }
             };
-        } else if (opps != null && opps.length >= 10)
-        {
+        } else if (opps != null && opps.length >= 10) {
             let pvt_metadata = null;
             metadata.searchURL = searchURL;
             metadata.refTypes = refselected;
             metadata.email = email;
 
-            if (contentTypeSelected)
-            {
+            if (contentTypeSelected) {
                 metadata.contentTypes = contentTypeSelected;
             }
             pvt_metadata = metadata;
@@ -838,15 +762,12 @@ module.exports = controller =>
                     ]
                 }
             };
-        } else
-        {
+        } else {
 
-            if (refselected && refselected != 'NONE' && refselected != '' && refselected != null)
-            {
+            if (refselected && refselected != 'NONE' && refselected != '' && refselected != null) {
                 searchURL += '&type=' + refselected;
             }
-            if (contentTypeSelected)
-            {
+            if (contentTypeSelected) {
                 searchURL += '&contype=' + contentTypeSelected;
             }
 
@@ -878,13 +799,11 @@ module.exports = controller =>
             };
         }
 
-        if (openView)
-        {
+        if (openView) {
             console.log('in open view.');
             viewObject.trigger_id = message.trigger_id;
             await bot.api.views.open(viewObject);////no scope required.
-        } else
-        {
+        } else {
             console.log('in else of open view.');
             viewObject.response_action = 'update';
             bot.httpBody(viewObject);
@@ -898,16 +817,13 @@ module.exports = controller =>
      * used in updating Reference Use Request Main modal when user clicks on Contact from Dropdown;
      * Use this in both dropdown of contact (active or inactive)
      */
-    async function refUseRequestModalWithContactInfo(bot, message)
-    {
-        try
-        {
+    async function refUseRequestModalWithContactInfo(bot, message) {
+        try {
             console.log('VALUES EARS 805 ', message.view.private_metadata);
             // console.log("MESSAGE ERAS 806 ", JSON.stringify(message));
             let pvt_metadata = JSON.parse(message.view.private_metadata);
 
-            if (message.view.state.values.blkCon1 || message.view.state.values.blkCon2)
-            {
+            if (message.view.state.values.blkCon1 || message.view.state.values.blkCon2) {
                 console.log('In if condition of AD_MODAL');
                 let selConId = message.view.state.values.blkCon1.con_select1.selected_option ? message.view.state.values.blkCon1.con_select1.selected_option.value :
                     message.view.state.values.blkCon2.con_select2.selected_option ? message.view.state.values.blkCon2.con_select2.selected_option.value :
@@ -916,8 +832,7 @@ module.exports = controller =>
                 pvt_metadata.Id = selConId;
             }
 
-            if (pvt_metadata.activeContacts.length && pvt_metadata.inactiveContacts.length)
-            {
+            if (pvt_metadata.activeContacts.length && pvt_metadata.inactiveContacts.length) {
                 // console.log('pvtDATA ', pvt_metadata);
                 await bot.api.views.update({
                     view_id: message.view.id,
@@ -1044,7 +959,7 @@ module.exports = controller =>
                                 },
                                 "label": {
                                     "type": "plain_text",
-                                    "text": "Select an existing program member....",
+                                    "text": "Select an existing reference contact....",
                                     "emoji": true
                                 }
                             },
@@ -1065,7 +980,7 @@ module.exports = controller =>
                                 },
                                 "label": {
                                     "type": "plain_text",
-                                    "text": "or add another contact to the reference program",
+                                    "text": "OR activate a reference contact",
                                     "emoji": true
                                 }
                             },
@@ -1123,16 +1038,13 @@ module.exports = controller =>
                         ]
                     }
                 });
-            } else if (pvt_metadata.activeContacts.length || pvt_metadata.inactiveContacts.length)
-            {
+            } else if (pvt_metadata.activeContacts.length || pvt_metadata.inactiveContacts.length) {
                 console.log('In this if of ONE');
                 let tmpCons, label = "Select a contact";
 
-                if (pvt_metadata.activeContacts.length)
-                {
+                if (pvt_metadata.activeContacts.length) {
                     tmpCons = pvt_metadata.activeContacts;
-                } else if (pvt_metadata.inactiveContacts.length)
-                {
+                } else if (pvt_metadata.inactiveContacts.length) {
                     console.log('In this if of ONE 2');
                     tmpCons = pvt_metadata.inactiveContacts;
                 }
@@ -1320,23 +1232,19 @@ module.exports = controller =>
                     }
                 });
             }
-        } catch (err)
-        {
+        } catch (err) {
             console.log('IN Catch of refUseRequestModalWithContactInfo Ears');
             logger.log(err);
         }
     }
 
-    function processContentResponse(response)
-    {
+    function processContentResponse(response) {
 
         let ref = [];
         let opp = [];
         let returnVal = {};
-        if (!response.hasOwnProperty('searchURL'))
-        {
-            Object.keys(response).forEach(function (k)
-            {
+        if (!response.hasOwnProperty('searchURL')) {
+            Object.keys(response).forEach(function (k) {
                 let entry = {
                     "text": {
                         "type": "plain_text",
@@ -1347,12 +1255,10 @@ module.exports = controller =>
                 ref.push(entry);
             });
             return ref;
-        } else if (response != 'false')
-        {
+        } else if (response != 'false') {
             let oppList = response['opp'];
             returnVal['searchURL'] = response['searchURL'];
-            oppList.forEach(function (oppWrapper)
-            {
+            oppList.forEach(function (oppWrapper) {
                 let entry = {
                     "text": {
                         "type": "plain_text",
@@ -1367,12 +1273,10 @@ module.exports = controller =>
         }
     }
 
-    function processRefTypeResponse(response)
-    {
+    function processRefTypeResponse(response) {
         console.log('RESPONSE IN processRefTypeResponse ', response);
         let ref = [];
-        Object.keys(response).forEach(function (k)
-        {
+        Object.keys(response).forEach(function (k) {
             let entry = {
                 "text": {
                     "type": "plain_text",
@@ -1392,17 +1296,13 @@ module.exports = controller =>
      * update private metadata as per Slack requirement to print Active/Inactive Contacts in dropdown;
      * These are used to print contacts in dropdown as per Active Inactive Contacts
      */
-    function forActiveInactiveCons(metadata)
-    {
+    function forActiveInactiveCons(metadata) {
         let activeCons = [], inactiveCons = [];
 
-        if (metadata.Contacts.length)
-        {
-            metadata.Contacts.forEach(con =>
-            {
+        if (metadata.Contacts.length) {
+            metadata.Contacts.forEach(con => {
 
-                if (con.Status == 'Active')
-                {
+                if (con.Status == 'Active') {
                     let entry = {
                         "text": {
                             "type": "plain_text",
@@ -1411,8 +1311,7 @@ module.exports = controller =>
                         "value": con.id
                     }
                     activeCons.push(entry);
-                } else
-                {
+                } else {
                     let entry = {
                         "text": {
                             "type": "plain_text",
@@ -1437,14 +1336,11 @@ module.exports = controller =>
      * add Name, Phone, Email, Title, Status, Last_Used as per Contact detail, getting from Salesforce and
      * update these in private metadata (object).
      */
-    function setSelectedContactInfo(metadata, selectedContactId)
-    {
+    function setSelectedContactInfo(metadata, selectedContactId) {
 
-        metadata.Contacts.forEach(con =>
-        {
+        metadata.Contacts.forEach(con => {
 
-            if (con.id == selectedContactId)
-            {
+            if (con.id == selectedContactId) {
                 metadata.Name = con.Name;
                 metadata.Phone = con.Phone;
                 metadata.Email = con.Email;
@@ -1462,39 +1358,31 @@ module.exports = controller =>
      */
     controller.on(
         'view_submission',
-        async (bot, message) =>
-        {
+        async (bot, message) => {
             console.log('view_submission');
-            try
-            {
+            try {
                 let existingConn = await connFactory.getConnection(message.team.id, controller);
                 console.log('In view_submission TRY 796');
                 let refselected = null;
-                if (!existingConn)
-                {
+                if (!existingConn) {
                     console.log('NOT EXisting Connection');
                     const authUrl = connFactory.getAuthUrl(message.team);
                     await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
-                } else
-                {
+                } else {
                     console.log('In Else 793 Ears Having Existing Connection');
                     // When Account Name entered
-                    if (message.view.callback_id == 'actionSelectionView')
-                    {
+                    if (message.view.callback_id == 'actionSelectionView') {
                         let actionName = 'account_search';
 
-                        if (message.view.state.values.accblock)
-                        {
+                        if (message.view.state.values.accblock) {
                             // retrieved what we select in the 1st modal 
                             actionName = message.view.state.values.accblock.searchid.selected_option.value;
                             console.log('Action Name 810 Ears', actionName);
-                        } else
-                        {
+                        } else {
                             //selected values of Content type is in refselected
                             refselected = message && message.view && message.view.state.values.blkref && message.view.state.values.blkref.reftype_select.selected_options != null ? message.view.state.values.blkref.reftype_select.selected_options : 'NONE';
                             let selectedValues = [];
-                            refselected.forEach(function (ref)
-                            {
+                            refselected.forEach(function (ref) {
                                 selectedValues.push(ref.value);
                             });
                             refselected = selectedValues.join(',');
@@ -1503,19 +1391,15 @@ module.exports = controller =>
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         pvt_metadata.actionName = actionName;
 
-                        if (refselected)
-                        {
+                        if (refselected) {
                             pvt_metadata.contentTypes = refselected;
                             console.log('PVT Metadata COntent Type');
                         }
 
-                        if (actionName == 'content_search')
-                        {
-                            if (pvt_metadata.pkg_version < 2.26)
-                            {
+                        if (actionName == 'content_search') {
+                            if (pvt_metadata.pkg_version < 2.26) {
                                 await opportunityFlow(bot, message, existingConn, pvt_metadata, pvt_metadata.email, null);
-                            } else
-                            {
+                            } else {
                                 console.log('...view submission content opp flow....');
                                 let mapval = await getRefTypes(existingConn, actionName);
                                 console.log('CONTENT search in MAPVAL 837 Ears ', mapval);
@@ -1561,10 +1445,8 @@ module.exports = controller =>
                                     }
                                 });
                             }
-                        } else if (actionName == 'account_search')
-                        {
-                            try
-                            {
+                        } else if (actionName == 'account_search') {
+                            try {
                                 console.log('...view submission Account Search ref type flow....');
                                 let mapval = await getRefTypes(existingConn, actionName);
                                 // Referenceability Type
@@ -1652,20 +1534,17 @@ module.exports = controller =>
                                     }
                                 });
 
-                            } catch (err)
-                            {
+                            } catch (err) {
                                 console.log('error occured during Account Search...');
                                 logger.log(err);
                             }
-                        } else
-                        {
+                        } else {
                             console.log('ACTION name BOTH');
                             let titleText = 'Content Type';
                             let block_element_type = 'multi_static_select';
                             let block_label_text = 'What type of reference content do you need?';
                             let callbackId = 'actionSelectionView';
-                            if (pvt_metadata.pkg_version < 2.26)
-                            {
+                            if (pvt_metadata.pkg_version < 2.26) {
                                 console.log('PCKG Verison', pvt_metadata.pkg_version);
                                 titleText = 'Referenceability Type';
                                 block_element_type = 'static_select';
@@ -1719,15 +1598,13 @@ module.exports = controller =>
                                 }
                             });
                         }
-                    } else if (message.view.callback_id == 'oppselect')
-                    {
+                    } else if (message.view.callback_id == 'oppselect') {
                         console.log('Opp Selected Ears');
                         let metdata = JSON.parse(message.view.private_metadata);
                         const email = metdata.email;
                         await opportunityFlow(bot, message, existingConn, metdata, email, null);
 
-                    } else if (message.view.callback_id == 'searchselectopplarge')
-                    {
+                    } else if (message.view.callback_id == 'searchselectopplarge') {
                         console.log('searchselectopplarge Ears');
                         let metadata = JSON.parse(message.view.private_metadata);
                         let searchURL = metadata.searchURL;
@@ -1739,16 +1616,13 @@ module.exports = controller =>
                         let acctext = message.view.state.values.accblock != null && message.view.state.values.accblock.account_name.value != null ? message.view.state.values.accblock.account_name.value : '';
                         let opptext = message.view.state.values.oppblock != null && message.view.state.values.oppblock.opp_name.value != null ? message.view.state.values.oppblock.opp_name.value : '';
                         let opps = [];
-                        if (oppSelected != '')
-                        {
+                        if (oppSelected != '') {
                             searchURL = metadata.searchURL.replace('@@', oppSelected);
-                            if (refselected && refselected != 'NONE' && refselected != '' && refselected != null)
-                            {
+                            if (refselected && refselected != 'NONE' && refselected != '' && refselected != null) {
                                 searchURL += '&type=';
                                 searchURL += refselected;
                             }
-                            if (contentTypeSelected)
-                            {
+                            if (contentTypeSelected) {
                                 searchURL += '&contype=';
                                 searchURL += contentTypeSelected;
                             }
@@ -1780,27 +1654,23 @@ module.exports = controller =>
                                     ]
                                 }
                             });
-                        } else if (oppSelected == '' && acctext == '' && opptext == '')
-                        {
+                        } else if (oppSelected == '' && acctext == '' && opptext == '') {
                             bot.httpBody({
                                 response_action: 'errors',
                                 errors: {
                                     "oppblock": 'Please provide Opportunity information.'
                                 }
                             });
-                        } else if (acctext != '' && opptext != '')
-                        {
+                        } else if (acctext != '' && opptext != '') {
                             bot.httpBody({
                                 response_action: 'errors',
                                 errors: {
                                     "oppblock": 'Please enter Account Name OR Opportunity name;'
                                 }
                             });
-                        } else if (acctext != '' && opptext == '')
-                        {
+                        } else if (acctext != '' && opptext == '') {
                             opps = await getOppfromAcc(existingConn, email, acctext);
-                            if (opps == null || opps.length == 0)
-                            {
+                            if (opps == null || opps.length == 0) {
                                 bot.httpBody({
                                     response_action: 'errors',
                                     errors: {
@@ -1808,11 +1678,9 @@ module.exports = controller =>
                                     }
                                 });
                             }
-                        } else if (acctext == '' && opptext != '')
-                        {
+                        } else if (acctext == '' && opptext != '') {
                             opps = await getOppfromName(existingConn, email, opptext);
-                            if (opps == null || opps.length == 0)
-                            {
+                            if (opps == null || opps.length == 0) {
                                 bot.httpBody({
                                     response_action: 'errors',
                                     errors: {
@@ -1821,8 +1689,7 @@ module.exports = controller =>
                                 });
                             }
                         }
-                        if (opps != null && opps.length > 0)
-                        {
+                        if (opps != null && opps.length > 0) {
                             bot.httpBody({
                                 response_action: 'update',
                                 view: {
@@ -1864,8 +1731,7 @@ module.exports = controller =>
                                 }
                             });
                         }
-                    } else if (message.view.callback_id == 'searchselect')
-                    {
+                    } else if (message.view.callback_id == 'searchselect') {
 
                         console.log('Search Selected EARS');
                         let metadata = JSON.parse(message.view.private_metadata);
@@ -1877,14 +1743,12 @@ module.exports = controller =>
                         let searchURL = metadata.searchURL;
                         searchURL = searchURL.replace('@@', oppSelected);
 
-                        if (refselected && refselected != 'NONE' && refselected != '' && refselected != null)
-                        {
+                        if (refselected && refselected != 'NONE' && refselected != '' && refselected != null) {
                             searchURL += '&type=';
                             searchURL += refselected;
                         }
 
-                        if (contentTypeSelected)
-                        {
+                        if (contentTypeSelected) {
                             searchURL += '&contype=';
                             searchURL += contentTypeSelected;
                         }
@@ -1915,8 +1779,7 @@ module.exports = controller =>
                                 ]
                             }
                         });
-                    } else if (message.view.callback_id == 'AD_Modal')
-                    {
+                    } else if (message.view.callback_id == 'AD_Modal') {
                         /* this callbackId is called when user click on submit button of Reference Use Request Main Block
                            then open Approve Modal or Decline Modal whichever option the user select 
                         */
@@ -1926,8 +1789,7 @@ module.exports = controller =>
 
                         // this condition is use to check for select contact block & selected contact id is store in selCon;
                         // as this Modal is also use in Approve Without Contact
-                        if (message.view.state.values.blkCon1 || message.view.state.values.blkCon2)
-                        {
+                        if (message.view.state.values.blkCon1 || message.view.state.values.blkCon2) {
                             selCon = message.view.state.values.blkCon1.con_select1.selected_option ?
                                 message.view.state.values.blkCon1.con_select1.selected_option.value :
                                 message.view.state.values.blkCon2.con_select2.selected_option ?
@@ -1935,24 +1797,20 @@ module.exports = controller =>
                         }
                         let requestStatus;
 
-                        if (pvt_metadata.ApproveWithoutContact || pvt_metadata.Contacts.length)
-                        {
+                        if (pvt_metadata.ApproveWithoutContact || pvt_metadata.Contacts.length) {
                             requestStatus = message.view.state.values.approveDeclineBlock && message.view.state.values.approveDeclineBlock.approveDeclineRadio
                                 ? message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value : "";
-                        } else
-                        {
+                        } else {
                             requestStatus = message.view.state.values.approveDeclineBlockForNoContacts.approveDeclineRadioForNoContacts.selected_option.value;
                         }
 
                         // validation for contact - email & phone number
-                        if (selCon && requestStatus !== "Decline")
-                        {
+                        if (selCon && requestStatus !== "Decline") {
                             requestStatus = pvt_metadata.Email && pvt_metadata.Phone ? requestStatus : "";
                         }
 
                         // selCon is not null & empty 
-                        if (selCon && requestStatus === "Approve")
-                        {
+                        if (selCon && requestStatus === "Approve") {
                             pvt_metadata.Id = selCon;
                             bot.httpBody({
                                 response_action: 'update',
@@ -2033,8 +1891,7 @@ module.exports = controller =>
                                     ]
                                 }
                             });
-                        } else if (requestStatus === "Decline" || (requestStatus === "Approve" && (selCon || pvt_metadata.ApproveWithoutContact)))
-                        {
+                        } else if (requestStatus === "Decline" || (requestStatus === "Approve" && (selCon || pvt_metadata.ApproveWithoutContact))) {
                             // this block is use in Decline Request & Approve Without Request (both - Approve/Decline)
                             console.log('In DECLINE NOTES MODAL ears 1389');
                             let popup = requestStatus === "Approve" ? "approvePopup" : "declinePopup";
@@ -2080,11 +1937,9 @@ module.exports = controller =>
                                     ]
                                 }
                             });
-                        } else
-                        {
+                        } else {
 
-                            if (!selCon)
-                            {
+                            if (!selCon) {
                                 //display error if user click submit button without selecting any Contact from select boxes in Main Block (Reference Use Request)
                                 bot.httpBody({
                                     "response_action": "errors",
@@ -2092,16 +1947,14 @@ module.exports = controller =>
                                         "blkCon1": "A contact must be selected before approving a request."
                                     }
                                 });
-                            } else if (message.view.state.values.blkCon2)
-                            {
+                            } else if (message.view.state.values.blkCon2) {
                                 bot.httpBody({
                                     "response_action": "errors",
                                     "errors": {
                                         "blkCon2": "Email and Phone number must be provided when you approve a request."
                                     }
                                 });
-                            } else
-                            {
+                            } else {
                                 bot.httpBody({
                                     "response_action": "errors",
                                     "errors": {
@@ -2110,8 +1963,7 @@ module.exports = controller =>
                                 });
                             }
                         }
-                    } else if (message.view.callback_id == 'approvePopup')
-                    {
+                    } else if (message.view.callback_id == 'approvePopup') {
                         //this is the final popup to confirm that user want to approve the Request
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let notes = message.view.state.values.noteBlock.contactnotes.value;
@@ -2150,8 +2002,7 @@ module.exports = controller =>
                                 ]
                             }
                         });
-                    } else if (message.view.callback_id == 'declinePopup')
-                    {
+                    } else if (message.view.callback_id == 'declinePopup') {
                         //this is the final popup to confirm that user want to Decline the Request
                         console.log('In Decline Popup EARS BEfore 1473 ', message.view);
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
@@ -2192,8 +2043,7 @@ module.exports = controller =>
                                 ]
                             }
                         });
-                    } else if (message.view.callback_id == 'approveRequest')
-                    {
+                    } else if (message.view.callback_id == 'approveRequest') {
                         /* it sends(post) data to Salesforce from refedge.js function of 
                         rraId(Reference Request Id), Notes, type, ApproveWithoutContact & Contact details
                         Use in Approving Request
@@ -2205,8 +2055,7 @@ module.exports = controller =>
                         approveData.type = 'Approve';
                         approveData.ApproveWithoutContact = pvt_metadata.ApproveWithoutContact;
 
-                        if (!approveData.ApproveWithoutContact)
-                        {
+                        if (!approveData.ApproveWithoutContact) {
                             approveData.selectedContactId = pvt_metadata.Id;
                             approveData.isUpdate = pvt_metadata.isUpdateable;
                             approveData.Title = pvt_metadata.Title;
@@ -2221,8 +2070,7 @@ module.exports = controller =>
                         bot.httpBody({
                             "response_action": "clear"
                         });
-                    } else if (message.view.callback_id == 'declineRequest')
-                    {
+                    } else if (message.view.callback_id == 'declineRequest') {
                         /* it sends(post) data to Salesforce from refedge.js function of
                         rraId(Reference Request Id), Notes, type
                         Use in Declining Request
@@ -2240,8 +2088,7 @@ module.exports = controller =>
                         bot.httpBody({
                             "response_action": "clear"
                         });
-                    } else if (message.view.callback_id == 'refUseReqMainBlockWithContacts')
-                    {
+                    } else if (message.view.callback_id == 'refUseReqMainBlockWithContacts') {
                         /* this part use in when user click on submit button of Edit Contact Modal
                         then we update the values of Title, Email & Phone of Contact if user change
                         it also check that these values are use for this Request only or update in Salesforce contact section also
@@ -2266,14 +2113,25 @@ module.exports = controller =>
 
                         // this is for to check that this RR Account has both Active & Inactive Contacts 
                         // as we display them in different select box.
-                        if (pvt_metadata.activeContacts.length && pvt_metadata.inactiveContacts.length)
-                        {
+                        if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(pvt_metadata.Email))) {
+                            bot.httpBody({
+                                "response_action": "errors",
+                                "errors": {
+                                    "conEmailBlock": "Invalid Email."
+                                }
+                            });
+                        } else if (isNaN(pvt_metadata.Phone)) {
+                            bot.httpBody({
+                                "response_action": "errors",
+                                "errors": {
+                                    "conPhoneBlock": "Invalid Phone number."
+                                }
+                            });
+                        } else if (pvt_metadata.activeContacts.length && pvt_metadata.inactiveContacts.length) {
                             let state;
-                            pvt_metadata.Contacts.forEach(con =>
-                            {
+                            pvt_metadata.Contacts.forEach(con => {
 
-                                if (con.id == pvt_metadata.Id)
-                                {
+                                if (con.id == pvt_metadata.Id) {
                                     state = con.Status;
                                 }
                             })
@@ -2284,8 +2142,7 @@ module.exports = controller =>
                              * we need to check selected contact is in Active select box or in Inactive box 
                              * to automatically display that selected contact from these select box
                              */
-                            if (state == "Active")
-                            {
+                            if (state == "Active") {
                                 bot.httpBody({
                                     response_action: 'update',
                                     view: {
@@ -2418,7 +2275,7 @@ module.exports = controller =>
                                                 },
                                                 "label": {
                                                     "type": "plain_text",
-                                                    "text": "Select an existing program member....",
+                                                    "text": "Select an existing reference contact....",
                                                     "emoji": true
                                                 }
                                             },
@@ -2439,7 +2296,7 @@ module.exports = controller =>
                                                 },
                                                 "label": {
                                                     "type": "plain_text",
-                                                    "text": "or add another contact to the reference program",
+                                                    "text": "OR activate a reference contact",
                                                     "emoji": true
                                                 }
                                             },
@@ -2497,8 +2354,7 @@ module.exports = controller =>
                                         ]
                                     }
                                 });
-                            } else
-                            {
+                            } else {
                                 bot.httpBody({
                                     response_action: 'update',
                                     view: {
@@ -2624,7 +2480,7 @@ module.exports = controller =>
                                                 },
                                                 "label": {
                                                     "type": "plain_text",
-                                                    "text": "Select an existing program member....",
+                                                    "text": "Select an existing reference contact....",
                                                     "emoji": true
                                                 }
                                             },
@@ -2652,7 +2508,7 @@ module.exports = controller =>
                                                 },
                                                 "label": {
                                                     "type": "plain_text",
-                                                    "text": "or add another contact to the reference program",
+                                                    "text": "OR activate a reference contact",
                                                     "emoji": true
                                                 }
                                             },
@@ -2711,17 +2567,14 @@ module.exports = controller =>
                                     }
                                 });
                             }
-                        } else if (pvt_metadata.activeContacts.length || pvt_metadata.inactiveContacts.length)
-                        {
+                        } else if (pvt_metadata.activeContacts.length || pvt_metadata.inactiveContacts.length) {
                             // this is for only one type Contacts - Active/Inactive in RR Account 
                             // so we need to display only one select box
                             let tmpCons, label = "Select a contact";
 
-                            if (pvt_metadata.activeContacts.length)
-                            {
+                            if (pvt_metadata.activeContacts.length) {
                                 tmpCons = pvt_metadata.activeContacts;
-                            } else if (pvt_metadata.inactiveContacts.length)
-                            {
+                            } else if (pvt_metadata.inactiveContacts.length) {
                                 tmpCons = pvt_metadata.inactiveContacts;
                             }
                             bot.httpBody({
@@ -2916,9 +2769,7 @@ module.exports = controller =>
                         }
                     }
                 }
-
-            } catch (err)
-            {
+            } catch (err) {
                 console.log('IN Catch 1152 Ears');
                 logger.log(err);
             }
@@ -2929,25 +2780,20 @@ module.exports = controller =>
      * this controller called when we click on button in Slack
      */
     controller.on('interactive_message_callback,block_actions',
-        async (bot, message) =>
-        {
+        async (bot, message) => {
             console.log('interactive_message_callback, block_actions');
-            try
-            {
+            try {
                 let existingConn = await connFactory.getConnection(message.team.id, controller);
 
-                if (existingConn)
-                {
+                if (existingConn) {
                     // const userProfile = await bot.api.users.info({//users.read scope
                     //     token: bot.api.token,
                     //     user: message.user
                     // });
-                    try
-                    {
+                    try {
                         console.log('MESSAGE 1281 EARS', message.actions[0].block_id, message.actions[0].action_id);
 
-                        if (message.actions[0].block_id == 'refUseReqMainBlock' && message.actions[0].action_id == 'refUseReqMainBlock')
-                        {
+                        if (message.actions[0].block_id == 'refUseReqMainBlock' && message.actions[0].action_id == 'refUseReqMainBlock') {
                             /**
                              * this is from where our main modal of p2p request display as user Click on Approve/Decline button in chat 
                              */
@@ -2955,11 +2801,9 @@ module.exports = controller =>
                             console.log('RRAID EARS', message.actions[0].value);
                             let obj = await getRefUseReqModal(existingConn, message.actions[0].value);
 
-                            if (obj && Object.keys(obj).length > 0 /* && Object.getPrototypeOf(obj) === Object.prototype */)
-                            {
+                            if (obj && Object.keys(obj).length > 0 /* && Object.getPrototypeOf(obj) === Object.prototype */) {
 
-                                if (obj.Approved_Declined)
-                                {
+                                if (obj.Approved_Declined) {
                                     await bot.api.views.open({
                                         trigger_id: message.trigger_id,
                                         view: {
@@ -2987,8 +2831,7 @@ module.exports = controller =>
                                             ]
                                         }
                                     });
-                                } else if (!obj.ApproveWithoutContact)
-                                {
+                                } else if (!obj.ApproveWithoutContact) {
                                     let pvt_metadata = forActiveInactiveCons(obj);
                                     pvt_metadata.rraId = message.actions[0].value;
                                     pvt_metadata.isUpdateable = false;
@@ -3055,7 +2898,7 @@ module.exports = controller =>
                                                             },
                                                             "label": {
                                                                 "type": "plain_text",
-                                                                "text": "Select an existing program member....",
+                                                                "text": "Select an existing reference contact....",
                                                                 "emoji": true
                                                             }
                                                         },
@@ -3076,7 +2919,7 @@ module.exports = controller =>
                                                             },
                                                             "label": {
                                                                 "type": "plain_text",
-                                                                "text": "or add another contact to the reference program",
+                                                                "text": "OR activate a reference contact",
                                                                 "emoji": true
                                                             }
                                                         },
@@ -3217,8 +3060,7 @@ module.exports = controller =>
                                         } */
                                     }
 
-                                    if (pvt_metadata.activeContacts.length && pvt_metadata.inactiveContacts.length)
-                                    {
+                                    if (pvt_metadata.activeContacts.length && pvt_metadata.inactiveContacts.length) {
                                         await bot.api.views.open({
                                             trigger_id: message.trigger_id,
                                             view: {
@@ -3343,7 +3185,7 @@ module.exports = controller =>
                                                         },
                                                         "label": {
                                                             "type": "plain_text",
-                                                            "text": "Select an existing program member....",
+                                                            "text": "Select an existing reference contact....",
                                                             "emoji": true
                                                         }
                                                     },
@@ -3364,22 +3206,19 @@ module.exports = controller =>
                                                         },
                                                         "label": {
                                                             "type": "plain_text",
-                                                            "text": "or add another contact to the reference program",
+                                                            "text": "OR activate a reference contact",
                                                             "emoji": true
                                                         }
                                                     }
                                                 ]
                                             }
                                         });
-                                    } else if (pvt_metadata.activeContacts.length || pvt_metadata.inactiveContacts.length)
-                                    {
+                                    } else if (pvt_metadata.activeContacts.length || pvt_metadata.inactiveContacts.length) {
                                         let tmpCons, label = "Select a contact";
 
-                                        if (pvt_metadata.activeContacts.length)
-                                        {
+                                        if (pvt_metadata.activeContacts.length) {
                                             tmpCons = pvt_metadata.activeContacts;
-                                        } else if (pvt_metadata.inactiveContacts.length)
-                                        {
+                                        } else if (pvt_metadata.inactiveContacts.length) {
                                             tmpCons = pvt_metadata.inactiveContacts;
                                         }
                                         await bot.api.views.open({
@@ -3513,8 +3352,7 @@ module.exports = controller =>
                                                 ]
                                             }
                                         });
-                                    } else
-                                    {
+                                    } else {
 
                                         await bot.api.views.open({
                                             trigger_id: message.trigger_id,
@@ -3630,8 +3468,7 @@ module.exports = controller =>
                                             }
                                         });
                                     }
-                                } else
-                                {
+                                } else {
                                     /* use in Approve Without Contact 
                                     means we can approve p2p request without contact
                                     */
@@ -3748,12 +3585,10 @@ module.exports = controller =>
                                     });
                                 }
                             }
-                        } else if (message.actions[0].action_id == "additionalModal" && message.actions[0].block_id == 'additionalBlock')
-                        {
+                        } else if (message.actions[0].action_id == "additionalModal" && message.actions[0].block_id == 'additionalBlock') {
                             console.log('In Additional Modal EARS 1688');
                             let obj = await getAdditionalModal(existingConn, message.actions[0].value);
-                            if (obj && Object.keys(obj).length > 0)
-                            {
+                            if (obj && Object.keys(obj).length > 0) {
                                 let jsonArray = [];
                                 obj["Requester Notes"] = obj["Requester Notes"] ? obj["Requester Notes"] : '';
                                 jsonArray.push({
@@ -3771,11 +3606,9 @@ module.exports = controller =>
                                         }
                                     });
 
-                                Object.keys(obj).forEach(con =>
-                                {
+                                Object.keys(obj).forEach(con => {
 
-                                    if (con != "Requester Notes")
-                                    {
+                                    if (con != "Requester Notes") {
                                         let entry = {
                                             "type": "section",
                                             "text": {
@@ -3795,11 +3628,6 @@ module.exports = controller =>
                                             "text": "Additional Request Info",
                                             "emoji": true
                                         },
-                                        "submit": {
-                                            "type": "plain_text",
-                                            "text": "Back",
-                                            "emoji": true
-                                        },
                                         "type": "modal",
                                         "close": {
                                             "type": "plain_text",
@@ -3810,16 +3638,13 @@ module.exports = controller =>
                                     }
                                 });
                             }
-                        } else if (message.actions[0].action_id == "con_select1" && message.actions[0].block_id == 'blkCon1')
-                        {
+                        } else if (message.actions[0].action_id == "con_select1" && message.actions[0].block_id == 'blkCon1') {
                             console.log('In blkCon1 & con_select1 EARS 1746');
                             await refUseRequestModalWithContactInfo(bot, message);
-                        } else if (message.actions[0].action_id == "con_select2" && message.actions[0].block_id == 'blkCon2')
-                        {
+                        } else if (message.actions[0].action_id == "con_select2" && message.actions[0].block_id == 'blkCon2') {
                             console.log('In blkCon2 & con_select2 EARS 1990');
                             await refUseRequestModalWithContactInfo(bot, message);
-                        } else if (message.actions[0].action_id == "editContactModal" && message.actions[0].block_id == 'editContactBlock')
-                        {
+                        } else if (message.actions[0].action_id == "editContactModal" && message.actions[0].block_id == 'editContactBlock') {
                             console.log('In editContactModal & editContactBlock EARS 2232');
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
 
@@ -3827,8 +3652,7 @@ module.exports = controller =>
                              * this if condition is to check that isUpdate checked or not 
                              * if checked then display check on modal and vice-versa.
                              */
-                            if (pvt_metadata.isUpdateable === "true")
-                            {
+                            if (pvt_metadata.isUpdateable === "true") {
                                 /**
                                  * this is to display already selected option of to Update Contact by User
                                  * so we pass initial value of that checkbox
@@ -3944,8 +3768,7 @@ module.exports = controller =>
                                         ]
                                     }
                                 });
-                            } else
-                            {
+                            } else {
                                 // this is for not selected checkbox
                                 await bot.api.views.push({
                                     trigger_id: message.trigger_id,
@@ -4053,16 +3876,14 @@ module.exports = controller =>
                                     }
                                 });
                             }
-                        } else if (message.actions[0].block_id == 'approveDeclineBlockForNoContacts' && message.actions[0].action_id == 'approveDeclineRadioForNoContacts')
-                        {
+                        } else if (message.actions[0].block_id == 'approveDeclineBlockForNoContacts' && message.actions[0].action_id == 'approveDeclineRadioForNoContacts') {
                             console.log('In ApproveDeclineBlockForNoContacts & approveDeclineRadioForNoContacts');
 
                             let requestStatus = message.view.state.values.approveDeclineBlockForNoContacts.approveDeclineRadioForNoContacts.selected_option.value;
                             console.log('REQUEST status -', requestStatus);
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
 
-                            if (requestStatus == "Decline")
-                            {
+                            if (requestStatus == "Decline") {
                                 await bot.api.views.update({
                                     view_id: message.view.id,
                                     view: {
@@ -4170,8 +3991,7 @@ module.exports = controller =>
                                         ]
                                     }
                                 });
-                            } else if (requestStatus == "Approve")
-                            {
+                            } else if (requestStatus == "Approve") {
 
                                 await bot.api.views.update({
                                     view_id: message.view.id,
@@ -4275,10 +4095,9 @@ module.exports = controller =>
                                                 "type": "section",
                                                 "text": {
                                                     "type": "mrkdwn",
-                                                    "text": "The requested Account, " + pvt_metadata["Account Name"] + ", does not have any associated Contacts."
+                                                    "text": "The requested Account, " + obj["Account Name"] + ", does not have any associated Contacts."
                                                         + "\nTo approve this request, please \n"
-                                                        + "<http://www.example.com|add a contact to this Account in Salesforce> \n"
-                                                        + "then return here to complete the process."
+                                                        + "<" + pvt_metadata.ContactURL + "|add a contact to this Account in Salesforce>."
                                                 }
                                             }
                                         ]
@@ -4286,8 +4105,7 @@ module.exports = controller =>
                                 });
                             }
                         }
-                    } catch (err)
-                    {
+                    } catch (err) {
                         console.log('...exception in block_actions interactive_message_callback ... 2367 EARS');
                         logger.log(err);
                     }
@@ -4296,8 +4114,7 @@ module.exports = controller =>
                 //     const authUrl = connFactory.getAuthUrl(message.team);
                 //     await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
                 // }
-            } catch (err)
-            {
+            } catch (err) {
                 logger.log(err);
             }
         }
