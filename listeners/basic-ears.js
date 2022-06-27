@@ -839,7 +839,6 @@ module.exports = controller => {
                     view: {
                         "type": "modal",
                         "callback_id": "AD_Modal",
-                        // "notify_on_close": true,
                         "clear_on_close": true,
                         "private_metadata": JSON.stringify(pvt_metadata),
                         "submit": {
@@ -857,7 +856,6 @@ module.exports = controller => {
                             "text": "Reference Use Request",
                             "emoji": true
                         },
-                        // "submit_disabled": true,
                         "blocks": [
                             {
                                 "type": "section",
@@ -1786,7 +1784,7 @@ module.exports = controller => {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         console.log('PRIVATE data EARS 1744 Approve', message.view.private_metadata);
                         let selCon;
-
+                        console.log('MESSAGE', message.view.state.values.blkCon1, " Message ", message.view.state.values.blkCon2);
                         // this condition is use to check for select contact block & selected contact id is store in selCon;
                         // as this Modal is also use in Approve Without Contact
                         if (message.view.state.values.blkCon1 || message.view.state.values.blkCon2) {
@@ -2798,7 +2796,6 @@ module.exports = controller => {
                              * this is from where our main modal of p2p request display as user Click on Approve/Decline button in chat 
                              */
                             console.log('IN refUseReqMainBlock EARS 1536');
-                            console.log('RRAID EARS', message.actions[0].value);
                             let obj = await getRefUseReqModal(existingConn, message.actions[0].value);
 
                             if (obj && Object.keys(obj).length > 0 /* && Object.getPrototypeOf(obj) === Object.prototype */) {
