@@ -4,7 +4,6 @@ const logger = require('../common/logger');
 const { getRefTypes, getOpp, getOppfromName, getOppfromAcc, saveTeamId, checkOrgSettingAndGetData, getRefUseReqModal, getAdditionalModal, submitP2PRequest } = require('../util/refedge');
 
 const { checkTeamMigration } = require('../listeners/middleware/migration-filter');
-const text = require('body-parser/lib/types/text');
 
 module.exports = controller => {
 
@@ -79,11 +78,6 @@ module.exports = controller => {
                     if (!isTeamMigrating) {
                         console.log('...spawning bot...');
                         const bot = await controller.spawn(teams[index].id);
-
-                        const userList = await bot.api.users.list({
-                            token: teams[index].bot.token
-                        });
-
                         console.log('...spawning bot2...');
 
                         if (msg.userEmail) {
@@ -1449,54 +1443,14 @@ module.exports = controller => {
                                 let mapval = await getRefTypes(existingConn, actionName);
                                 // Referenceability Type
                                 console.log('Account Search MAPVAL 883 Ears', mapval);
-                                // bot.httpBody({
-                                //     response_action: 'update',
-                                //     view: {
-                                //         "type": "modal",
-                                //         "notify_on_close": true,
-                                //         "callback_id": "oppselect",
-                                //         "private_metadata": JSON.stringify(pvt_metadata),
-                                //         "submit": {
-                                //             "type": "plain_text",
-                                //             "text": "Next",
-                                //             "emoji": true
-                                //         },
-                                //         "title": {
-                                //             "type": "plain_text",
-                                //             "text": "Referenceability Type",
-                                //             "emoji": true
-                                //         },
-                                //         "blocks": [
-                                //             {
-                                //                 "type": "input",
-                                //                 "block_id": "blkref",
-                                //                 "element": {
-                                //                     "type": "static_select",
-                                //                     "action_id": "reftype_select",
-                                //                     "placeholder": {
-                                //                         "type": "plain_text",
-                                //                         "text": "Select a type",
-                                //                         "emoji": true
-                                //                     },
-                                //                     "options": mapval
-                                //                 },
-                                //                 "label": {
-                                //                     "type": "plain_text",
-                                //                     "text": "What type of reference accounts do you need?",
-                                //                     "emoji": true
-                                //                 }
-                                //             }
-                                //         ]
-                                //     }
-                                // });
-
+                                
                                 bot.httpBody({
                                     response_action: 'update',
                                     view: {
                                         "type": "modal",
-                                        "notify_on_close": true,
+                                        "notify_on_close" : true,
                                         "callback_id": "oppselect",
-                                        "private_metadata": JSON.stringify(pvt_metadata),
+                                        "private_metadata" : JSON.stringify(pvt_metadata),
                                         "submit": {
                                             "type": "plain_text",
                                             "text": "Next",
@@ -1504,33 +1458,34 @@ module.exports = controller => {
                                         },
                                         "title": {
                                             "type": "plain_text",
-                                            "text": "Content Type",
+                                            "text": "Referenceability Type",
                                             "emoji": true
                                         },
                                         "blocks": [
                                             {
                                                 "type": "input",
-                                                "optional": true,
                                                 "block_id": "blkref",
                                                 "element": {
-                                                    "type": "multi_static_select",
+                                                    "type": "static_select",
                                                     "action_id": "reftype_select",
                                                     "placeholder": {
                                                         "type": "plain_text",
                                                         "text": "Select a type",
                                                         "emoji": true
                                                     },
-                                                    "options": ["Hello", "Hii", "Ceeeee", "Peeee"]
+                                                    "options": mapval
                                                 },
                                                 "label": {
                                                     "type": "plain_text",
-                                                    "text": "What type of reference content do you need?",
+                                                    "text": "What type of reference accounts do you need?",
                                                     "emoji": true
                                                 }
                                             }
                                         ]
                                     }
                                 });
+
+                                
 
                             } catch (err) {
                                 console.log('error occured during Account Search...');
