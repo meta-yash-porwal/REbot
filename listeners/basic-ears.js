@@ -2803,7 +2803,10 @@ module.exports = controller => {
 
                             if (obj && Object.keys(obj).length > 0 /* && Object.getPrototypeOf(obj) === Object.prototype */) {
 
-                                if (obj.Approved_Declined) {
+                                if (obj.Error) {
+                                    console.log("Error from Salesforce Side");
+                                    logger.log(obj.Error);
+                                } else if (obj.Approved_Declined) {
                                     await bot.api.views.open({
                                         trigger_id: message.trigger_id,
                                         view: {
