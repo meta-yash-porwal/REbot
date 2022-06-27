@@ -1945,7 +1945,7 @@ module.exports = controller => {
                                         "blkCon1": "A contact must be selected before approving a request."
                                     }
                                 });
-                            } else if (message.view.state.values.blkCon2) {
+                            } else if (message.view.state.values.blkCon2 && message.view.state.values.blkCon2.con_select1.selected_option.value) {
                                 bot.httpBody({
                                     "response_action": "errors",
                                     "errors": {
