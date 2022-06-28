@@ -831,7 +831,7 @@ module.exports = controller => {
                     view_id: message.view.id,
                     view: {
                         "type": "modal",
-                        "callback_id": "AD_Modal",
+                        "callback_id": "approveDeclinePopup",
                         "clear_on_close": true,
                         "private_metadata": JSON.stringify(pvt_metadata),
                         "submit": {
@@ -850,25 +850,6 @@ module.exports = controller => {
                             "emoji": true
                         },
                         "blocks": [
-                            {
-                                "type": "section",
-                                "block_id": "additionalBlock",
-                                "text": {
-                                    "type": "mrkdwn",
-                                    "text": " "
-                                },
-                                "accessory": {
-                                    "type": "button",
-                                    "action_id": "additionalModal",
-                                    "text": {
-                                        "type": "plain_text",
-                                        "text": "Additional Request Info",
-                                        "emoji": true
-                                    },
-                                    "style": "primary",
-                                    "value": pvt_metadata.rraId
-                                }
-                            },
                             {
                                 "type": "section",
                                 "fields": [
@@ -893,6 +874,54 @@ module.exports = controller => {
                                         "text": "*Requester*\n" + pvt_metadata["Requester Name"]
                                     }
                                 ]
+                            },
+                            {
+                                "type": "actions",
+                                "block_id": "additionalBlock",
+                                "elements": [
+                                    {
+                                        "type": "button",
+                                        "action_id": "additionalModal",
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "More Request Details"
+                                        },
+                                        "style": "primary",
+                                        "value": pvt_metadata.rraId
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "divider"
+                            },
+                            {
+                                "type": "input",
+                                "block_id": "approveDeclineBlock",
+                                "dispatch_action": true,
+                                "label": {
+                                    "type": "plain_text",
+                                    "text": "What would you like to do?",
+                                },
+                                "element": {
+                                    "type": "radio_buttons",
+                                    "action_id": "approveDeclineRadio",
+                                    "options": [
+                                        {
+                                            "text": {
+                                                "type": "mrkdwn",
+                                                "text": "*Approve*"
+                                            },
+                                            "value": "Approve"
+                                        },
+                                        {
+                                            "text": {
+                                                "type": "mrkdwn",
+                                                "text": "*Decline*"
+                                            },
+                                            "value": "Decline"
+                                        }
+                                    ]
+                                }
                             },
                             {
                                 "type": "divider"
@@ -994,40 +1023,18 @@ module.exports = controller => {
                                 "type": "divider"
                             },
                             {
-                                "type": "actions",
-                                "block_id": "approveDeclineBlock",
-                                "elements": [
-                                    {
-                                        "type": "radio_buttons",
-                                        "options": [
-                                            {
-                                                "text": {
-                                                    "type": "mrkdwn",
-                                                    "text": "*Approve*"
-                                                },
-                                                "value": "Approve"
-                                            },
-                                            {
-                                                "text": {
-                                                    "type": "mrkdwn",
-                                                    "text": "*Decline*"
-                                                },
-                                                "value": "Decline"
-                                            }
-                                        ],
-                                        "action_id": "approveDeclineRadio",
-                                        "initial_option": {
-                                            "value": "Approve",
-                                            "text": {
-                                                "type": "mrkdwn",
-                                                "text": "*Approve*"
-                                            }
-                                        },
-                                        "focus_on_load": true 
-                                    }
-                                ]
-                            },
-
+                                "type": "input",
+                                "block_id": "contactNotesBlock",
+                                "element": {
+                                    "type": "plain_text_input",
+                                    "multiline": true,
+                                    "action_id": "contactNotes"
+                                },
+                                "label": {
+                                    "type": "plain_text",
+                                    "text": "Add a Note",
+                                }
+                            }
                         ]
                     }
                 });
@@ -1220,6 +1227,22 @@ module.exports = controller => {
                                         "text": "*Last Used*\n" + pvt_metadata.Last_Used,
                                     },
                                 ]
+                            },
+                            {
+                                "type": "divider"
+                            },
+                            {
+                                "type": "input",
+                                "block_id": "contactNotesBlock",
+                                "element": {
+                                    "type": "plain_text_input",
+                                    "multiline": true,
+                                    "action_id": "contactNotes"
+                                },
+                                "label": {
+                                    "type": "plain_text",
+                                    "text": "Add a Note",
+                                }
                             }
                         ]
                     }
@@ -1376,8 +1399,7 @@ module.exports = controller => {
                     response_action: 'update',
                     view: {
                         "type": "modal",
-                        "callback_id": "AD_Modal",
-                        // "notify_on_close": true,
+                        "callback_id": "approveDeclinePopup",
                         "clear_on_close": true,
                         "private_metadata": JSON.stringify(pvt_metadata),
                         "submit": {
@@ -1395,27 +1417,7 @@ module.exports = controller => {
                             "text": "Reference Use Request",
                             "emoji": true
                         },
-                        // "submit_disabled": true,
                         "blocks": [
-                            {
-                                "type": "section",
-                                "block_id": "additionalBlock",
-                                "text": {
-                                    "type": "mrkdwn",
-                                    "text": " "
-                                },
-                                "accessory": {
-                                    "type": "button",
-                                    "action_id": "additionalModal",
-                                    "text": {
-                                        "type": "plain_text",
-                                        "text": "Additional Request Info",
-                                        "emoji": true
-                                    },
-                                    "style": "primary",
-                                    "value": pvt_metadata.rraId
-                                }
-                            },
                             {
                                 "type": "section",
                                 "fields": [
@@ -1442,40 +1444,52 @@ module.exports = controller => {
                                 ]
                             },
                             {
+                                "type": "actions",
+                                "block_id": "additionalBlock",
+                                "elements": [
+                                    {
+                                        "type": "button",
+                                        "action_id": "additionalModal",
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "More Request Details"
+                                        },
+                                        "style": "primary",
+                                        "value": pvt_metadata.rraId
+                                    }
+                                ]
+                            },
+                            {
                                 "type": "divider"
                             },
                             {
-                                "type": "actions",
+                                "type": "input",
                                 "block_id": "approveDeclineBlock",
-                                "elements": [
-                                    {
-                                        "type": "radio_buttons",
-                                        "options": [
-                                            {
-                                                "text": {
-                                                    "type": "mrkdwn",
-                                                    "text": "*Approve*"
-                                                },
-                                                "value": "Approve"
-                                            },
-                                            {
-                                                "text": {
-                                                    "type": "mrkdwn",
-                                                    "text": "*Decline*"
-                                                },
-                                                "value": "Decline"
-                                            }
-                                        ],
-                                        "action_id": "approveDeclineRadio",
-                                        "initial_option": {
-                                            "value": "Approve",
+                                "dispatch_action": true,
+                                "label": {
+                                    "type": "plain_text",
+                                    "text": "What would you like to do?",
+                                },
+                                "element": {
+                                    "type": "radio_buttons",
+                                    "action_id": "approveDeclineRadio",
+                                    "options": [
+                                        {
                                             "text": {
                                                 "type": "mrkdwn",
                                                 "text": "*Approve*"
-                                            }
+                                            },
+                                            "value": "Approve"
+                                        },
+                                        {
+                                            "text": {
+                                                "type": "mrkdwn",
+                                                "text": "*Decline*"
+                                            },
+                                            "value": "Decline"
                                         }
-                                    }
-                                ]
+                                    ]
+                                }
                             },
                             {
                                 "type": "divider"
@@ -1579,6 +1593,22 @@ module.exports = controller => {
                                         "text": "*Last Used*\n" + pvt_metadata.Last_Used,
                                     },
                                 ]
+                            },
+                            {
+                                "type": "divider"
+                            },
+                            {
+                                "type": "input",
+                                "block_id": "contactNotesBlock",
+                                "element": {
+                                    "type": "plain_text_input",
+                                    "multiline": true,
+                                    "action_id": "contactNotes"
+                                },
+                                "label": {
+                                    "type": "plain_text",
+                                    "text": "Add a Note",
+                                }
                             }
                         ]
                     }
@@ -1588,8 +1618,7 @@ module.exports = controller => {
                     response_action: 'update',
                     view: {
                         "type": "modal",
-                        "callback_id": "AD_Modal",
-                        // "notify_on_close": true,
+                        "callback_id": "approveDeclinePopup",
                         "clear_on_close": true,
                         "private_metadata": JSON.stringify(pvt_metadata),
                         "submit": {
@@ -1607,27 +1636,7 @@ module.exports = controller => {
                             "text": "Reference Use Request",
                             "emoji": true
                         },
-                        // "submit_disabled": true,
                         "blocks": [
-                            {
-                                "type": "section",
-                                "block_id": "additionalBlock",
-                                "text": {
-                                    "type": "mrkdwn",
-                                    "text": " "
-                                },
-                                "accessory": {
-                                    "type": "button",
-                                    "action_id": "additionalModal",
-                                    "text": {
-                                        "type": "plain_text",
-                                        "text": "Additional Request Info",
-                                        "emoji": true
-                                    },
-                                    "style": "primary",
-                                    "value": pvt_metadata.rraId
-                                }
-                            },
                             {
                                 "type": "section",
                                 "fields": [
@@ -1654,40 +1663,52 @@ module.exports = controller => {
                                 ]
                             },
                             {
+                                "type": "actions",
+                                "block_id": "additionalBlock",
+                                "elements": [
+                                    {
+                                        "type": "button",
+                                        "action_id": "additionalModal",
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "More Request Details"
+                                        },
+                                        "style": "primary",
+                                        "value": pvt_metadata.rraId
+                                    }
+                                ]
+                            },
+                            {
                                 "type": "divider"
                             },
                             {
-                                "type": "actions",
+                                "type": "input",
                                 "block_id": "approveDeclineBlock",
-                                "elements": [
-                                    {
-                                        "type": "radio_buttons",
-                                        "options": [
-                                            {
-                                                "text": {
-                                                    "type": "mrkdwn",
-                                                    "text": "*Approve*"
-                                                },
-                                                "value": "Approve"
-                                            },
-                                            {
-                                                "text": {
-                                                    "type": "mrkdwn",
-                                                    "text": "*Decline*"
-                                                },
-                                                "value": "Decline"
-                                            }
-                                        ],
-                                        "action_id": "approveDeclineRadio",
-                                        "initial_option": {
-                                            "value": "Approve",
+                                "dispatch_action": true,
+                                "label": {
+                                    "type": "plain_text",
+                                    "text": "What would you like to do?",
+                                },
+                                "element": {
+                                    "type": "radio_buttons",
+                                    "action_id": "approveDeclineRadio",
+                                    "options": [
+                                        {
                                             "text": {
                                                 "type": "mrkdwn",
                                                 "text": "*Approve*"
-                                            }
+                                            },
+                                            "value": "Approve"
+                                        },
+                                        {
+                                            "text": {
+                                                "type": "mrkdwn",
+                                                "text": "*Decline*"
+                                            },
+                                            "value": "Decline"
                                         }
-                                    }
-                                ]
+                                    ]
+                                }
                             },
                             {
                                 "type": "divider"
@@ -1791,6 +1812,22 @@ module.exports = controller => {
                                         "text": "*Last Used*\n" + pvt_metadata.Last_Used,
                                     },
                                 ]
+                            },
+                            {
+                                "type": "divider"
+                            },
+                            {
+                                "type": "input",
+                                "block_id": "contactNotesBlock",
+                                "element": {
+                                    "type": "plain_text_input",
+                                    "multiline": true,
+                                    "action_id": "contactNotes"
+                                },
+                                "label": {
+                                    "type": "plain_text",
+                                    "text": "Add a Note",
+                                }
                             }
                         ]
                     }
@@ -1810,11 +1847,9 @@ module.exports = controller => {
                 response_action: 'update',
                 view: {
                     "type": "modal",
-                    "callback_id": "AD_Modal",
-                    // "notify_on_close": true,
+                    "callback_id": "approveDeclinePopup",
                     "clear_on_close": true,
                     "private_metadata": JSON.stringify(pvt_metadata),
-                    // "submit_disabled": true,
                     "submit": {
                         "type": "plain_text",
                         "text": "Next",
@@ -1831,25 +1866,6 @@ module.exports = controller => {
                         "emoji": true
                     },
                     "blocks": [
-                        {
-                            "type": "section",
-                            "block_id": "additionalBlock",
-                            "text": {
-                                "type": "mrkdwn",
-                                "text": " "
-                            },
-                            "accessory": {
-                                "type": "button",
-                                "action_id": "additionalModal",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Additional Request Info",
-                                    "emoji": true
-                                },
-                                "style": "primary",
-                                "value": pvt_metadata.rraId
-                            }
-                        },
                         {
                             "type": "section",
                             "fields": [
@@ -1876,40 +1892,52 @@ module.exports = controller => {
                             ]
                         },
                         {
+                            "type": "actions",
+                            "block_id": "additionalBlock",
+                            "elements": [
+                                {
+                                    "type": "button",
+                                    "action_id": "additionalModal",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "More Request Details"
+                                    },
+                                    "style": "primary",
+                                    "value": pvt_metadata.rraId
+                                }
+                            ]
+                        },
+                        {
                             "type": "divider"
                         },
                         {
-                            "type": "actions",
+                            "type": "input",
                             "block_id": "approveDeclineBlock",
-                            "elements": [
-                                {
-                                    "type": "radio_buttons",
-                                    "options": [
-                                        {
-                                            "text": {
-                                                "type": "mrkdwn",
-                                                "text": "*Approve*"
-                                            },
-                                            "value": "Approve"
-                                        },
-                                        {
-                                            "text": {
-                                                "type": "mrkdwn",
-                                                "text": "*Decline*"
-                                            },
-                                            "value": "Decline"
-                                        }
-                                    ],
-                                    "action_id": "approveDeclineRadio",
-                                    "initial_option": {
-                                        "value": "Approve",
+                            "dispatch_action": true,
+                            "label": {
+                                "type": "plain_text",
+                                "text": "What would you like to do?",
+                            },
+                            "element": {
+                                "type": "radio_buttons",
+                                "action_id": "approveDeclineRadio",
+                                "options": [
+                                    {
                                         "text": {
                                             "type": "mrkdwn",
                                             "text": "*Approve*"
-                                        }
+                                        },
+                                        "value": "Approve"
+                                    },
+                                    {
+                                        "text": {
+                                            "type": "mrkdwn",
+                                            "text": "*Decline*"
+                                        },
+                                        "value": "Decline"
                                     }
-                                }
-                            ]
+                                ]
+                            }
                         },
                         {
                             "type": "divider"
@@ -1991,6 +2019,22 @@ module.exports = controller => {
                                     "text": "*Last Used*\n" + pvt_metadata.Last_Used,
                                 },
                             ]
+                        },
+                        {
+                            "type": "divider"
+                        },
+                        {
+                            "type": "input",
+                            "block_id": "contactNotesBlock",
+                            "element": {
+                                "type": "plain_text_input",
+                                "multiline": true,
+                                "action_id": "contactNotes"
+                            },
+                            "label": {
+                                "type": "plain_text",
+                                "text": "Add a Note",
+                            }
                         }
                     ]
                 }
@@ -2782,10 +2826,7 @@ module.exports = controller => {
                 let existingConn = await connFactory.getConnection(message.team.id, controller);
 
                 if (existingConn) {
-                    // const userProfile = await bot.api.users.info({//users.read scope
-                    //     token: bot.api.token,
-                    //     user: message.user
-                    // });
+
                     try {
                         console.log('MESSAGE 1281 EARS', message.actions[0].block_id, message.actions[0].action_id);
 
@@ -3551,22 +3592,22 @@ module.exports = controller => {
                                     view: {
                                         "title": {
                                             "type": "plain_text",
-                                            "text": "Reference Use Request",
+                                            "text": "Edit Contact",
                                             "emoji": true
                                         },
                                         "submit": {
                                             "type": "plain_text",
-                                            "text": "Back",
+                                            "text": "Close",
                                             "emoji": true
                                         },
                                         "type": "modal",
                                         "callback_id": "refUseReqMainBlockWithContacts",
                                         "private_metadata": JSON.stringify(pvt_metadata),
-                                        "close": {
-                                            "type": "plain_text",
-                                            "text": "Close",
-                                            "emoji": true
-                                        },
+                                        // "close": {
+                                        //     "type": "plain_text",
+                                        //     "text": "Back",
+                                        //     "emoji": true
+                                        // },
                                         "blocks": [
                                             {
                                                 "type": "section",
@@ -3664,22 +3705,22 @@ module.exports = controller => {
                                     view: {
                                         "title": {
                                             "type": "plain_text",
-                                            "text": "Reference Use Request",
+                                            "text": "Edit Contact",
                                             "emoji": true
                                         },
                                         "submit": {
                                             "type": "plain_text",
-                                            "text": "Save",
+                                            "text": "Close",
                                             "emoji": true
                                         },
                                         "type": "modal",
                                         "callback_id": "refUseReqMainBlockWithContacts",
                                         "private_metadata": JSON.stringify(pvt_metadata),
-                                        "close": {
-                                            "type": "plain_text",
-                                            "text": "Close",
-                                            "emoji": true
-                                        },
+                                        // "close": {
+                                        //     "type": "plain_text",
+                                        //     "text": "Close",
+                                        //     "emoji": true
+                                        // },
                                         "blocks": [
                                             {
                                                 "type": "section",
@@ -4112,6 +4153,171 @@ module.exports = controller => {
                                         ]
                                     }
                                 });
+                            } else if (requestStatus == "Approve") {
+                                pvt_metadata.requestStatus = requestStatus;
+
+                                if (pvt_metadata.activeContacts.length && pvt_metadata.inactiveContacts.length) {
+                                    await bot.api.views.update({
+                                        view_id: message.view.id,
+                                        view: {
+                                            "type": "modal",
+                                            "callback_id": "approveDeclinePopup",
+                                            "clear_on_close": true,
+                                            "private_metadata": JSON.stringify(pvt_metadata),
+                                            "submit": {
+                                                "type": "plain_text",
+                                                "text": "Next",
+                                                "emoji": true
+                                            },
+                                            "close": {
+                                                "type": "plain_text",
+                                                "text": "Close",
+                                                "emoji": true
+                                            },
+                                            "title": {
+                                                "type": "plain_text",
+                                                "text": "Reference Use Request",
+                                                "emoji": true
+                                            },
+                                            "blocks": [
+                                                {
+                                                    "type": "section",
+                                                    "fields": [
+                                                        {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Reference Account*\n" + pvt_metadata["Account Name"]
+                                                        },
+                                                        {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Opportunity Account*\n" + pvt_metadata["Opportunity Account Name"]
+                                                        },
+                                                        {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Reference Type*\n" + pvt_metadata["Reference Type"]
+                                                        },
+                                                        {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Opportunity Name*\n" + pvt_metadata["Opportunity Name"]
+                                                        },
+                                                        {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Requester*\n" + pvt_metadata["Requester Name"]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "actions",
+                                                    "block_id": "additionalBlock",
+                                                    "elements": [
+                                                        {
+                                                            "type": "button",
+                                                            "action_id": "additionalModal",
+                                                            "text": {
+                                                                "type": "plain_text",
+                                                                "text": "More Request Details"
+                                                            },
+                                                            "style": "primary",
+                                                            "value": pvt_metadata.rraId
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "divider"
+                                                },
+                                                {
+                                                    "type": "input",
+                                                    "block_id": "approveDeclineBlock",
+                                                    "dispatch_action": true,
+                                                    "label": {
+                                                        "type": "plain_text",
+                                                        "text": "What would you like to do?",
+                                                    },
+                                                    "element": {
+                                                        "type": "radio_buttons",
+                                                        "action_id": "approveDeclineRadio",
+                                                        "options": [
+                                                            {
+                                                                "text": {
+                                                                    "type": "mrkdwn",
+                                                                    "text": "*Approve*"
+                                                                },
+                                                                "value": "Approve"
+                                                            },
+                                                            {
+                                                                "text": {
+                                                                    "type": "mrkdwn",
+                                                                    "text": "*Decline*"
+                                                                },
+                                                                "value": "Decline"
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                {
+                                                    "type": "divider"
+                                                },
+                                                {
+                                                    "type": "input",
+                                                    "optional": true,
+                                                    "block_id": "blkCon1",
+                                                    "dispatch_action": true,
+                                                    "element": {
+                                                        "type": "static_select",
+                                                        "action_id": "con_select1",
+                                                        "placeholder": {
+                                                            "type": "plain_text",
+                                                            "text": "Select a type",
+                                                            "emoji": true
+                                                        },
+                                                        "options": pvt_metadata.activeContacts
+                                                    },
+                                                    "label": {
+                                                        "type": "plain_text",
+                                                        "text": "Select an existing reference contact....",
+                                                        "emoji": true
+                                                    }
+                                                },
+                                                {
+                                                    "type": "input",
+                                                    "optional": true,
+                                                    "block_id": "blkCon2",
+                                                    "dispatch_action": true,
+                                                    "element": {
+                                                        "type": "static_select",
+                                                        "action_id": "con_select2",
+                                                        "placeholder": {
+                                                            "type": "plain_text",
+                                                            "text": "Select a type",
+                                                            "emoji": true
+                                                        },
+                                                        "options": pvt_metadata.inactiveContacts
+                                                    },
+                                                    "label": {
+                                                        "type": "plain_text",
+                                                        "text": "OR activate a reference contact",
+                                                        "emoji": true
+                                                    }
+                                                },
+                                                {
+                                                    "type": "divider"
+                                                },
+                                                {
+                                                    "type": "input",
+                                                    "block_id": "contactNotesBlock",
+                                                    "element": {
+                                                        "type": "plain_text_input",
+                                                        "multiline": true,
+                                                        "action_id": "contactNotes"
+                                                    },
+                                                    "label": {
+                                                        "type": "plain_text",
+                                                        "text": "Add a Note",
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    });
+                                }
                             }
                             
                         }
