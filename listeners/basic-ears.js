@@ -2623,13 +2623,14 @@ module.exports = controller => {
                         });
                     } else if (message.view.callback_id == 'approveDeclinePopup') {
                         //this is the final popup to confirm that user want to Decline the Request
-                        console.log('In Decline Popup EARS BEfore 1473 ', message.view);
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let notes = message.view.state.values.contactNotesBlock.contactNotes.value;
                         pvt_metadata.Notes = notes;
                         console.log('In Approve Decline Popup EARS 1473 -> ', pvt_metadata.requestStatus);
                         let titleText = pvt_metadata.requestStatus + " Reference Request";
+                        console.log('In Approve Decline Popup EARS 1473 -> ', titleText);
                         let blockText = "Are you sure you want to "+ pvt_metadata.requestStatus + " this Reference Request?";
+                        console.log('In Approve Decline Popup EARS 1473 -> ', blockText);
                         
                         bot.httpBody({
                             response_action: 'update',
@@ -2655,8 +2656,8 @@ module.exports = controller => {
                                         "type": "section",
                                         "text": {
                                             "type": "plain_text",
-                                            // "text": "Are you sure you want to this Reference Request?"
-                                            "text": blockText
+                                            "text": "Are you sure you want to this Reference Request?"
+                                            // "text": blockText
                                         }
                                     }
                                 ]
