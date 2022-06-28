@@ -250,7 +250,7 @@ module.exports = {
 
     getAdditionalModal: async (conn, rraId) => {
         let val;
-        await conn.apex.get(process.env.NAMESPACE + '/rebot/AD_MODAL' + '::' + rraId + '::Additional', (err, response) => {
+        await conn.apex.get(process.env.NAMESPACE + '/rebot/AD_MODAL' + '::' + rraId + '::ADDITIONAL_MODAL', (err, response) => {
 
             if (err) {
                 console.log('ERROR in getAdditionalModal REFEDGE.js');
@@ -264,6 +264,13 @@ module.exports = {
             }
         });
         return val;
+    },
+
+    getSearchedContact : async (conn, accId, searchKeywordForContact) => {
+        let val;
+        await conn.apex.get(process.env.NAMESPACE + '/rebot/AD_MODAL' + '::' + accId + '::' + searchKeywordForContact, (err, response) => {
+
+        });
     },
 
     submitP2PRequest: async (conn, requestData) => {
