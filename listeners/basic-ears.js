@@ -1488,7 +1488,14 @@ module.exports = controller => {
                                             },
                                             "value": "Decline"
                                         }
-                                    ]
+                                    ],
+                                    "initial_option": {
+                                        "value": "Approve",
+                                        "text": {
+                                            "type": "mrkdwn",
+                                            "text": "*Approve*"
+                                        }
+                                    }
                                 }
                             },
                             {
@@ -1708,6 +1715,13 @@ module.exports = controller => {
                                             "value": "Decline"
                                         }
                                     ]
+                                },
+                                "initial_option": {
+                                    "value": "Approve",
+                                    "text": {
+                                        "type": "mrkdwn",
+                                        "text": "*Approve*"
+                                    }
                                 }
                             },
                             {
@@ -1937,6 +1951,13 @@ module.exports = controller => {
                                         "value": "Decline"
                                     }
                                 ]
+                            },
+                            "initial_option": {
+                                "value": "Approve",
+                                "text": {
+                                    "type": "mrkdwn",
+                                    "text": "*Approve*"
+                                }
                             }
                         },
                         {
