@@ -2627,13 +2627,13 @@ module.exports = controller => {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let notes = message.view.state.values.contactNotesBlock.contactNotes.value;
                         pvt_metadata.Notes = notes;
-                        console.log('In Approve Decline Popup EARS 1473');
+                        console.log('In Approve Decline Popup EARS 1473 -> ', pvt_metadata.requestStatus);
                         bot.httpBody({
                             response_action: 'update',
                             view: {
                                 "title": {
                                     "type": "plain_text",
-                                    "text": /* pvt_metadata.requestStatus +  */" Reference Request"
+                                    "text": pvt_metadata.requestStatus + " Reference Request"
                                 },
                                 "submit": {
                                     "type": "plain_text",
@@ -2652,8 +2652,8 @@ module.exports = controller => {
                                         "type": "section",
                                         "text": {
                                             "type": "plain_text",
-                                            "text": "Are you sure you want to this Reference Request?"
-                                            // "text": "Are you sure you want to "+ pvt_metadata.requestStatus + " this Reference Request?"
+                                            // "text": "Are you sure you want to this Reference Request?"
+                                            "text": "Are you sure you want to "+ pvt_metadata.requestStatus + " this Reference Request?"
                                         }
                                     }
                                 ]
