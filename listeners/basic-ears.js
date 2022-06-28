@@ -2626,42 +2626,42 @@ module.exports = controller => {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let notes = message.view.state.values.contactNotesBlock.contactNotes.value;
                         pvt_metadata.Notes = notes;
-                        console.log('In Approve Decline Popup EARS 1473 -> ', pvt_metadata.requestStatus);
-                        // let titleText = String(pvt_metadata.requestStatus) + " Reference Request";
-                        let titleText = "Approve " + " Reference Request";
-                        console.log('In Approve Decline Popup EARS 1473 -> ', titleText);
-                        let blockText = "Are you sure you want to "+ String(pvt_metadata.requestStatus) + " this Reference Request?";
-                        
-                        bot.httpBody({
-                            response_action: 'update',
-                            view: {
-                                "title": {
-                                    "type": "plain_text",
-                                    "text": "Decline Reference Request"
-                                },
-                                "submit": {
-                                    "type": "plain_text",
-                                    "text": "Yes"
-                                },
-                                "type": "modal",
-                                "clear_on_close": true,
-                                "private_metadata": JSON.stringify(pvt_metadata),
-                                "callback_id": "approveDeclineRequest",
-                                "close": {
-                                    "type": "plain_text",
-                                    "text": "No",
-                                },
-                                "blocks": [
-                                    {
-                                        "type": "section",
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": blockText
+
+                        if (pvt_metadata.requestStatus == "Approve" || pvt_metadata.requestStatus == "Decline") {
+                            let titleText = String(pvt_metadata.requestStatus) + " ReferenceRequest";
+                            let blockText = "Are you sure you want to "+ String(pvt_metadata.requestStatus) + " this Reference Request?";
+                            
+                            bot.httpBody({
+                                response_action: 'update',
+                                view: {
+                                    "title": {
+                                        "type": "plain_text",
+                                        "text": titleText
+                                    },
+                                    "submit": {
+                                        "type": "plain_text",
+                                        "text": "Yes"
+                                    },
+                                    "type": "modal",
+                                    "clear_on_close": true,
+                                    "private_metadata": JSON.stringify(pvt_metadata),
+                                    "callback_id": "approveDeclineRequest",
+                                    "close": {
+                                        "type": "plain_text",
+                                        "text": "No",
+                                    },
+                                    "blocks": [
+                                        {
+                                            "type": "section",
+                                            "text": {
+                                                "type": "plain_text",
+                                                "text": blockText
+                                            }
                                         }
-                                    }
-                                ]
-                            }
-                        });
+                                    ]
+                                }
+                            });
+                        }
                     } else if (message.view.callback_id == 'approveRequest') {
                         /* it sends(post) data to Salesforce from refedge.js function of 
                         rraId(Reference Request Id), Notes, type, ApproveWithoutContact & Contact details
