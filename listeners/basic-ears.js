@@ -2627,9 +2627,9 @@ module.exports = controller => {
                         let notes = message.view.state.values.contactNotesBlock.contactNotes.value;
                         pvt_metadata.Notes = notes;
                         console.log('In Approve Decline Popup EARS 1473 -> ', pvt_metadata.requestStatus);
-                        let titleText = pvt_metadata.requestStatus + " Reference Request";
+                        let titleText = String(pvt_metadata.requestStatus) + " Reference Request";
                         console.log('In Approve Decline Popup EARS 1473 -> ', titleText);
-                        let blockText = "Are you sure you want to "+ pvt_metadata.requestStatus + " this Reference Request?";
+                        let blockText = "Are you sure you want to "+ String(pvt_metadata.requestStatus) + " this Reference Request?";
                         console.log('In Approve Decline Popup EARS 1473 -> ', blockText);
                         
                         bot.httpBody({
@@ -2637,7 +2637,7 @@ module.exports = controller => {
                             view: {
                                 "title": {
                                     "type": "plain_text",
-                                    "text": titleText
+                                    "text": "titleText"
                                 },
                                 "submit": {
                                     "type": "plain_text",
@@ -2656,8 +2656,8 @@ module.exports = controller => {
                                         "type": "section",
                                         "text": {
                                             "type": "plain_text",
-                                            "text": "Are you sure you want to this Reference Request?"
-                                            // "text": blockText
+                                            // "text": "Are you sure you want to this Reference Request?"
+                                            "text": blockText
                                         }
                                     }
                                 ]
