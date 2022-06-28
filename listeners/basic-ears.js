@@ -2633,13 +2633,11 @@ module.exports = controller => {
                             view: {
                                 "title": {
                                     "type": "plain_text",
-                                    "text": pvt_metadata.requestStatus + " Reference Request",
-                                    "emoji": true
+                                    "text": /* pvt_metadata.requestStatus +  */" Reference Request"
                                 },
                                 "submit": {
                                     "type": "plain_text",
-                                    "text": "Yes",
-                                    "emoji": true
+                                    "text": "Yes"
                                 },
                                 "type": "modal",
                                 "clear_on_close": true,
@@ -2648,15 +2646,14 @@ module.exports = controller => {
                                 "close": {
                                     "type": "plain_text",
                                     "text": "No",
-                                    "emoji": true
                                 },
                                 "blocks": [
                                     {
                                         "type": "section",
                                         "text": {
                                             "type": "plain_text",
-                                            "text": "Are you sure you want to "+ pvt_metadata.requestStatus + " this Reference Request?",
-                                            "emoji": true
+                                            "text": "Are you sure you want to this Reference Request?"
+                                            // "text": "Are you sure you want to "+ pvt_metadata.requestStatus + " this Reference Request?"
                                         }
                                     }
                                 ]
