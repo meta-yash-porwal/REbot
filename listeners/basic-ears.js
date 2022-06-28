@@ -2637,7 +2637,7 @@ module.exports = controller => {
                             view: {
                                 "title": {
                                     "type": "plain_text",
-                                    "text": "titleText"
+                                    "text": titleText
                                 },
                                 "submit": {
                                     "type": "plain_text",
@@ -2656,7 +2656,6 @@ module.exports = controller => {
                                         "type": "section",
                                         "text": {
                                             "type": "plain_text",
-                                            // "text": "Are you sure you want to this Reference Request?"
                                             "text": blockText
                                         }
                                     }
