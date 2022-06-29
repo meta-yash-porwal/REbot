@@ -2442,7 +2442,7 @@ module.exports = controller => {
                             inOrActive = '';
                         }
                         console.log('CONS', contactSearchKeyword, requestStatus, pvt_metadata.Id);
-                        if ((pvt_metadata.requestStatus == "Approve" || pvt_metadata.requestStatus == "Decline") && pvt_metadata.Id && !contactSearchKeyword) {
+                        if (pvt_metadata.requestStatus == "Decline" || (pvt_metadata.requestStatus == "Approve" && pvt_metadata.Id && !contactSearchKeyword) {
                             console.log('IN approve decline Popup');
                             let titleText = String(pvt_metadata.requestStatus) + " ReferenceRequest";
                             let blockText = "Are you sure you want to "+ String(pvt_metadata.requestStatus) + " this Reference Request?";
