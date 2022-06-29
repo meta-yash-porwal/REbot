@@ -1810,7 +1810,7 @@ module.exports = controller => {
         bot.httpBody({
             "response_action": "errors",
             "errors": {
-                "blkCon2": message
+                "blkCon2": "message"
             }
         });
     }
