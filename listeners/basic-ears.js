@@ -2441,7 +2441,7 @@ module.exports = controller => {
                             contactSearchKeyword = message.view.state.values.blkCon2.con_select2.value;
                             inOrActive = '';
                         }
-                        console.log('CONS', contactSearchKeyword);
+                        console.log('CONS', contactSearchKeyword, requestStatus, pvt_metadata.Id);
                         if ((pvt_metadata.requestStatus == "Approve" || pvt_metadata.requestStatus == "Decline") && pvt_metadata.Id && !contactSearchKeyword) {
                             console.log('IN approve decline Popup');
                             let titleText = String(pvt_metadata.requestStatus) + " ReferenceRequest";
@@ -2639,6 +2639,7 @@ module.exports = controller => {
                             }
                         } else {
                             let selectedContactId = message.view.state.values.conSelectBlock.conSelect.selected_option.value;
+                            pvt_metadata.Id = selectedContactId;
                             pvt_metadata = setSelectedContactInfo(pvt_metadata, selectedContactId);
                         }
                         mainModalRefUseReqWith_editContact_selectedContact(bot, message, pvt_metadata);
