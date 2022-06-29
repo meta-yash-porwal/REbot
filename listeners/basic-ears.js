@@ -1,7 +1,7 @@
 const connFactory = require('../util/connection-factory');
 const logger = require('../common/logger');
 
-const { getRefTypes, getOpp, getOppfromName, getOppfromAcc, saveTeamId, checkOrgSettingAndGetData, getRefUseReqModal, getAdditionalModal, submitP2PRequest } = require('../util/refedge');
+const { getRefTypes, getOpp, getOppfromName, getOppfromAcc, saveTeamId, checkOrgSettingAndGetData, getRefUseReqModal, getAdditionalModal, submitP2PRequest, getSearchedContact } = require('../util/refedge');
 
 const { checkTeamMigration } = require('../listeners/middleware/migration-filter');
 
@@ -2693,15 +2693,17 @@ module.exports = controller => {
                         pvt_metadata.Notes = notes;
                         console.log('BLK1', message.view.state.values.blkCon1);
                         console.log('BLK2', message.view.state.values.blkCon2);
-                        let contactSearchKeyword;
-                        if (message.view.state.values.blkCon1) {
+                        let contactSearchKeyword, inOrActive;
 
-                        } else if (message.view.state.values.blkCon2) {
-
+                        if (message.view.state.values.blkCon1 && message.view.state.values.blkCon1.con_select1 && message.view.state.values.blkCon1.con_select1.value) {
+                            contactSearchKeyword = message.view.state.values.blkCon1.con_select1.value;
+                            inOrActive = 'RBI';
+                        } else if (message.view.state.values.blkCon2 && message.view.state.values.blkCon2.con_select2 && message.view.state.values.blkCon2.con_select2.value) {
+                            contactSearchKeyword = message.view.state.values.blkCon2.con_select2.value;
+                            inOrActive = '';
                         }
 
-
-                        if ((pvt_metadata.requestStatus == "Approve" || pvt_metadata.requestStatus == "Decline") && pvt_metadata.Id) {
+                        if ((pvt_metadata.requestStatus == "Approve" || pvt_metadata.requestStatus == "Decline") && pvt_metadata.Id && !contactSearchKeyword) {
                             let titleText = String(pvt_metadata.requestStatus) + " ReferenceRequest";
                             let blockText = "Are you sure you want to "+ String(pvt_metadata.requestStatus) + " this Reference Request?";
                             
@@ -2735,6 +2737,57 @@ module.exports = controller => {
                                     ]
                                 }
                             });
+                        } else if (contactSearchKeyword) {
+                            let contacts = await getSearchedContact(existingConn, pvt_metadata.Accountid, inOrActive);
+                            let activeCons = [];
+
+                                contacts.forEach(con => {
+
+                                    let entry = {
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": con.Name
+                                        },
+                                        "value": con.id
+                                    }
+                                    activeCons.push(entry);
+                                    bot.httpBody({
+                                        response_action: 'update',
+                                        view: {
+                                            "title": {
+                                                "type": "plain_text",
+                                                "text": "Select Contact",
+                                            },
+                                            "submit": {
+                                                "type": "plain_text",
+                                                "text": "Close"
+                                            },
+                                            "type": "modal",
+                                            "clear_on_close": true,
+                                            "private_metadata": JSON.stringify(pvt_metadata),
+                                            "callback_id": "approveDeclineRequest",
+                                            "blocks": [
+                                                {
+                                                    "type": "input",
+                                                    "block_id": "conSelectBlock",
+                                                    "element": {
+                                                        "type": "static_select",
+                                                        "action_id": "conSelect",
+                                                        "placeholder": {
+                                                            "type": "plain_text",
+                                                            "text": "Select"
+                                                        },
+                                                        "options": 
+                                                    },
+                                                    "label": {
+                                                        "type": "plain_text",
+                                                        "text": "Contacts",
+                                                    }
+                                                },
+                                            ]
+                                        }
+                                    });
+                            
                         }
                     } else if (message.view.callback_id == 'approveRequest') {
                         /* it sends(post) data to Salesforce from refedge.js function of 
