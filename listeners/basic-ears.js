@@ -1806,11 +1806,11 @@ module.exports = controller => {
         }
     }
 
-    async function errorShowingBlockFunction(blockId, message) {
+    async function errorShowingBlockFunction(bot, blockId, message) {
         bot.httpBody({
             "response_action": "errors",
             "errors": {
-                "blkCon2": "message"
+                blockId: message
             }
         });
     }
@@ -2448,7 +2448,7 @@ module.exports = controller => {
                         if (message.view.state.values.blkCon1 && message.view.state.values.blkCon1.con_select1 && 
                             message.view.state.values.blkCon1.con_select1.value && message.view.state.values.blkCon2 && 
                             message.view.state.values.blkCon2.con_select2 && message.view.state.values.blkCon2.con_select2.value) {
-                                errorShowingBlockFunction("blkCon2", "OR");
+                                errorShowingBlockFunction(bot, "blkCon2", "OR");
                         } else if (message.view.state.values.blkCon1 && message.view.state.values.blkCon1.con_select1 && message.view.state.values.blkCon1.con_select1.value) {
                             contactSearchKeyword = message.view.state.values.blkCon1.con_select1.value;
                             inOrActive = 'RBI';
@@ -2550,9 +2550,9 @@ module.exports = controller => {
                             } else {
 
                                 if (inOrActive) {
-                                    errorShowingBlockFunction("blkCon1", "No Contact matching the Entered Name found.Please retry.");
+                                    errorShowingBlockFunction(bot, "blkCon1", "No Contact matching the Entered Name found.Please retry.");
                                 } else {
-                                    errorShowingBlockFunction("blkCon2", "No Contact matching the Entered Name found.Please retry.");
+                                    errorShowingBlockFunction(bot, "blkCon2", "No Contact matching the Entered Name found.Please retry.");
                                 }
                             }
                             
