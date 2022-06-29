@@ -2739,56 +2739,61 @@ module.exports = controller => {
                             });
                         } else if (contactSearchKeyword) {
                             let contacts = await getSearchedContact(existingConn, pvt_metadata.Accountid, contactSearchKeyword, inOrActive);
-                            console.log('Contacts -: ', contacts);
 
-                            // let activeCons = [];
+                            if (contacts && contacts.length) {
+                                let slackCons = [];
 
-                            //     contacts.forEach(con => {
+                                contacts.forEach(con => {
 
-                            //         let entry = {
-                            //             "text": {
-                            //                 "type": "plain_text",
-                            //                 "text": con.Name
-                            //             },
-                            //             "value": con.id
-                            //         }
-                            //         activeCons.push(entry);
-                                    bot.httpBody({
-                                        response_action: 'update',
-                                        view: {
-                                            "title": {
-                                                "type": "plain_text",
-                                                "text": "Select Contact",
-                                            },
-                                            "submit": {
-                                                "type": "plain_text",
-                                                "text": "Close"
-                                            },
-                                            "type": "modal",
-                                            "clear_on_close": true,
-                                            "private_metadata": JSON.stringify(pvt_metadata),
-                                            "callback_id": "approveDeclineRequest",
-                                            "blocks": [
-                                                {
-                                                    "type": "input",
-                                                    "block_id": "conSelectBlock",
-                                                    "element": {
-                                                        "type": "static_select",
-                                                        "action_id": "conSelect",
-                                                        "placeholder": {
-                                                            "type": "plain_text",
-                                                            "text": "Select"
-                                                        },
-                                                        // "options": 
-                                                    },
-                                                    "label": {
+                                    let entry = {
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": con.Name
+                                        },
+                                        "value": con.id
+                                    }
+                                    slackCons.push(entry);
+                                });
+
+                                bot.httpBody({
+                                    response_action: 'update',
+                                    view: {
+                                        "title": {
+                                            "type": "plain_text",
+                                            "text": "Select Contact",
+                                        },
+                                        "submit": {
+                                            "type": "plain_text",
+                                            "text": "Close"
+                                        },
+                                        "type": "modal",
+                                        "clear_on_close": true,
+                                        "private_metadata": JSON.stringify(pvt_metadata),
+                                        "callback_id": "approveDeclineRequest",
+                                        "blocks": [
+                                            {
+                                                "type": "input",
+                                                "block_id": "conSelectBlock",
+                                                "element": {
+                                                    "type": "static_select",
+                                                    "action_id": "conSelect",
+                                                    "placeholder": {
                                                         "type": "plain_text",
-                                                        "text": "Contacts",
-                                                    }
+                                                        "text": "Select"
+                                                    },
+                                                    "options": slackCons
                                                 },
-                                            ]
-                                        }
-                                    });
+                                                "label": {
+                                                    "type": "plain_text",
+                                                    "text": "Contacts",
+                                                }
+                                            },
+                                        ]
+                                    }
+                                });
+                            } else {
+
+                            }
                             
                         }
                     } else if (message.view.callback_id == 'approveRequest') {

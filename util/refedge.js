@@ -281,7 +281,7 @@ module.exports = {
                 }
             }
         });
-        return val;
+        return val.Contacts;
     },
 
     submitP2PRequest: async (conn, requestData) => {
