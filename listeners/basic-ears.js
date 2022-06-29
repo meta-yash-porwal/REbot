@@ -2432,8 +2432,6 @@ module.exports = controller => {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let notes = message.view.state.values.contactNotesBlock.contactNotes.value;
                         pvt_metadata.Notes = notes;
-                        console.log('BLK1', message.view.state.values.blkCon1);
-                        console.log('BLK2', message.view.state.values.blkCon2);
                         let contactSearchKeyword, inOrActive;
 
                         if (message.view.state.values.blkCon1 && message.view.state.values.blkCon1.con_select1 && message.view.state.values.blkCon1.con_select1.value) {
@@ -2443,7 +2441,7 @@ module.exports = controller => {
                             contactSearchKeyword = message.view.state.values.blkCon2.con_select2.value;
                             inOrActive = '';
                         }
-
+                        console.log('CONS', contactSearchKeyword);
                         if ((pvt_metadata.requestStatus == "Approve" || pvt_metadata.requestStatus == "Decline") && pvt_metadata.Id && !contactSearchKeyword) {
                             let titleText = String(pvt_metadata.requestStatus) + " ReferenceRequest";
                             let blockText = "Are you sure you want to "+ String(pvt_metadata.requestStatus) + " this Reference Request?";
