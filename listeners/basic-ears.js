@@ -1806,15 +1806,6 @@ module.exports = controller => {
         }
     }
 
-    async function errorShowingBlockFunction(bot, blockId, message) {
-        bot.httpBody({
-            "response_action": "errors",
-            "errors": {
-                "blkCon2": message
-            }
-        });
-    }
-
     /**
      * when user clicks on submit button of Modal then this controller is called;
      * then it works as per callback_id of Modal
@@ -2448,7 +2439,12 @@ module.exports = controller => {
                         if (message.view.state.values.blkCon1 && message.view.state.values.blkCon1.con_select1 && 
                             message.view.state.values.blkCon1.con_select1.value && message.view.state.values.blkCon2 && 
                             message.view.state.values.blkCon2.con_select2 && message.view.state.values.blkCon2.con_select2.value) {
-                                errorShowingBlockFunction(bot, "blkCon2", "OR");
+                                bot.httpBody({
+                                    "response_action": "errors",
+                                    "errors": {
+                                        "blkCon2": "OR"
+                                    }
+                                });
                         } else if (message.view.state.values.blkCon1 && message.view.state.values.blkCon1.con_select1 && message.view.state.values.blkCon1.con_select1.value) {
                             contactSearchKeyword = message.view.state.values.blkCon1.con_select1.value;
                             inOrActive = 'RBI';
@@ -2550,9 +2546,19 @@ module.exports = controller => {
                             } else {
 
                                 if (inOrActive) {
-                                    errorShowingBlockFunction(bot, "blkCon1", "No Contact matching the Entered Name found.Please retry.");
+                                    bot.httpBody({
+                                        "response_action": "errors",
+                                        "errors": {
+                                            "blkCon1": "No Contact matching the Entered Name found.Please retry."
+                                        }
+                                    });
                                 } else {
-                                    errorShowingBlockFunction(bot, "blkCon2", "No Contact matching the Entered Name found.Please retry.");
+                                    bot.httpBody({
+                                        "response_action": "errors",
+                                        "errors": {
+                                            "blkCon2": "No Contact matching the Entered Name found.Please retry."
+                                        }
+                                    });
                                 }
                             }
                             
