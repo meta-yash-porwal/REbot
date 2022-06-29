@@ -1362,7 +1362,7 @@ module.exports = controller => {
                 metadata.Email = con.Email;
                 metadata.Title = con.Title;
                 metadata.Status = con.Status;
-                metadata.Last_Used = con.Last_Used ? con.Last_Used : ' ';
+                metadata.Last_Used = con.Last_Used ? con.Last_Used : '';
             }
         });
         return metadata;
@@ -1379,484 +1379,13 @@ module.exports = controller => {
      */
     async function mainModalRefUseReqWith_editContact_selectedContact(bot, message, pvt_metadata) {
 
-        if (pvt_metadata.activeContacts.length && pvt_metadata.inactiveContacts.length) {
-            let state;
-            pvt_metadata.Contacts.forEach(con => {
-
-                if (con.id == pvt_metadata.Id) {
-                    state = con.Status;
-                }
-            })
-
             /**
              * this is for inital options selected by user as user comes from Edit Contact Modal to here
              * so as we have difference select box of Contact - Active, Inactive
              * we need to check selected contact is in Active select box or in Inactive box 
              * to automatically display that selected contact from these select box
              */
-            if (state == "Active") {
-                bot.httpBody({
-                    response_action: 'update',
-                    view: {
-                        "type": "modal",
-                        "callback_id": "approveDeclinePopup",
-                        "clear_on_close": true,
-                        "private_metadata": JSON.stringify(pvt_metadata),
-                        "submit": {
-                            "type": "plain_text",
-                            "text": "Next",
-                            "emoji": true
-                        },
-                        "close": {
-                            "type": "plain_text",
-                            "text": "Close",
-                            "emoji": true
-                        },
-                        "title": {
-                            "type": "plain_text",
-                            "text": "Reference Use Request",
-                            "emoji": true
-                        },
-                        "blocks": [
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Reference Account*\n" + pvt_metadata["Account Name"]
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Opportunity Account*\n" + pvt_metadata["Opportunity Account Name"]
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Reference Type*\n" + pvt_metadata["Reference Type"]
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Opportunity Name*\n" + pvt_metadata["Opportunity Name"]
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Requester*\n" + pvt_metadata["Requester Name"]
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "actions",
-                                "block_id": "additionalBlock",
-                                "elements": [
-                                    {
-                                        "type": "button",
-                                        "action_id": "additionalModal",
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": "More Request Details"
-                                        },
-                                        "style": "primary",
-                                        "value": pvt_metadata.rraId
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "divider"
-                            },
-                            {
-                                "type": "input",
-                                "block_id": "approveDeclineBlock",
-                                "dispatch_action": true,
-                                "label": {
-                                    "type": "plain_text",
-                                    "text": "What would you like to do?",
-                                },
-                                "element": {
-                                    "type": "radio_buttons",
-                                    "action_id": "approveDeclineRadio",
-                                    "options": [
-                                        {
-                                            "text": {
-                                                "type": "mrkdwn",
-                                                "text": "*Approve*"
-                                            },
-                                            "value": "Approve"
-                                        },
-                                        {
-                                            "text": {
-                                                "type": "mrkdwn",
-                                                "text": "*Decline*"
-                                            },
-                                            "value": "Decline"
-                                        }
-                                    ],
-                                    "initial_option": {
-                                        "value": "Approve",
-                                        "text": {
-                                            "type": "mrkdwn",
-                                            "text": "*Approve*"
-                                        }
-                                    }
-                                }
-                            },
-                            {
-                                "type": "divider"
-                            },
-                            {
-                                "type": "input",
-                                "optional": true,
-                                "block_id": "blkCon1",
-                                "dispatch_action": true,
-                                "element": {
-                                    "type": "static_select",
-                                    "action_id": "con_select1",
-                                    "placeholder": {
-                                        "type": "plain_text",
-                                        "text": "Select a type",
-                                        "emoji": true
-                                    },
-                                    "options": pvt_metadata.activeContacts,
-                                    "initial_option": {
-                                        "value": pvt_metadata.Id,
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": pvt_metadata.Name
-                                        }
-                                    },
-                                },
-                                "label": {
-                                    "type": "plain_text",
-                                    "text": "Select an existing reference contact....",
-                                    "emoji": true
-                                }
-                            },
-                            {
-                                "type": "input",
-                                "optional": true,
-                                "block_id": "blkCon2",
-                                "dispatch_action": true,
-                                "element": {
-                                    "type": "static_select",
-                                    "action_id": "con_select2",
-                                    "placeholder": {
-                                        "type": "plain_text",
-                                        "text": "Select a type",
-                                        "emoji": true
-                                    },
-                                    "options": pvt_metadata.inactiveContacts
-                                },
-                                "label": {
-                                    "type": "plain_text",
-                                    "text": "OR activate a reference contact",
-                                    "emoji": true
-                                }
-                            },
-                            {
-                                "type": "divider"
-                            },
-                            {
-                                "type": "section",
-                                "block_id": "editContactBlock",
-                                "text": {
-                                    "type": "mrkdwn",
-                                    "text": "*Selected Contact Info*"
-                                },
-                                "accessory": {
-                                    "type": "button",
-                                    "action_id": "editContactModal",
-                                    "text": {
-                                        "type": "plain_text",
-                                        "text": "Edit",
-                                        "emoji": true
-                                    },
-                                    "style": "primary",
-                                    "value": pvt_metadata.Id
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Name*\n" + pvt_metadata.Name,
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Title*\n" + pvt_metadata.Title,
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Email*\n" + pvt_metadata.Email,
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Program Member*\n" + pvt_metadata.Status,
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Phone*\n" + pvt_metadata.Phone,
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Last Used*\n" + pvt_metadata.Last_Used,
-                                    },
-                                ]
-                            },
-                            {
-                                "type": "divider"
-                            },
-                            {
-                                "type": "input",
-                                "block_id": "contactNotesBlock",
-                                "element": {
-                                    "type": "plain_text_input",
-                                    "multiline": true,
-                                    "action_id": "contactNotes"
-                                },
-                                "label": {
-                                    "type": "plain_text",
-                                    "text": "Add a Note",
-                                }
-                            }
-                        ]
-                    }
-                });
-            } else {
-                bot.httpBody({
-                    response_action: 'update',
-                    view: {
-                        "type": "modal",
-                        "callback_id": "approveDeclinePopup",
-                        "clear_on_close": true,
-                        "private_metadata": JSON.stringify(pvt_metadata),
-                        "submit": {
-                            "type": "plain_text",
-                            "text": "Next",
-                            "emoji": true
-                        },
-                        "close": {
-                            "type": "plain_text",
-                            "text": "Close",
-                            "emoji": true
-                        },
-                        "title": {
-                            "type": "plain_text",
-                            "text": "Reference Use Request",
-                            "emoji": true
-                        },
-                        "blocks": [
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Reference Account*\n" + pvt_metadata["Account Name"]
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Opportunity Account*\n" + pvt_metadata["Opportunity Account Name"]
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Reference Type*\n" + pvt_metadata["Reference Type"]
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Opportunity Name*\n" + pvt_metadata["Opportunity Name"]
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Requester*\n" + pvt_metadata["Requester Name"]
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "actions",
-                                "block_id": "additionalBlock",
-                                "elements": [
-                                    {
-                                        "type": "button",
-                                        "action_id": "additionalModal",
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": "More Request Details"
-                                        },
-                                        "style": "primary",
-                                        "value": pvt_metadata.rraId
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "divider"
-                            },
-                            {
-                                "type": "input",
-                                "block_id": "approveDeclineBlock",
-                                "dispatch_action": true,
-                                "label": {
-                                    "type": "plain_text",
-                                    "text": "What would you like to do?",
-                                },
-                                "element": {
-                                    "type": "radio_buttons",
-                                    "action_id": "approveDeclineRadio",
-                                    "options": [
-                                        {
-                                            "text": {
-                                                "type": "mrkdwn",
-                                                "text": "*Approve*"
-                                            },
-                                            "value": "Approve"
-                                        },
-                                        {
-                                            "text": {
-                                                "type": "mrkdwn",
-                                                "text": "*Decline*"
-                                            },
-                                            "value": "Decline"
-                                        }
-                                    ]
-                                },
-                                "initial_option": {
-                                    "value": "Approve",
-                                    "text": {
-                                        "type": "mrkdwn",
-                                        "text": "*Approve*"
-                                    }
-                                }
-                            },
-                            {
-                                "type": "divider"
-                            },
-                            {
-                                "type": "input",
-                                "optional": true,
-                                "block_id": "blkCon1",
-                                "dispatch_action": true,
-                                "element": {
-                                    "type": "static_select",
-                                    "action_id": "con_select1",
-                                    "placeholder": {
-                                        "type": "plain_text",
-                                        "text": "Select a type",
-                                        "emoji": true
-                                    },
-                                    "options": pvt_metadata.activeContacts
-                                },
-                                "label": {
-                                    "type": "plain_text",
-                                    "text": "Select an existing reference contact....",
-                                    "emoji": true
-                                }
-                            },
-                            {
-                                "type": "input",
-                                "optional": true,
-                                "block_id": "blkCon2",
-                                "dispatch_action": true,
-                                "element": {
-                                    "type": "static_select",
-                                    "action_id": "con_select2",
-                                    "placeholder": {
-                                        "type": "plain_text",
-                                        "text": "Select a type",
-                                        "emoji": true
-                                    },
-                                    "options": pvt_metadata.inactiveContacts,
-                                    "initial_option": {
-                                        "value": pvt_metadata.Id,
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": pvt_metadata.Name
-                                        }
-                                    },
-                                },
-                                "label": {
-                                    "type": "plain_text",
-                                    "text": "OR activate a reference contact",
-                                    "emoji": true
-                                }
-                            },
-                            {
-                                "type": "divider"
-                            },
-                            {
-                                "type": "section",
-                                "block_id": "editContactBlock",
-                                "text": {
-                                    "type": "mrkdwn",
-                                    "text": "*Selected Contact Info*"
-                                },
-                                "accessory": {
-                                    "type": "button",
-                                    "action_id": "editContactModal",
-                                    "text": {
-                                        "type": "plain_text",
-                                        "text": "Edit",
-                                        "emoji": true
-                                    },
-                                    "style": "primary",
-                                    "value": pvt_metadata.Id
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Name*\n" + pvt_metadata.Name,
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Title*\n" + pvt_metadata.Title,
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Email*\n" + pvt_metadata.Email,
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Program Member*\n" + pvt_metadata.Status,
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Phone*\n" + pvt_metadata.Phone,
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Last Used*\n" + pvt_metadata.Last_Used,
-                                    },
-                                ]
-                            },
-                            {
-                                "type": "divider"
-                            },
-                            {
-                                "type": "input",
-                                "block_id": "contactNotesBlock",
-                                "element": {
-                                    "type": "plain_text_input",
-                                    "multiline": true,
-                                    "action_id": "contactNotes"
-                                },
-                                "label": {
-                                    "type": "plain_text",
-                                    "text": "Add a Note",
-                                }
-                            }
-                        ]
-                    }
-                });
-            }
-        } else if (pvt_metadata.activeContacts.length || pvt_metadata.inactiveContacts.length) {
-            // this is for only one type Contacts - Active/Inactive in RR Account 
-            // so we need to display only one select box
-            let tmpCons, label = "Select a contact";
-
-            if (pvt_metadata.activeContacts.length) {
-                tmpCons = pvt_metadata.activeContacts;
-            } else if (pvt_metadata.inactiveContacts.length) {
-                tmpCons = pvt_metadata.inactiveContacts;
-            }
+        if (pvt_metadata.Status) {
             bot.httpBody({
                 response_action: 'update',
                 view: {
@@ -1950,13 +1479,13 @@ module.exports = controller => {
                                         },
                                         "value": "Decline"
                                     }
-                                ]
-                            },
-                            "initial_option": {
-                                "value": "Approve",
-                                "text": {
-                                    "type": "mrkdwn",
-                                    "text": "*Approve*"
+                                ],
+                                "initial_option": {
+                                    "value": "Approve",
+                                    "text": {
+                                        "type": "mrkdwn",
+                                        "text": "*Approve*"
+                                    }
                                 }
                             }
                         },
@@ -1965,28 +1494,36 @@ module.exports = controller => {
                         },
                         {
                             "type": "input",
+                            "optional": true,
                             "block_id": "blkCon1",
-                            "dispatch_action": true,
                             "element": {
-                                "type": "static_select",
+                                "type": "plain_text_input",
                                 "action_id": "con_select1",
                                 "placeholder": {
                                     "type": "plain_text",
-                                    "text": "Select a type",
-                                    "emoji": true
-                                },
-                                "options": tmpCons,
-                                "initial_option": {
-                                    "value": pvt_metadata.Id,
-                                    "text": {
-                                        "type": "plain_text",
-                                        "text": pvt_metadata.Name
-                                    }
-                                },
+                                    "text": "Select a contact"
+                                }
                             },
                             "label": {
                                 "type": "plain_text",
-                                "text": label,
+                                "text": "Existing reference contacts....",
+                            }
+                        },
+                        {
+                            "type": "input",
+                            "optional": true,
+                            "block_id": "blkCon2",
+                            "element": {
+                                "type": "plain_text_input",
+                                "action_id": "con_select2",
+                                "placeholder": {
+                                    "type": "plain_text",
+                                    "text": "Select a contact"
+                                }
+                            },
+                            "label": {
+                                "type": "plain_text",
+                                "text": "Other contacts....",
                                 "emoji": true
                             }
                         },
@@ -2038,6 +1575,210 @@ module.exports = controller => {
                                 {
                                     "type": "mrkdwn",
                                     "text": "*Last Used*\n" + pvt_metadata.Last_Used,
+                                },
+                            ]
+                        },
+                        {
+                            "type": "divider"
+                        },
+                        {
+                            "type": "input",
+                            "block_id": "contactNotesBlock",
+                            "element": {
+                                "type": "plain_text_input",
+                                "multiline": true,
+                                "action_id": "contactNotes"
+                            },
+                            "label": {
+                                "type": "plain_text",
+                                "text": "Add a Note",
+                            }
+                        }
+                    ]
+                }
+            });
+        } else {
+            bot.httpBody({
+                response_action: 'update',
+                view: {
+                    "type": "modal",
+                    "callback_id": "approveDeclinePopup",
+                    "clear_on_close": true,
+                    "private_metadata": JSON.stringify(pvt_metadata),
+                    "submit": {
+                        "type": "plain_text",
+                        "text": "Next",
+                        "emoji": true
+                    },
+                    "close": {
+                        "type": "plain_text",
+                        "text": "Close",
+                        "emoji": true
+                    },
+                    "title": {
+                        "type": "plain_text",
+                        "text": "Reference Use Request",
+                        "emoji": true
+                    },
+                    "blocks": [
+                        {
+                            "type": "section",
+                            "fields": [
+                                {
+                                    "type": "mrkdwn",
+                                    "text": "*Reference Account*\n" + pvt_metadata["Account Name"]
+                                },
+                                {
+                                    "type": "mrkdwn",
+                                    "text": "*Opportunity Account*\n" + pvt_metadata["Opportunity Account Name"]
+                                },
+                                {
+                                    "type": "mrkdwn",
+                                    "text": "*Reference Type*\n" + pvt_metadata["Reference Type"]
+                                },
+                                {
+                                    "type": "mrkdwn",
+                                    "text": "*Opportunity Name*\n" + pvt_metadata["Opportunity Name"]
+                                },
+                                {
+                                    "type": "mrkdwn",
+                                    "text": "*Requester*\n" + pvt_metadata["Requester Name"]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "actions",
+                            "block_id": "additionalBlock",
+                            "elements": [
+                                {
+                                    "type": "button",
+                                    "action_id": "additionalModal",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "More Request Details"
+                                    },
+                                    "style": "primary",
+                                    "value": pvt_metadata.rraId
+                                }
+                            ]
+                        },
+                        {
+                            "type": "divider"
+                        },
+                        {
+                            "type": "input",
+                            "block_id": "approveDeclineBlock",
+                            "dispatch_action": true,
+                            "label": {
+                                "type": "plain_text",
+                                "text": "What would you like to do?",
+                            },
+                            "element": {
+                                "type": "radio_buttons",
+                                "action_id": "approveDeclineRadio",
+                                "options": [
+                                    {
+                                        "text": {
+                                            "type": "mrkdwn",
+                                            "text": "*Approve*"
+                                        },
+                                        "value": "Approve"
+                                    },
+                                    {
+                                        "text": {
+                                            "type": "mrkdwn",
+                                            "text": "*Decline*"
+                                        },
+                                        "value": "Decline"
+                                    }
+                                ],
+                                "initial_option": {
+                                    "value": "Approve",
+                                    "text": {
+                                        "type": "mrkdwn",
+                                        "text": "*Approve*"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "type": "divider"
+                        },
+                        {
+                            "type": "input",
+                            "optional": true,
+                            "block_id": "blkCon1",
+                            "element": {
+                                "type": "plain_text_input",
+                                "action_id": "con_select1",
+                                "placeholder": {
+                                    "type": "plain_text",
+                                    "text": "Select a contact"
+                                }
+                            },
+                            "label": {
+                                "type": "plain_text",
+                                "text": "Existing reference contacts....",
+                            }
+                        },
+                        {
+                            "type": "input",
+                            "optional": true,
+                            "block_id": "blkCon2",
+                            "element": {
+                                "type": "plain_text_input",
+                                "action_id": "con_select2",
+                                "placeholder": {
+                                    "type": "plain_text",
+                                    "text": "Select a contact"
+                                }
+                            },
+                            "label": {
+                                "type": "plain_text",
+                                "text": "Other contacts....",
+                                "emoji": true
+                            }
+                        },
+                        {
+                            "type": "divider"
+                        },
+                        {
+                            "type": "section",
+                            "block_id": "editContactBlock",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "*Selected Contact Info*"
+                            },
+                            "accessory": {
+                                "type": "button",
+                                "action_id": "editContactModal",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "Edit",
+                                    "emoji": true
+                                },
+                                "style": "primary",
+                                "value": pvt_metadata.Id
+                            }
+                        },
+                        {
+                            "type": "section",
+                            "fields": [
+                                {
+                                    "type": "mrkdwn",
+                                    "text": "*Name*\n" + pvt_metadata.Name,
+                                },
+                                {
+                                    "type": "mrkdwn",
+                                    "text": "*Title*\n" + pvt_metadata.Title,
+                                },
+                                {
+                                    "type": "mrkdwn",
+                                    "text": "*Email*\n" + pvt_metadata.Email,
+                                },
+                                {
+                                    "type": "mrkdwn",
+                                    "text": "*Phone*\n" + pvt_metadata.Phone,
                                 },
                             ]
                         },
@@ -2741,6 +2482,7 @@ module.exports = controller => {
                             let contacts = await getSearchedContact(existingConn, pvt_metadata.Accountid, contactSearchKeyword, inOrActive);
 
                             if (contacts && contacts.length) {
+                                pvt_metadata.Contacts = contacts;
                                 let slackCons = [];
 
                                 contacts.forEach(con => {
@@ -2769,7 +2511,7 @@ module.exports = controller => {
                                         "type": "modal",
                                         "clear_on_close": true,
                                         "private_metadata": JSON.stringify(pvt_metadata),
-                                        "callback_id": "approveDeclineRequest",
+                                        "callback_id": "refUseReqMainBlockWithContacts",
                                         "blocks": [
                                             {
                                                 "type": "input",
@@ -2861,42 +2603,46 @@ module.exports = controller => {
                         it also check that these values are use for this Request only or update in Salesforce contact section also
                         */
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
-                        console.log('HELLO MetaData', pvt_metadata.isUpdateable);
-                        pvt_metadata.Title = message.view.state.values.conTitleBlock && message.view.state.values.conTitleBlock.conTitle
-                            ? message.view.state.values.conTitleBlock.conTitle.value : pvt_metadata.Title;
-                        // as title is showing null on Modal.
-                        pvt_metadata.Title = pvt_metadata.Title ? pvt_metadata.Title : "";
-                        pvt_metadata.Email = message.view.state.values.conEmailBlock && message.view.state.values.conEmailBlock.conEmail
-                            ? message.view.state.values.conEmailBlock.conEmail.value : pvt_metadata.Email;
-                        pvt_metadata.Phone = message.view.state.values.conPhoneBlock && message.view.state.values.conPhoneBlock.conPhone
-                            ? message.view.state.values.conPhoneBlock.conPhone.value : pvt_metadata.Phone;
-                        console.log('Before isUpdateable in EARS with COntact Section', message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options);
-                        pvt_metadata.isUpdateable = message.view.state.values.isUpdateableConBlock.isUpdateableCon && message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options[0] ?
-                            message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options[0].value :
-                            false;
-                        console.log('pvt_metadata.isUpdateable', pvt_metadata.isUpdateable);
-                        // message.view.private_metadata = JSON.stringify(pvt_metadata);
-                        // refUseRequestModalWithContactInfo(bot, message);
 
-                        // this is for to check that this RR Account has both Active & Inactive Contacts 
-                        // as we display them in different select box.
-                        if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(pvt_metadata.Email))) {
-                            bot.httpBody({
-                                "response_action": "errors",
-                                "errors": {
-                                    "conEmailBlock": "Invalid Email."
-                                }
-                            });
-                        } else if (isNaN(pvt_metadata.Phone)) {
-                            bot.httpBody({
-                                "response_action": "errors",
-                                "errors": {
-                                    "conPhoneBlock": "Invalid Phone number."
-                                }
-                            });
+                        if (message.view.state.values.conEmailBlock && message.view.state.values.conPhoneBlock) {
+                            pvt_metadata.Title = message.view.state.values.conTitleBlock && message.view.state.values.conTitleBlock.conTitle
+                                ? message.view.state.values.conTitleBlock.conTitle.value : pvt_metadata.Title;
+                            // as title is showing null on Modal.
+                            pvt_metadata.Title = pvt_metadata.Title ? pvt_metadata.Title : "";
+                            pvt_metadata.Email = message.view.state.values.conEmailBlock && message.view.state.values.conEmailBlock.conEmail
+                                ? message.view.state.values.conEmailBlock.conEmail.value : pvt_metadata.Email;
+                            pvt_metadata.Phone = message.view.state.values.conPhoneBlock && message.view.state.values.conPhoneBlock.conPhone
+                                ? message.view.state.values.conPhoneBlock.conPhone.value : pvt_metadata.Phone;
+                            console.log('Before isUpdateable in EARS with COntact Section', message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options);
+                            pvt_metadata.isUpdateable = message.view.state.values.isUpdateableConBlock.isUpdateableCon && message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options[0] ?
+                                message.view.state.values.isUpdateableConBlock.isUpdateableCon.selected_options[0].value :
+                                false;
+                            console.log('pvt_metadata.isUpdateable', pvt_metadata.isUpdateable);
+                            // message.view.private_metadata = JSON.stringify(pvt_metadata);
+                            // refUseRequestModalWithContactInfo(bot, message);
+
+                            // this is for to check that this RR Account has both Active & Inactive Contacts 
+                            // as we display them in different select box.
+                            if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(pvt_metadata.Email))) {
+                                bot.httpBody({
+                                    "response_action": "errors",
+                                    "errors": {
+                                        "conEmailBlock": "Invalid Email."
+                                    }
+                                });
+                            } else if (isNaN(pvt_metadata.Phone)) {
+                                bot.httpBody({
+                                    "response_action": "errors",
+                                    "errors": {
+                                        "conPhoneBlock": "Invalid Phone number."
+                                    }
+                                });
+                            }
                         } else {
-                            mainModalRefUseReqWith_editContact_selectedContact(bot, message, pvt_metadata);
+                            let selectedContactId = message.view.state.values.conSelectBlock.conSelect.selected_option.value;
+                            pvt_metadata = setSelectedContactInfo(pvt_metadata, selectedContactId);
                         }
+                        mainModalRefUseReqWith_editContact_selectedContact(bot, message, pvt_metadata);
                     }
                 }
             } catch (err) {
