@@ -270,7 +270,18 @@ module.exports = {
         let val;
         await conn.apex.get(process.env.NAMESPACE + '/rebot/AD_MODAL' + '::' + accId + '::' + searchKeywordForContact + '::' + inOrActive, (err, response) => {
 
+            if (err) {
+                console.log('ERROR in getSearchedContact REFEDGE.js');
+                logger.log(err);
+            } else if (response) {
+
+                if (response != 'false') {
+                    console.log('RESPOSNE getSearchedContact refedge.js ', response);
+                    val = JSON.parse(response);
+                }
+            }
         });
+        return val;
     },
 
     submitP2PRequest: async (conn, requestData) => {
