@@ -1587,7 +1587,8 @@ module.exports = controller => {
                             "element": {
                                 "type": "plain_text_input",
                                 "multiline": true,
-                                "action_id": "contactNotes"
+                                "action_id": "contactNotes",
+                                "initial_value": pvt_metadata.Notes
                             },
                             "label": {
                                 "type": "plain_text",
@@ -1791,7 +1792,8 @@ module.exports = controller => {
                             "element": {
                                 "type": "plain_text_input",
                                 "multiline": true,
-                                "action_id": "contactNotes"
+                                "action_id": "contactNotes",
+                                "initial_value": pvt_metadata.Notes
                             },
                             "label": {
                                 "type": "plain_text",
@@ -1802,6 +1804,15 @@ module.exports = controller => {
                 }
             });
         }
+    }
+
+    async function errorShowingBlockFunction(blockId, message) {
+        bot.httpBody({
+            "response_action": "errors",
+            "errors": {
+                blockId: message
+            }
+        });
     }
 
     /**
@@ -2434,25 +2445,29 @@ module.exports = controller => {
                         pvt_metadata.Notes = notes;
                         let contactSearchKeyword, inOrActive;
 
-                        if (message.view.state.values.blkCon1 && message.view.state.values.blkCon1.con_select1 && message.view.state.values.blkCon1.con_select1.value) {
+                        if (message.view.state.values.blkCon1 && message.view.state.values.blkCon1.con_select1 && 
+                            message.view.state.values.blkCon1.con_select1.value && message.view.state.values.blkCon2 && 
+                            message.view.state.values.blkCon2.con_select2 && message.view.state.values.blkCon2.con_select2.value) {
+                                errorShowingBlockFunction(blkCon2, "OR");
+                        } else if (message.view.state.values.blkCon1 && message.view.state.values.blkCon1.con_select1 && message.view.state.values.blkCon1.con_select1.value) {
                             contactSearchKeyword = message.view.state.values.blkCon1.con_select1.value;
                             inOrActive = 'RBI';
                         } else if (message.view.state.values.blkCon2 && message.view.state.values.blkCon2.con_select2 && message.view.state.values.blkCon2.con_select2.value) {
                             contactSearchKeyword = message.view.state.values.blkCon2.con_select2.value;
                             inOrActive = '';
                         }
-                        console.log('CONS', contactSearchKeyword, requestStatus, pvt_metadata.Id);
+
                         if (pvt_metadata.requestStatus == "Decline" || (pvt_metadata.requestStatus == "Approve" && pvt_metadata.Id && !contactSearchKeyword)) {
                             console.log('IN approve decline Popup');
-                            let titleText = String(pvt_metadata.requestStatus) + " ReferenceRequest";
-                            let blockText = "Are you sure you want to "+ String(pvt_metadata.requestStatus) + " this Reference Request?";
+                            // let titleText = String(pvt_metadata.requestStatus) + " ReferenceRequest";
+                            // let blockText = "Are you sure you want to "+ String(pvt_metadata.requestStatus) + " this Reference Request?";
                             
                             bot.httpBody({
                                 response_action: 'update',
                                 view: {
                                     "title": {
                                         "type": "plain_text",
-                                        "text": titleText
+                                        "text": pvt_metadata.requestStatus + " ReferenceRequest"
                                     },
                                     "submit": {
                                         "type": "plain_text",
@@ -2471,7 +2486,7 @@ module.exports = controller => {
                                             "type": "section",
                                             "text": {
                                                 "type": "plain_text",
-                                                "text": blockText
+                                                "text": "Are you sure you want to "+ pvt_metadata.requestStatus + " this Reference Request?"
                                             }
                                         }
                                     ]
@@ -2534,6 +2549,11 @@ module.exports = controller => {
                                 });
                             } else {
 
+                                if (inOrActive) {
+                                    errorShowingBlockFunction(blkCon1, "No Contact matching the Entered Name found.Please retry.");
+                                } else {
+                                    errorShowingBlockFunction(blkCon2, "No Contact matching the Entered Name found.Please retry.");
+                                }
                             }
                             
                         }
