@@ -2738,19 +2738,21 @@ module.exports = controller => {
                                 }
                             });
                         } else if (contactSearchKeyword) {
-                            let contacts = await getSearchedContact(existingConn, pvt_metadata.Accountid, inOrActive);
-                            let activeCons = [];
+                            let contacts = await getSearchedContact(existingConn, pvt_metadata.Accountid, contactSearchKeyword, inOrActive);
+                            console.log('Contacts -: ', contacts);
 
-                                contacts.forEach(con => {
+                            // let activeCons = [];
 
-                                    let entry = {
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": con.Name
-                                        },
-                                        "value": con.id
-                                    }
-                                    activeCons.push(entry);
+                            //     contacts.forEach(con => {
+
+                            //         let entry = {
+                            //             "text": {
+                            //                 "type": "plain_text",
+                            //                 "text": con.Name
+                            //             },
+                            //             "value": con.id
+                            //         }
+                            //         activeCons.push(entry);
                                     bot.httpBody({
                                         response_action: 'update',
                                         view: {
@@ -2777,7 +2779,7 @@ module.exports = controller => {
                                                             "type": "plain_text",
                                                             "text": "Select"
                                                         },
-                                                        "options": 
+                                                        // "options": 
                                                     },
                                                     "label": {
                                                         "type": "plain_text",
