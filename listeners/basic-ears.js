@@ -2580,7 +2580,7 @@ module.exports = controller => {
                                 }
                             }
                             
-                        } else {
+                        } else if (!contactSearchKeyword && pvt_metadata.Id) {
                             bot.httpBody({
                                 "response_action": "errors",
                                 "errors": {
