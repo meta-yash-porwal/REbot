@@ -3424,19 +3424,19 @@ module.exports = controller => {
                                                     "fields": [
                                                         {
                                                             "type": "mrkdwn",
-                                                            "text": "*Reference Account*\n" + obj["Account Name"]
+                                                            "text": "*Reference Account*\n" + pvt_metadata["Account Name"]
                                                         },
                                                         {
                                                             "type": "mrkdwn",
-                                                            "text": "*Opportunity Account*\n" + obj["Opportunity Account Name"]
+                                                            "text": "*Opportunity Account*\n" + pvt_metadata["Opportunity Account Name"]
                                                         },
                                                         {
                                                             "type": "mrkdwn",
-                                                            "text": "*Reference Type*\n" + obj["Reference Type"]
+                                                            "text": "*Reference Type*\n" + pvt_metadata["Reference Type"]
                                                         },
                                                         {
                                                             "type": "mrkdwn",
-                                                            "text": "*Opportunity Name*\n" + obj["Opportunity Name"]
+                                                            "text": "*Opportunity Name*\n" + pvt_metadata["Opportunity Name"]
                                                         },
                                                         {
                                                             "type": "mrkdwn",
@@ -4154,23 +4154,23 @@ module.exports = controller => {
                                                 "fields": [
                                                     {
                                                         "type": "mrkdwn",
-                                                        "text": "*Reference Account*\n" + obj["Account Name"]
+                                                        "text": "*Reference Account*\n" + pvt_metadata["Account Name"]
                                                     },
                                                     {
                                                         "type": "mrkdwn",
-                                                        "text": "*Opportunity Account*\n" + obj["Opportunity Account Name"]
+                                                        "text": "*Opportunity Account*\n" + pvt_metadata["Opportunity Account Name"]
                                                     },
                                                     {
                                                         "type": "mrkdwn",
-                                                        "text": "*Reference Type*\n" + obj["Reference Type"]
+                                                        "text": "*Reference Type*\n" + pvt_metadata["Reference Type"]
                                                     },
                                                     {
                                                         "type": "mrkdwn",
-                                                        "text": "*Opportunity Name*\n" + obj["Opportunity Name"]
+                                                        "text": "*Opportunity Name*\n" + pvt_metadata["Opportunity Name"]
                                                     },
                                                     {
                                                         "type": "mrkdwn",
-                                                        "text": "*Requester*\n" + obj["Requester Name"]
+                                                        "text": "*Requester*\n" + pvt_metadata["Requester Name"]
                                                     }
                                                 ]
                                             },
