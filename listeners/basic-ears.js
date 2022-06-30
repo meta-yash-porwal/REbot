@@ -2513,7 +2513,7 @@ module.exports = controller => {
                                 pvt_metadata.Contacts = obj.Contacts;
                                 let slackCons = [];
 
-                                contacts.forEach(con => {
+                                pvt_metadata.Contacts.forEach(con => {
 
                                     let entry = {
                                         "text": {
@@ -3578,7 +3578,7 @@ module.exports = controller => {
                                         },
                                         "submit": {
                                             "type": "plain_text",
-                                            "text": "Close",
+                                            "text": "Save",
                                             "emoji": true
                                         },
                                         "type": "modal",
@@ -3687,7 +3687,7 @@ module.exports = controller => {
                                         },
                                         "submit": {
                                             "type": "plain_text",
-                                            "text": "Close",
+                                            "text": "Save",
                                             "emoji": true
                                         },
                                         "type": "modal",
