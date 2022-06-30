@@ -2434,7 +2434,7 @@ module.exports = controller => {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let notes = message.view.state.values.contactNotesBlock.contactNotes.value;
                         pvt_metadata.Notes = notes;
-                        let contactSearchKeyword, inOrActive;
+                        let contactSearchKeyword, isRBI;
 
                         if (message.view.state.values.blkCon1 && message.view.state.values.blkCon1.con_select1 && 
                             message.view.state.values.blkCon1.con_select1.value && message.view.state.values.blkCon2 && 
@@ -2447,10 +2447,10 @@ module.exports = controller => {
                                 });
                         } else if (message.view.state.values.blkCon1 && message.view.state.values.blkCon1.con_select1 && message.view.state.values.blkCon1.con_select1.value) {
                             contactSearchKeyword = message.view.state.values.blkCon1.con_select1.value;
-                            inOrActive = 'RBI';
+                            isRBI = true;
                         } else if (message.view.state.values.blkCon2 && message.view.state.values.blkCon2.con_select2 && message.view.state.values.blkCon2.con_select2.value) {
                             contactSearchKeyword = message.view.state.values.blkCon2.con_select2.value;
-                            inOrActive = '';
+                            isRBI = false;
                         }
 
                         if (pvt_metadata.requestStatus == "Decline" || (pvt_metadata.requestStatus == "Approve" && pvt_metadata.Id && !contactSearchKeyword)) {
@@ -2487,7 +2487,7 @@ module.exports = controller => {
                                 }
                             });
                         } else if (contactSearchKeyword) {
-                            let contacts = await getSearchedContact(existingConn, pvt_metadata.Accountid, contactSearchKeyword, inOrActive);
+                            let contacts = await getSearchedContact(existingConn, pvt_metadata.Accountid, contactSearchKeyword, isRBI);
 
                             if (contacts && contacts.length) {
                                 pvt_metadata.Contacts = contacts;
@@ -2543,7 +2543,7 @@ module.exports = controller => {
                                 });
                             } else {
 
-                                if (inOrActive) {
+                                if (isRBI) {
                                     bot.httpBody({
                                         "response_action": "errors",
                                         "errors": {
