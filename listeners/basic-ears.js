@@ -2455,15 +2455,13 @@ module.exports = controller => {
 
                         if (pvt_metadata.requestStatus == "Decline" || (pvt_metadata.requestStatus == "Approve" && pvt_metadata.Id && !contactSearchKeyword)) {
                             console.log('IN approve decline Popup');
-                            // let titleText = String(pvt_metadata.requestStatus) + " ReferenceRequest";
-                            // let blockText = "Are you sure you want to "+ String(pvt_metadata.requestStatus) + " this Reference Request?";
                             
                             bot.httpBody({
                                 response_action: 'update',
                                 view: {
                                     "title": {
                                         "type": "plain_text",
-                                        "text": pvt_metadata.requestStatus + " ReferenceRequest"
+                                        "text": pvt_metadata.requestStatus + " Request"
                                     },
                                     "submit": {
                                         "type": "plain_text",
@@ -2562,6 +2560,13 @@ module.exports = controller => {
                                 }
                             }
                             
+                        } else {
+                            bot.httpBody({
+                                "response_action": "errors",
+                                "errors": {
+                                    "blkCon1": "Please provide Contact information."
+                                }
+                            });
                         }
                     } else if (message.view.callback_id == 'approveRequest') {
                         /* it sends(post) data to Salesforce from refedge.js function of 
@@ -3460,11 +3465,6 @@ module.exports = controller => {
                                         "type": "modal",
                                         "callback_id": "refUseReqMainBlockWithContacts",
                                         "private_metadata": JSON.stringify(pvt_metadata),
-                                        // "close": {
-                                        //     "type": "plain_text",
-                                        //     "text": "Back",
-                                        //     "emoji": true
-                                        // },
                                         "blocks": [
                                             {
                                                 "type": "section",
@@ -3512,6 +3512,7 @@ module.exports = controller => {
                                             {
                                                 "type": "input",
                                                 "block_id": "conTitleBlock",
+                                                "optional": true,
                                                 "label": {
                                                     "type": "plain_text",
                                                     "text": "Title",
@@ -3573,11 +3574,6 @@ module.exports = controller => {
                                         "type": "modal",
                                         "callback_id": "refUseReqMainBlockWithContacts",
                                         "private_metadata": JSON.stringify(pvt_metadata),
-                                        // "close": {
-                                        //     "type": "plain_text",
-                                        //     "text": "Close",
-                                        //     "emoji": true
-                                        // },
                                         "blocks": [
                                             {
                                                 "type": "section",
