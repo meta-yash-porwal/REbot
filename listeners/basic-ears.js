@@ -2490,21 +2490,12 @@ module.exports = controller => {
                                     }
                                 });
                             } else {
-                                if (pvt_metadata.Status) {
                                     bot.httpBody({
                                         "response_action": "errors",
                                         "errors": {
-                                            "blkCon1": "Email and Phone number must be provided when you approve a request."
+                                            "contactNotesBlock": "Email and Phone number must be provided when you approve a request."
                                         }
                                     });
-                                } else {
-                                    bot.httpBody({
-                                        "response_action": "errors",
-                                        "errors": {
-                                            "blkCon2": "Email and Phone number must be provided when you approve a request."
-                                        }
-                                    });
-                                }
                             }
                         } else if (contactSearchKeyword) {
                             let obj = await getSearchedContact(existingConn, pvt_metadata.Accountid, contactSearchKeyword, hasRBI);
