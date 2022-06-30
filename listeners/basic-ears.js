@@ -2508,7 +2508,7 @@ module.exports = controller => {
                             }
                         } else if (contactSearchKeyword) {
                             let obj = await getSearchedContact(existingConn, pvt_metadata.Accountid, contactSearchKeyword, hasRBI);
-                            pvt_metadata.EmailPhoneNotRequired = obj.EmailPhoneNotRequired;
+                            // pvt_metadata.EmailPhoneNotRequired = obj.EmailPhoneNotRequired;
 
                             if (obj.Contacts && obj.Contacts.length) {
                                 pvt_metadata.Contacts = obj.Contacts;
@@ -3752,7 +3752,6 @@ module.exports = controller => {
                                                     "action_id": "conTitle",
                                                     "initial_value": pvt_metadata.Title
                                                 }
-
                                             },
                                             {
                                                 "type": "section",
