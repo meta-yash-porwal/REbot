@@ -2535,7 +2535,7 @@ module.exports = controller => {
                                         },
                                         "submit": {
                                             "type": "plain_text",
-                                            "text": "Close"
+                                            "text": "Next"
                                         },
                                         "type": "modal",
                                         "clear_on_close": true,
@@ -2689,7 +2689,7 @@ module.exports = controller => {
                                     }
                                 });
                             }
-                        } else {
+                        } else if (message.view.state.values.conSelectBlock) {
                             let selectedContactId = message.view.state.values.conSelectBlock.conSelect.selected_option.value;
                             pvt_metadata.Id = selectedContactId;
                             pvt_metadata = setSelectedContactInfo(pvt_metadata, selectedContactId);
