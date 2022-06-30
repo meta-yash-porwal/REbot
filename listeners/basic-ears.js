@@ -2434,7 +2434,7 @@ module.exports = controller => {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let notes = message.view.state.values.contactNotesBlock.contactNotes.value;
                         pvt_metadata.Notes = notes;
-                        let contactSearchKeyword, isRBI;
+                        let contactSearchKeyword, hasRBI;
 
                         if (message.view.state.values.blkCon1 && message.view.state.values.blkCon1.con_select1 && 
                             message.view.state.values.blkCon1.con_select1.value && message.view.state.values.blkCon2 && 
@@ -2447,50 +2447,70 @@ module.exports = controller => {
                                 });
                         } else if (message.view.state.values.blkCon1 && message.view.state.values.blkCon1.con_select1 && message.view.state.values.blkCon1.con_select1.value) {
                             contactSearchKeyword = message.view.state.values.blkCon1.con_select1.value;
-                            isRBI = true;
+                            hasRBI = true;
                         } else if (message.view.state.values.blkCon2 && message.view.state.values.blkCon2.con_select2 && message.view.state.values.blkCon2.con_select2.value) {
                             contactSearchKeyword = message.view.state.values.blkCon2.con_select2.value;
-                            isRBI = false;
+                            hasRBI = false;
                         }
 
-                        if (pvt_metadata.requestStatus == "Decline" || (pvt_metadata.requestStatus == "Approve" && pvt_metadata.Id && !contactSearchKeyword)) {
+                        if (pvt_metadata.requestStatus == "Decline" || (pvt_metadata.requestStatus == "Approve" && pvt_metadata.ApproveWithoutContact) ||
+                        (pvt_metadata.requestStatus == "Approve" && pvt_metadata.Id && !contactSearchKeyword)) {
                             console.log('IN approve decline Popup');
-                            
-                            bot.httpBody({
-                                response_action: 'update',
-                                view: {
-                                    "title": {
-                                        "type": "plain_text",
-                                        "text": pvt_metadata.requestStatus + " Request"
-                                    },
-                                    "submit": {
-                                        "type": "plain_text",
-                                        "text": "Yes"
-                                    },
-                                    "type": "modal",
-                                    "clear_on_close": true,
-                                    "private_metadata": JSON.stringify(pvt_metadata),
-                                    "callback_id": "approveDeclineRequest",
-                                    "close": {
-                                        "type": "plain_text",
-                                        "text": "No",
-                                    },
-                                    "blocks": [
-                                        {
-                                            "type": "section",
-                                            "text": {
-                                                "type": "plain_text",
-                                                "text": "Are you sure you want to "+ pvt_metadata.requestStatus + " this Reference Request?"
-                                            }
-                                        }
-                                    ]
-                                }
-                            });
-                        } else if (contactSearchKeyword) {
-                            let contacts = await getSearchedContact(existingConn, pvt_metadata.Accountid, contactSearchKeyword, isRBI);
 
-                            if (contacts && contacts.length) {
-                                pvt_metadata.Contacts = contacts;
+                            if (pvt_metadata.EmailPhoneNotRequired || (!pvt_metadata.EmailPhoneNotRequired && pvt_metadata.Email && pvt_metadata.Phone)) {
+                                bot.httpBody({
+                                    response_action: 'update',
+                                    view: {
+                                        "title": {
+                                            "type": "plain_text",
+                                            "text": pvt_metadata.requestStatus + " Request"
+                                        },
+                                        "submit": {
+                                            "type": "plain_text",
+                                            "text": "Yes"
+                                        },
+                                        "type": "modal",
+                                        "clear_on_close": true,
+                                        "private_metadata": JSON.stringify(pvt_metadata),
+                                        "callback_id": "approveDeclineRequest",
+                                        "close": {
+                                            "type": "plain_text",
+                                            "text": "No",
+                                        },
+                                        "blocks": [
+                                            {
+                                                "type": "section",
+                                                "text": {
+                                                    "type": "plain_text",
+                                                    "text": "Are you sure you want to "+ pvt_metadata.requestStatus + " this Reference Request?"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                });
+                            } else {
+                                if (pvt_metadata.Status) {
+                                    bot.httpBody({
+                                        "response_action": "errors",
+                                        "errors": {
+                                            "blkCon1": "Email and Phone number must be provided when you approve a request."
+                                        }
+                                    });
+                                } else {
+                                    bot.httpBody({
+                                        "response_action": "errors",
+                                        "errors": {
+                                            "blkCon2": "Email and Phone number must be provided when you approve a request."
+                                        }
+                                    });
+                                }
+                            }
+                        } else if (contactSearchKeyword) {
+                            let obj = await getSearchedContact(existingConn, pvt_metadata.Accountid, contactSearchKeyword, hasRBI);
+                            pvt_metadata.EmailPhoneNotRequired = obj.EmailPhoneNotRequired;
+
+                            if (obj.Contacts && obj.Contacts.length) {
+                                pvt_metadata.Contacts = obj.Contacts;
                                 let slackCons = [];
 
                                 contacts.forEach(con => {
@@ -2543,7 +2563,7 @@ module.exports = controller => {
                                 });
                             } else {
 
-                                if (isRBI) {
+                                if (hasRBI) {
                                     bot.httpBody({
                                         "response_action": "errors",
                                         "errors": {
@@ -2742,7 +2762,106 @@ module.exports = controller => {
                                     pvt_metadata.rraId = message.actions[0].value;
                                     pvt_metadata.isUpdateable = false;
 
-                                    if (true) {
+                                    if (pvt_metadata.ContactURL) {
+                                        await bot.api.views.open({
+                                            trigger_id: message.trigger_id,
+                                            view: {
+                                                "type": "modal",
+                                                "clear_on_close": true,
+                                                "private_metadata": JSON.stringify(pvt_metadata),
+                                                "submit": {
+                                                    "type": "plain_text",
+                                                    "text": "Next",
+                                                    "emoji": true
+                                                },
+                                                "close": {
+                                                    "type": "plain_text",
+                                                    "text": "Close",
+                                                    "emoji": true
+                                                },
+                                                "title": {
+                                                    "type": "plain_text",
+                                                    "text": "Reference Use Request",
+                                                    "emoji": true
+                                                },
+                                                "blocks": [
+                                                    {
+                                                        "type": "section",
+                                                        "fields": [
+                                                            {
+                                                                "type": "mrkdwn",
+                                                                "text": "*Reference Account*\n" + obj["Account Name"]
+                                                            },
+                                                            {
+                                                                "type": "mrkdwn",
+                                                                "text": "*Opportunity Account*\n" + obj["Opportunity Account Name"]
+                                                            },
+                                                            {
+                                                                "type": "mrkdwn",
+                                                                "text": "*Reference Type*\n" + obj["Reference Type"]
+                                                            },
+                                                            {
+                                                                "type": "mrkdwn",
+                                                                "text": "*Opportunity Name*\n" + obj["Opportunity Name"]
+                                                            },
+                                                            {
+                                                                "type": "mrkdwn",
+                                                                "text": "*Requester*\n" + obj["Requester Name"]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "actions",
+                                                        "block_id": "additionalBlock",
+                                                        "elements": [
+                                                            {
+                                                                "type": "button",
+                                                                "action_id": "additionalModal",
+                                                                "text": {
+                                                                    "type": "plain_text",
+                                                                    "text": "More Request Details"
+                                                                },
+                                                                "style": "primary",
+                                                                "value": pvt_metadata.rraId
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "divider"
+                                                    },
+                                                    {
+                                                        "type": "input",
+                                                        "block_id": "approveDeclineBlock",
+                                                        "dispatch_action": true,
+                                                        "label": {
+                                                            "type": "plain_text",
+                                                            "text": "What would you like to do?",
+                                                        },
+                                                        "element": {
+                                                            "type": "radio_buttons",
+                                                            "action_id": "approveDeclineRadio",
+                                                            "options": [
+                                                                {
+                                                                    "text": {
+                                                                        "type": "mrkdwn",
+                                                                        "text": "*Approve*"
+                                                                    },
+                                                                    "value": "Approve"
+                                                                },
+                                                                {
+                                                                    "text": {
+                                                                        "type": "mrkdwn",
+                                                                        "text": "*Decline*"
+                                                                    },
+                                                                    "value": "Decline"
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        });
+                                    } else if (true) {
                                         await bot.api.views.open({
                                             trigger_id: message.trigger_id,
                                             view: {
@@ -4006,6 +4125,117 @@ module.exports = controller => {
                                         ]
                                     }
                                 });
+                            } else if (requestStatus == "Approve" && pvt_metadata.ContactURL) {
+                                await bot.api.views.update({
+                                    view_id: message.view.id,
+                                    view: {
+                                        "type": "modal",
+                                        "clear_on_close": true,
+                                        "private_metadata": JSON.stringify(pvt_metadata),
+                                        "submit": {
+                                            "type": "plain_text",
+                                            "text": "Next",
+                                            "emoji": true
+                                        },
+                                        "close": {
+                                            "type": "plain_text",
+                                            "text": "Close",
+                                            "emoji": true
+                                        },
+                                        "title": {
+                                            "type": "plain_text",
+                                            "text": "Reference Use Request",
+                                            "emoji": true
+                                        },
+                                        "blocks": [
+                                            {
+                                                "type": "section",
+                                                "fields": [
+                                                    {
+                                                        "type": "mrkdwn",
+                                                        "text": "*Reference Account*\n" + obj["Account Name"]
+                                                    },
+                                                    {
+                                                        "type": "mrkdwn",
+                                                        "text": "*Opportunity Account*\n" + obj["Opportunity Account Name"]
+                                                    },
+                                                    {
+                                                        "type": "mrkdwn",
+                                                        "text": "*Reference Type*\n" + obj["Reference Type"]
+                                                    },
+                                                    {
+                                                        "type": "mrkdwn",
+                                                        "text": "*Opportunity Name*\n" + obj["Opportunity Name"]
+                                                    },
+                                                    {
+                                                        "type": "mrkdwn",
+                                                        "text": "*Requester*\n" + obj["Requester Name"]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "actions",
+                                                "block_id": "additionalBlock",
+                                                "elements": [
+                                                    {
+                                                        "type": "button",
+                                                        "action_id": "additionalModal",
+                                                        "text": {
+                                                            "type": "plain_text",
+                                                            "text": "More Request Details"
+                                                        },
+                                                        "style": "primary",
+                                                        "value": pvt_metadata.rraId
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "divider"
+                                            },
+                                            {
+                                                "type": "input",
+                                                "block_id": "approveDeclineBlock",
+                                                "dispatch_action": true,
+                                                "label": {
+                                                    "type": "plain_text",
+                                                    "text": "What would you like to do?",
+                                                },
+                                                "element": {
+                                                    "type": "radio_buttons",
+                                                    "action_id": "approveDeclineRadio",
+                                                    "options": [
+                                                        {
+                                                            "text": {
+                                                                "type": "mrkdwn",
+                                                                "text": "*Approve*"
+                                                            },
+                                                            "value": "Approve"
+                                                        },
+                                                        {
+                                                            "text": {
+                                                                "type": "mrkdwn",
+                                                                "text": "*Decline*"
+                                                            },
+                                                            "value": "Decline"
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "type": "divider"
+                                            },
+                                            {
+                                                "type": "section",
+                                                "text": {
+                                                    "type": "mrkdwn",
+                                                    "text": "The requested Account, " + obj["Account Name"] + ", does not have any associated Contacts."
+                                                        + "\nTo approve this request, please \n"
+                                                        + "<" + pvt_metadata.ContactURL + "|add a contact to this Account in Salesforce>."
+                                                }
+                                            }
+                                        ]
+                                    }
+                                });
                             } else if (requestStatus == "Approve") {
                                 pvt_metadata.requestStatus = requestStatus;
 
@@ -4169,7 +4399,7 @@ module.exports = controller => {
                                         ]
                                     }
                                 });
-                            }
+                            } 
                             
                         }
                     } catch (err) {
