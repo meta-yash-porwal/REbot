@@ -2452,6 +2452,7 @@ module.exports = controller => {
                             contactSearchKeyword = message.view.state.values.blkCon2.con_select2.value;
                             hasRBI = false;
                         }
+                        console.log('In Approve Decline Popup', contactSearchKeyword, );
 
                         if (pvt_metadata.requestStatus == "Decline" || (pvt_metadata.requestStatus == "Approve" && pvt_metadata.ApproveWithoutContact) ||
                         (pvt_metadata.requestStatus == "Approve" && pvt_metadata.Id && !contactSearchKeyword)) {
@@ -2580,7 +2581,7 @@ module.exports = controller => {
                                 }
                             }
                             
-                        } else if (!contactSearchKeyword && pvt_metadata.Id) {
+                        } else if (!contactSearchKeyword && !pvt_metadata.Id) {
                             bot.httpBody({
                                 "response_action": "errors",
                                 "errors": {
