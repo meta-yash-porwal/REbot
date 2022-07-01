@@ -4125,11 +4125,6 @@ module.exports = controller => {
                                         "type": "modal",
                                         "clear_on_close": true,
                                         "private_metadata": JSON.stringify(pvt_metadata),
-                                        "submit": {
-                                            "type": "plain_text",
-                                            "text": "Next",
-                                            "emoji": true
-                                        },
                                         "close": {
                                             "type": "plain_text",
                                             "text": "Close",
