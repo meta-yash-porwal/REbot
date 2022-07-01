@@ -2434,11 +2434,12 @@ module.exports = controller => {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
                         let notes = message.view.state.values.contactNotesBlock.contactNotes.value;
                         pvt_metadata.Notes = notes;
-                        let contactSearchKeyword, hasRBI;
+                        let contactSearchKeyword, hasRBI = false;
 
                         if (message.view.state.values.blkCon1 && message.view.state.values.blkCon1.con_select1 && 
                             message.view.state.values.blkCon1.con_select1.value && message.view.state.values.blkCon2 && 
                             message.view.state.values.blkCon2.con_select2 && message.view.state.values.blkCon2.con_select2.value) {
+                                hasRBI = true;
                                 bot.httpBody({
                                     "response_action": "errors",
                                     "errors": {
@@ -2564,7 +2565,7 @@ module.exports = controller => {
                                             "blkCon1": "No Contact matching the Entered Name found.Please retry."
                                         }
                                     });
-                                } else {
+                                } else if (!hasRBI) {
                                     bot.httpBody({
                                         "response_action": "errors",
                                         "errors": {
@@ -2574,7 +2575,7 @@ module.exports = controller => {
                                 }
                             }
                             
-                        } else if (!contactSearchKeyword && !pvt_metadata.Id) {
+                        } else if (!contactSearchKeyword && !pvt_metadata.Id && !hasRBI) {
                             bot.httpBody({
                                 "response_action": "errors",
                                 "errors": {
