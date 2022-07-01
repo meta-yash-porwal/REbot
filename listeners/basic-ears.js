@@ -2435,10 +2435,12 @@ module.exports = controller => {
                         let notes = message.view.state.values.contactNotesBlock.contactNotes.value;
                         pvt_metadata.Notes = notes;
                         let contactSearchKeyword, hasRBI = false;
+                        console.log('CON1', message.view.state.values.blkCon1, message.view.state.values.blkCon2);
 
                         if (message.view.state.values.blkCon1 && message.view.state.values.blkCon1.con_select1 && 
                             message.view.state.values.blkCon1.con_select1.value && message.view.state.values.blkCon2 && 
                             message.view.state.values.blkCon2.con_select2 && message.view.state.values.blkCon2.con_select2.value) {
+                                console.log('In main IF');
                                 hasRBI = true;
                                 bot.httpBody({
                                     "response_action": "errors",
@@ -2576,6 +2578,7 @@ module.exports = controller => {
                             }
                             
                         } else if (!contactSearchKeyword && !pvt_metadata.Id && !hasRBI) {
+                            console.log('HAS RBI', hasRBI);
                             bot.httpBody({
                                 "response_action": "errors",
                                 "errors": {
