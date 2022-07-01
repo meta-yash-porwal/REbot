@@ -2458,7 +2458,9 @@ module.exports = controller => {
                         (pvt_metadata.requestStatus == "Approve" && pvt_metadata.Id && !contactSearchKeyword)) {
                             console.log('IN approve decline Popup');
 
-                            if (pvt_metadata.requestStatus == "Decline" || pvt_metadata.EmailPhoneNotRequired || (!pvt_metadata.EmailPhoneNotRequired && pvt_metadata.Email && pvt_metadata.Phone)) {
+                            if (pvt_metadata.requestStatus == "Decline" || pvt_metadata.EmailPhoneNotRequired || 
+                               (!pvt_metadata.EmailPhoneNotRequired && pvt_metadata.Email && pvt_metadata.Phone) ||
+                               (pvt_metadata.requestStatus == "Approve" && pvt_metadata.ApproveWithoutContact)) {
                                 bot.httpBody({
                                     response_action: 'update',
                                     view: {
