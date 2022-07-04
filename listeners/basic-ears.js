@@ -3571,6 +3571,7 @@ module.exports = controller => {
                             pvt_metadata.Id = message.view.state.values.conSelectBlock.conSelect.selected_option.value;
                             console.log('ContactID', pvt_metadata.Id);
                             pvt_metadata = setSelectedContactInfo(pvt_metadata, pvt_metadata.Id);
+                            console.log('PVTDATA -> ', JSON.stringify(pvt_metadata));
 
                             await bot.api.views.update({
                                 view_id: message.view.id,
