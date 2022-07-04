@@ -3492,6 +3492,7 @@ module.exports = controller => {
                                 contactSearchKeyword = message.view.state.values.blkCon2.con_select2.value;
                                 hasRBI = false;
                             }
+                            console.log('HAS RBI -> ', contactSearchKeyword, hasRBI);
                             let obj = await getSearchedContact(existingConn, pvt_metadata.Accountid, contactSearchKeyword, hasRBI);
 
                             if (obj.Contacts && obj.Contacts.length) {
@@ -3546,6 +3547,7 @@ module.exports = controller => {
                                     }
                                 });
                             } else {
+                                console.log('HAS RBI -> ', hasRBI);
 
                                 if (hasRBI) {
                                     bot.httpBody({
