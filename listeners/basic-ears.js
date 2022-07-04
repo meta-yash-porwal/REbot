@@ -3573,9 +3573,7 @@ module.exports = controller => {
                             pvt_metadata = setSelectedContactInfo(pvt_metadata, pvt_metadata.Id);
                             console.log('PVTDATA -> ', JSON.stringify(pvt_metadata));
 
-                            // await bot.api.views.update({
-                            //     view_id: message.view.id,
-                            await bot.api.views.open({
+                            await bot.api.views.push({
                                 trigger_id: message.trigger_id,
                                 view: {
                                     "title": {
@@ -3587,6 +3585,7 @@ module.exports = controller => {
                                         "text": "Next"
                                     },
                                     "type": "modal",
+                                    "clear_on_close": true,
                                     "private_metadata": JSON.stringify(pvt_metadata),
                                     "callback_id": "refUseReqMainBlockWithContacts",
                                     "blocks": [
