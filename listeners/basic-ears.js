@@ -3573,8 +3573,10 @@ module.exports = controller => {
                             pvt_metadata = setSelectedContactInfo(pvt_metadata, pvt_metadata.Id);
                             console.log('PVTDATA -> ', JSON.stringify(pvt_metadata));
 
-                            await bot.api.views.update({
-                                view_id: message.view.id,
+                            // await bot.api.views.update({
+                            //     view_id: message.view.id,
+                            await bot.api.views.open({
+                                trigger_id: message.trigger_id,
                                 view: {
                                     "title": {
                                         "type": "plain_text",
