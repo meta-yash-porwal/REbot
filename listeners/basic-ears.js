@@ -3484,16 +3484,17 @@ module.exports = controller => {
                                    (message.actions[0].block_id == 'blkCon2' && message.actions[0].action_id == 'con_select2')) {
 
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
-                            let contactSearchKeyword, hasRBI;
+                            let contactSearchKeyword, hasRBI, obj;
                             if (message.view.state.values.blkCon1 && message.view.state.values.blkCon1.con_select1 && message.view.state.values.blkCon1.con_select1.value) {
                                 contactSearchKeyword = message.view.state.values.blkCon1.con_select1.value;
                                 hasRBI = true;
+                                obj = await getSearchedContact(existingConn, pvt_metadata.Accountid, contactSearchKeyword, hasRBI);
                             } else if (message.view.state.values.blkCon2 && message.view.state.values.blkCon2.con_select2 && message.view.state.values.blkCon2.con_select2.value) {
                                 contactSearchKeyword = message.view.state.values.blkCon2.con_select2.value;
                                 hasRBI = false;
+                                obj = await getSearchedContact(existingConn, pvt_metadata.Accountid, contactSearchKeyword, hasRBI);
                             }
                             console.log('HAS RBI -> ', contactSearchKeyword, hasRBI);
-                            let obj = await getSearchedContact(existingConn, pvt_metadata.Accountid, contactSearchKeyword, hasRBI);
 
                             if (obj.Contacts && obj.Contacts.length) {
                                 let slackCons = [];
@@ -3546,7 +3547,7 @@ module.exports = controller => {
                                         ]
                                     }
                                 });
-                            } else {
+                            } /* else {
                                 console.log('HAS RBI -> ', hasRBI);
 
                                 if (hasRBI) {
@@ -3564,7 +3565,7 @@ module.exports = controller => {
                                         }
                                     });
                                 }
-                            }
+                            } */
                         } else if (message.actions[0].block_id == 'conSelectBlock' && message.actions[0].action_id == 'conSelect') {
                             pvt_metadata.Id = message.view.state.values.conSelectBlock.conSelect.selected_option.value;
                             pvt_metadata = setSelectedContactInfo(pvt_metadata, pvt_metadata.Id);
