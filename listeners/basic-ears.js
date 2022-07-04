@@ -3497,9 +3497,10 @@ module.exports = controller => {
                             console.log('HAS RBI -> ', contactSearchKeyword, hasRBI);
 
                             if (obj.Contacts && obj.Contacts.length) {
+                                pvt_metadata.Contacts = obj.Contacts;
                                 let slackCons = [];
 
-                                obj.Contacts.forEach(con => {
+                                pvt_metadata.Contacts.forEach(con => {
 
                                     let entry = {
                                         "text": {
