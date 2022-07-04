@@ -3484,7 +3484,7 @@ module.exports = controller => {
                                    (message.actions[0].block_id == 'blkCon2' && message.actions[0].action_id == 'con_select2')) {
 
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
-                                    
+                            let contactSearchKeyword, hasRBI;
                             if (message.view.state.values.blkCon1 && message.view.state.values.blkCon1.con_select1 && message.view.state.values.blkCon1.con_select1.value) {
                                 contactSearchKeyword = message.view.state.values.blkCon1.con_select1.value;
                                 hasRBI = true;
