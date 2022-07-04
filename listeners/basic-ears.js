@@ -2425,9 +2425,8 @@ module.exports = controller => {
                                 });
                             }
                         } else if (message.view.state.values.conSelectBlock) {
-                            let selectedContactId = message.view.state.values.conSelectBlock.conSelect.selected_option.value;
-                            pvt_metadata.Id = selectedContactId;
-                            pvt_metadata = setSelectedContactInfo(pvt_metadata, selectedContactId);
+                            pvt_metadata.Id = message.view.state.values.conSelectBlock.conSelect.selected_option.value;
+                            pvt_metadata = setSelectedContactInfo(pvt_metadata, pvt_metadata.Id);
                         }
                         mainModalRefUseReqWith_editContact_selectedContact(bot, message, pvt_metadata);
                     }
@@ -3570,6 +3569,7 @@ module.exports = controller => {
                         } else if (message.actions[0].block_id == 'conSelectBlock' && message.actions[0].action_id == 'conSelect') {
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
                             pvt_metadata.Id = message.view.state.values.conSelectBlock.conSelect.selected_option.value;
+                            console.log('ContactID', pvt_metadata.Id);
                             pvt_metadata = setSelectedContactInfo(pvt_metadata, pvt_metadata.Id);
 
                             await bot.api.views.update({
