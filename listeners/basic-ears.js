@@ -1807,7 +1807,7 @@ module.exports = controller => {
         }
     }
 
-    async function contactEditModal(bot, message) {
+    async function contactEditModal(bot, message, pvt_metadata) {
         await bot.api.views.push({
             trigger_id: message.trigger_id,
             view: {
@@ -3555,7 +3555,7 @@ module.exports = controller => {
                             console.log('ContactID', pvt_metadata.Id);
                             pvt_metadata = setSelectedContactInfo(pvt_metadata, pvt_metadata.Id);
                             console.log('PVTDATA -> ', JSON.stringify(pvt_metadata));
-                            contactEditModal(bot, message);
+                            contactEditModal(bot, message, pvt_metadata);
 
                             /* await bot.api.views.push({
                                 trigger_id: message.trigger_id,
