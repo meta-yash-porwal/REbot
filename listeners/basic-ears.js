@@ -1387,7 +1387,7 @@ module.exports = controller => {
              * to automatically display that selected contact from these select box
              */
         if (pvt_metadata.Status) {
-            console.log('In Status of Main Modal after selected Contact');
+            console.log('In Status of Main Modal after selected Contact 1');
             bot.httpBody({
                 response_action: 'update',
                 view: {
@@ -1436,7 +1436,7 @@ module.exports = controller => {
                                 }
                             ]
                         },
-                        {
+                        /* {
                             "type": "actions",
                             "block_id": "additionalBlock",
                             "elements": [
@@ -1604,7 +1604,7 @@ module.exports = controller => {
                                 "type": "plain_text",
                                 "text": "Add a Note",
                             }
-                        }
+                        } */
                     ]
                 }
             });
