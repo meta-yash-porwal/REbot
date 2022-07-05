@@ -1931,7 +1931,7 @@ module.exports = controller => {
         });
     }
 
-    async function selectContactModal(bot, message, pvt_metadata) {
+    async function selectContactModal(bot, message, pvt_metadata, obj) {
 
         pvt_metadata.Contacts = obj.Contacts;
         let slackCons = [];
@@ -2499,7 +2499,7 @@ module.exports = controller => {
                                         ]
                                     }
                                 }); */
-                                selectContactModal(bot, message, pvt_metadata);
+                                selectContactModal(bot, message, pvt_metadata, obj);
                             } else {
 
                                 if (hasRBI) {
@@ -3575,7 +3575,7 @@ module.exports = controller => {
                             console.log('HAS RBI -> ', contactSearchKeyword, hasRBI);
 
                             if (obj.Contacts && obj.Contacts.length) {
-                                selectContactModal(bot, message, pvt_metadata);
+                                selectContactModal(bot, message, pvt_metadata, obj);
                             } else {
 
                                 if (hasRBI) {
