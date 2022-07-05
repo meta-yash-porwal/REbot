@@ -1497,12 +1497,16 @@ module.exports = controller => {
                             "type": "input",
                             "optional": true,
                             "block_id": "blkCon1",
+                            "dispatch_action": true,
                             "element": {
                                 "type": "plain_text_input",
                                 "action_id": "con_select1",
                                 "placeholder": {
                                     "type": "plain_text",
                                     "text": "Select a contact"
+                                },
+                                "dispatch_action_config": {
+                                    "trigger_actions_on": ["on_enter_pressed"]
                                 }
                             },
                             "label": {
@@ -1514,12 +1518,16 @@ module.exports = controller => {
                             "type": "input",
                             "optional": true,
                             "block_id": "blkCon2",
+                            "dispatch_action": true,
                             "element": {
                                 "type": "plain_text_input",
                                 "action_id": "con_select2",
                                 "placeholder": {
                                     "type": "plain_text",
                                     "text": "Select a contact"
+                                },
+                                "dispatch_action_config": {
+                                    "trigger_actions_on": ["on_enter_pressed"]
                                 }
                             },
                             "label": {
@@ -1710,12 +1718,16 @@ module.exports = controller => {
                             "type": "input",
                             "optional": true,
                             "block_id": "blkCon1",
+                            "dispatch_action": true,
                             "element": {
                                 "type": "plain_text_input",
                                 "action_id": "con_select1",
                                 "placeholder": {
                                     "type": "plain_text",
                                     "text": "Select a contact"
+                                },
+                                "dispatch_action_config": {
+                                    "trigger_actions_on": ["on_enter_pressed"]
                                 }
                             },
                             "label": {
@@ -1727,12 +1739,16 @@ module.exports = controller => {
                             "type": "input",
                             "optional": true,
                             "block_id": "blkCon2",
+                            "dispatch_action": true,
                             "element": {
                                 "type": "plain_text_input",
                                 "action_id": "con_select2",
                                 "placeholder": {
                                     "type": "plain_text",
                                     "text": "Select a contact"
+                                },
+                                "dispatch_action_config": {
+                                    "trigger_actions_on": ["on_enter_pressed"]
                                 }
                             },
                             "label": {
@@ -3548,6 +3564,357 @@ module.exports = controller => {
                                         ]
                                     }
                                 });
+                            } else {
+
+                                if (hasRBI) {
+                                    await bot.api.views.update({
+                                        view_id: message.view.id,
+                                        view: {
+                                            "type": "modal",
+                                            "callback_id": "approveDeclinePopup",
+                                            "clear_on_close": true,
+                                            "private_metadata": JSON.stringify(pvt_metadata),
+                                            "submit": {
+                                                "type": "plain_text",
+                                                "text": "Next",
+                                                "emoji": true
+                                            },
+                                            "close": {
+                                                "type": "plain_text",
+                                                "text": "Close",
+                                                "emoji": true
+                                            },
+                                            "title": {
+                                                "type": "plain_text",
+                                                "text": "Reference Use Request",
+                                                "emoji": true
+                                            },
+                                            "blocks": [
+                                                {
+                                                    "type": "section",
+                                                    "fields": [
+                                                        {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Reference Account*\n" + pvt_metadata["Account Name"]
+                                                        },
+                                                        {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Opportunity Account*\n" + pvt_metadata["Opportunity Account Name"]
+                                                        },
+                                                        {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Reference Type*\n" + pvt_metadata["Reference Type"]
+                                                        },
+                                                        {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Opportunity Name*\n" + pvt_metadata["Opportunity Name"]
+                                                        },
+                                                        {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Requester*\n" + pvt_metadata["Requester Name"]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "actions",
+                                                    "block_id": "additionalBlock",
+                                                    "elements": [
+                                                        {
+                                                            "type": "button",
+                                                            "action_id": "additionalModal",
+                                                            "text": {
+                                                                "type": "plain_text",
+                                                                "text": "More Request Details"
+                                                            },
+                                                            "style": "primary",
+                                                            "value": pvt_metadata.rraId
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "divider"
+                                                },
+                                                {
+                                                    "type": "input",
+                                                    "block_id": "approveDeclineBlock",
+                                                    "dispatch_action": true,
+                                                    "label": {
+                                                        "type": "plain_text",
+                                                        "text": "What would you like to do?",
+                                                    },
+                                                    "element": {
+                                                        "type": "radio_buttons",
+                                                        "action_id": "approveDeclineRadio",
+                                                        "options": [
+                                                            {
+                                                                "text": {
+                                                                    "type": "mrkdwn",
+                                                                    "text": "*Approve*"
+                                                                },
+                                                                "value": "Approve"
+                                                            },
+                                                            {
+                                                                "text": {
+                                                                    "type": "mrkdwn",
+                                                                    "text": "*Decline*"
+                                                                },
+                                                                "value": "Decline"
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                {
+                                                    "type": "divider"
+                                                },
+                                                {
+                                                    "type": "section",
+                                                    "text": {
+                                                        "type": "mrkdwn",
+                                                        "text": "*Search and select from one of the following:*"
+                                                        }
+                                                },
+                                                {
+                                                    "type": "input",
+                                                    "optional": true,
+                                                    "block_id": "blkCon1",
+                                                    "dispatch_action": true,
+                                                    "element": {
+                                                        "type": "plain_text_input",
+                                                        "action_id": "con_select1",
+                                                        "placeholder": {
+                                                            "type": "plain_text",
+                                                            "text": "Select a contact"
+                                                        },
+                                                        "dispatch_action_config": {
+                                                            "trigger_actions_on": ["on_enter_pressed"]
+                                                        }
+                                                    },
+                                                    "label": {
+                                                        "type": "plain_text",
+                                                        "text": "Existing reference contacts....",
+                                                    },
+                                                    "hint": {
+                                                        "type": "plain_text",
+                                                        "text": "No matching contact found."
+                                                    }
+                                                },
+                                                {
+                                                    "type": "input",
+                                                    "optional": true,
+                                                    "block_id": "blkCon2",
+                                                    "dispatch_action": true,
+                                                    "element": {
+                                                        "type": "plain_text_input",
+                                                        "action_id": "con_select2",
+                                                        "placeholder": {
+                                                            "type": "plain_text",
+                                                            "text": "Select a contact"
+                                                        },
+                                                        "dispatch_action_config": {
+                                                            "trigger_actions_on": ["on_enter_pressed"]
+                                                        }
+                                                    },
+                                                    "label": {
+                                                        "type": "plain_text",
+                                                        "text": "Other contacts....",
+                                                        "emoji": true
+                                                    }
+                                                },
+                                                {
+                                                    "type": "divider"
+                                                },
+                                                {
+                                                    "type": "input",
+                                                    "block_id": "contactNotesBlock",
+                                                    "optional": true,
+                                                    "element": {
+                                                        "type": "plain_text_input",
+                                                        "multiline": true,
+                                                        "action_id": "contactNotes"
+                                                    },
+                                                    "label": {
+                                                        "type": "plain_text",
+                                                        "text": "Add a Note",
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    });
+                                } else {
+                                    await bot.api.views.update({
+                                        view_id: message.view.id,
+                                        view: {
+                                            "type": "modal",
+                                            "callback_id": "approveDeclinePopup",
+                                            "clear_on_close": true,
+                                            "private_metadata": JSON.stringify(pvt_metadata),
+                                            "submit": {
+                                                "type": "plain_text",
+                                                "text": "Next",
+                                                "emoji": true
+                                            },
+                                            "close": {
+                                                "type": "plain_text",
+                                                "text": "Close",
+                                                "emoji": true
+                                            },
+                                            "title": {
+                                                "type": "plain_text",
+                                                "text": "Reference Use Request",
+                                                "emoji": true
+                                            },
+                                            "blocks": [
+                                                {
+                                                    "type": "section",
+                                                    "fields": [
+                                                        {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Reference Account*\n" + pvt_metadata["Account Name"]
+                                                        },
+                                                        {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Opportunity Account*\n" + pvt_metadata["Opportunity Account Name"]
+                                                        },
+                                                        {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Reference Type*\n" + pvt_metadata["Reference Type"]
+                                                        },
+                                                        {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Opportunity Name*\n" + pvt_metadata["Opportunity Name"]
+                                                        },
+                                                        {
+                                                            "type": "mrkdwn",
+                                                            "text": "*Requester*\n" + pvt_metadata["Requester Name"]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "actions",
+                                                    "block_id": "additionalBlock",
+                                                    "elements": [
+                                                        {
+                                                            "type": "button",
+                                                            "action_id": "additionalModal",
+                                                            "text": {
+                                                                "type": "plain_text",
+                                                                "text": "More Request Details"
+                                                            },
+                                                            "style": "primary",
+                                                            "value": pvt_metadata.rraId
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "divider"
+                                                },
+                                                {
+                                                    "type": "input",
+                                                    "block_id": "approveDeclineBlock",
+                                                    "dispatch_action": true,
+                                                    "label": {
+                                                        "type": "plain_text",
+                                                        "text": "What would you like to do?",
+                                                    },
+                                                    "element": {
+                                                        "type": "radio_buttons",
+                                                        "action_id": "approveDeclineRadio",
+                                                        "options": [
+                                                            {
+                                                                "text": {
+                                                                    "type": "mrkdwn",
+                                                                    "text": "*Approve*"
+                                                                },
+                                                                "value": "Approve"
+                                                            },
+                                                            {
+                                                                "text": {
+                                                                    "type": "mrkdwn",
+                                                                    "text": "*Decline*"
+                                                                },
+                                                                "value": "Decline"
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                {
+                                                    "type": "divider"
+                                                },
+                                                {
+                                                    "type": "section",
+                                                    "text": {
+                                                        "type": "mrkdwn",
+                                                        "text": "*Search and select from one of the following:*"
+                                                        }
+                                                },
+                                                {
+                                                    "type": "input",
+                                                    "optional": true,
+                                                    "block_id": "blkCon1",
+                                                    "dispatch_action": true,
+                                                    "element": {
+                                                        "type": "plain_text_input",
+                                                        "action_id": "con_select1",
+                                                        "placeholder": {
+                                                            "type": "plain_text",
+                                                            "text": "Select a contact"
+                                                        },
+                                                        "dispatch_action_config": {
+                                                            "trigger_actions_on": ["on_enter_pressed"]
+                                                        }
+                                                    },
+                                                    "label": {
+                                                        "type": "plain_text",
+                                                        "text": "Existing reference contacts....",
+                                                    }
+                                                },
+                                                {
+                                                    "type": "input",
+                                                    "optional": true,
+                                                    "block_id": "blkCon2",
+                                                    "dispatch_action": true,
+                                                    "element": {
+                                                        "type": "plain_text_input",
+                                                        "action_id": "con_select2",
+                                                        "placeholder": {
+                                                            "type": "plain_text",
+                                                            "text": "Select a contact"
+                                                        },
+                                                        "dispatch_action_config": {
+                                                            "trigger_actions_on": ["on_enter_pressed"]
+                                                        }
+                                                    },
+                                                    "label": {
+                                                        "type": "plain_text",
+                                                        "text": "Other contacts....",
+                                                        "emoji": true
+                                                    },
+                                                    "hint": {
+                                                        "type": "plain_text",
+                                                        "text": "No matching contact found."
+                                                    }
+                                                },
+                                                {
+                                                    "type": "divider"
+                                                },
+                                                {
+                                                    "type": "input",
+                                                    "block_id": "contactNotesBlock",
+                                                    "optional": true,
+                                                    "element": {
+                                                        "type": "plain_text_input",
+                                                        "multiline": true,
+                                                        "action_id": "contactNotes"
+                                                    },
+                                                    "label": {
+                                                        "type": "plain_text",
+                                                        "text": "Add a Note",
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    });
+                                }
                             }
                         } else if (message.actions[0].block_id == 'conSelectBlock' && message.actions[0].action_id == 'conSelect') {
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
