@@ -1829,106 +1829,115 @@ module.exports = controller => {
      * @param {*} message 
      * @param {*} pvt_metadata 
      */
-    async function contactEditModal(bot, message, pvt_metadata) {
-        await bot.api.views.push({
-            trigger_id: message.trigger_id,
-            view: {
-                "title": {
-                    "type": "plain_text",
-                    "text": "Edit Contact",
-                    "emoji": true
+    async function contactEditModal(bot, message, pvt_metadata, fromEditContactButton) {
+        let display = {
+            "title": {
+                "type": "plain_text",
+                "text": "Edit Contact",
+                "emoji": true
+            },
+            "submit": {
+                "type": "plain_text",
+                "text": "Save",
+                "emoji": true
+            },
+            "type": "modal",
+            "callback_id": "refUseReqMainBlockWithContacts",
+            "private_metadata": JSON.stringify(pvt_metadata),
+            "blocks": [
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Selected Contact Info*"
+                    },
                 },
-                "submit": {
-                    "type": "plain_text",
-                    "text": "Save",
-                    "emoji": true
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Name*\n" + pvt_metadata.Name
+                    },
                 },
-                "type": "modal",
-                "callback_id": "refUseReqMainBlockWithContacts",
-                "private_metadata": JSON.stringify(pvt_metadata),
-                "blocks": [
-                    {
-                        "type": "section",
-                        "text": {
-                            "type": "mrkdwn",
-                            "text": "*Selected Contact Info*"
-                        },
+                {
+                    "type": "input",
+                    "block_id": "conEmailBlock",
+                    "label": {
+                        "type": "plain_text",
+                        "text": "Email",
+                        "emoji": true
                     },
-                    {
-                        "type": "section",
-                        "text": {
-                            "type": "mrkdwn",
-                            "text": "*Name*\n" + pvt_metadata.Name
-                        },
-                    },
-                    {
-                        "type": "input",
-                        "block_id": "conEmailBlock",
-                        "label": {
-                            "type": "plain_text",
-                            "text": "Email",
-                            "emoji": true
-                        },
-                        "element": {
-                            "type": "plain_text_input",
-                            "action_id": "conEmail",
-                            "initial_value": pvt_metadata.Email
-                        }
-
-                    },
-                    {
-                        "type": "input",
-                        "block_id": "conPhoneBlock",
-                        "label": {
-                            "type": "plain_text",
-                            "text": "Phone",
-                            "emoji": true
-                        },
-                        "element": {
-                            "type": "plain_text_input",
-                            "action_id": "conPhone",
-                            "initial_value": pvt_metadata.Phone
-                        }
-                    },
-                    {
-                        "type": "input",
-                        "optional": true,
-                        "block_id": "conTitleBlock",
-                        "label": {
-                            "type": "plain_text",
-                            "text": "Title",
-                            "emoji": true
-                        },
-                        "element": {
-                            "type": "plain_text_input",
-                            "action_id": "conTitle",
-                            "initial_value": pvt_metadata.Title
-                        }
-                    },
-                    {
-                        "type": "section",
-                        "block_id": "isUpdateableConBlock",
-                        "text": {
-                            "type": "plain_text",
-                            "text": "Write these changes back to the Contact record?"
-                        },
-                        "accessory": {
-                            "type": "checkboxes",
-                            "action_id": "isUpdateableCon",
-                            "options": [
-                                {
-                                    "value": "true",
-                                    "text": {
-                                        "type": "plain_text",
-                                        "text": " "
-                                    }
-                                },
-                            ]
-                        }
+                    "element": {
+                        "type": "plain_text_input",
+                        "action_id": "conEmail",
+                        "initial_value": pvt_metadata.Email
                     }
-                ]
-            }
-        });
+
+                },
+                {
+                    "type": "input",
+                    "block_id": "conPhoneBlock",
+                    "label": {
+                        "type": "plain_text",
+                        "text": "Phone",
+                        "emoji": true
+                    },
+                    "element": {
+                        "type": "plain_text_input",
+                        "action_id": "conPhone",
+                        "initial_value": pvt_metadata.Phone
+                    }
+                },
+                {
+                    "type": "input",
+                    "optional": true,
+                    "block_id": "conTitleBlock",
+                    "label": {
+                        "type": "plain_text",
+                        "text": "Title",
+                        "emoji": true
+                    },
+                    "element": {
+                        "type": "plain_text_input",
+                        "action_id": "conTitle",
+                        "initial_value": pvt_metadata.Title
+                    }
+                },
+                {
+                    "type": "section",
+                    "block_id": "isUpdateableConBlock",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "Write these changes back to the Contact record?"
+                    },
+                    "accessory": {
+                        "type": "checkboxes",
+                        "action_id": "isUpdateableCon",
+                        "options": [
+                            {
+                                "value": "true",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": " "
+                                }
+                            },
+                        ]
+                    }
+                }
+            ]
+        };
+
+        if (fromEditContactButton) {
+            await bot.api.views.push({
+                trigger_id: message.trigger_id,
+                view: display
+            });
+        } else {
+            await bot.api.views.update({
+                view_id: message.view.id,
+                view: display
+            });
+        }
     }
 
     async function selectContactModal(bot, message, pvt_metadata, obj, fromSubmitButton) {
@@ -3165,7 +3174,7 @@ module.exports = controller => {
                                 });
                             } else {
                                 // this is for not selected checkbox
-                                contactEditModal(bot, message);
+                                contactEditModal(bot, message, pvt_metadata, true);
                             }
                         
                         } else if (message.actions[0].block_id == 'approveDeclineBlock' && message.actions[0].action_id == 'approveDeclineRadio') {
@@ -3943,7 +3952,7 @@ module.exports = controller => {
                             console.log('ContactID', pvt_metadata.Id);
                             pvt_metadata = setSelectedContactInfo(pvt_metadata, pvt_metadata.Id);
                             console.log('PVTDATA -> ', JSON.stringify(pvt_metadata));
-                            contactEditModal(bot, message, pvt_metadata);
+                            contactEditModal(bot, message, pvt_metadata, false);
 
                             /* await bot.api.views.push({
                                 trigger_id: message.trigger_id,
