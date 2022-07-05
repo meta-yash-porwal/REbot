@@ -3567,38 +3567,30 @@ module.exports = controller => {
                                 }
                             } */
                         } else if (message.actions[0].block_id == 'conSelectBlock' && message.actions[0].action_id == 'conSelect') {
-
-                            bot.httpBody({
-                                "response_action": "clear"
-                            });
-
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
                             pvt_metadata.Id = message.view.state.values.conSelectBlock.conSelect.selected_option.value;
                             console.log('ContactID', pvt_metadata.Id);
                             pvt_metadata = setSelectedContactInfo(pvt_metadata, pvt_metadata.Id);
                             console.log('PVTDATA -> ', JSON.stringify(pvt_metadata));
 
-                            // await bot.api.views.push({
-                            //     trigger_id: message.trigger_id,
+                            await bot.api.views.push({
+                                trigger_id: message.trigger_id,
                             // await bot.api.views.update({
                             //     view_id: message.view.id,
-                            await bot.api.views.open({
-                                trigger_id: message.trigger_id,
                                 view: {
                                     "title": {
                                         "type": "plain_text",
-                                        "text": "Select Contact",
+                                        "text": "Edit Contact",
                                     },
                                     "submit": {
                                         "type": "plain_text",
                                         "text": "Next"
                                     },
                                     "type": "modal",
-                                    "clear_on_close": true,
                                     "private_metadata": JSON.stringify(pvt_metadata),
                                     "callback_id": "refUseReqMainBlockWithContacts",
                                     "blocks": [
-                                        {
+                                        /* {
                                             "type": "input",
                                             "block_id": "conSelectBlock",
                                             "dispatch_action": true,
@@ -3625,7 +3617,7 @@ module.exports = controller => {
                                         },
                                         {
                                             "type": "divider"
-                                        },
+                                        }, */
                                         {
                                             "type": "section",
                                             "text": {
