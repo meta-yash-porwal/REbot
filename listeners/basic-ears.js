@@ -1387,6 +1387,7 @@ module.exports = controller => {
              * to automatically display that selected contact from these select box
              */
         if (pvt_metadata.Status) {
+            console.log('In Status of Main Modal after selected Contact');
             bot.httpBody({
                 response_action: 'update',
                 view: {
@@ -1608,6 +1609,7 @@ module.exports = controller => {
                 }
             });
         } else {
+            console.log('In Status of Main Modal after selected Contact');
             bot.httpBody({
                 response_action: 'update',
                 view: {
