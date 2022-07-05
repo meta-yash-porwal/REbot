@@ -1823,6 +1823,12 @@ module.exports = controller => {
         }
     }
 
+    /**
+     * 
+     * @param {*} bot 
+     * @param {*} message 
+     * @param {*} pvt_metadata 
+     */
     async function contactEditModal(bot, message, pvt_metadata) {
         await bot.api.views.push({
             trigger_id: message.trigger_id,
@@ -1924,6 +1930,57 @@ module.exports = controller => {
             }
         });
     }
+
+    async function selectContactModal(bot, message, pvt_metadata) {
+
+        pvt_metadata.Contacts = obj.Contacts;
+        let slackCons = [];
+
+        pvt_metadata.Contacts.forEach(con => {
+
+            let entry = {
+                "text": {
+                    "type": "plain_text",
+                    "text": con.Name
+                },
+                "value": con.id
+            }
+            slackCons.push(entry);
+        });
+        pvt_metadata.contactsInDropDown = slackCons;
+
+        await bot.api.views.push({
+            trigger_id: message.trigger_id,
+            view: {
+                "title": {
+                    "type": "plain_text",
+                    "text": "Select Contact",
+                },
+                "type": "modal",
+                "private_metadata": JSON.stringify(pvt_metadata),
+                "blocks": [
+                    {
+                        "type": "input",
+                        "block_id": "conSelectBlock",
+                        "dispatch_action": true,
+                        "element": {
+                            "type": "static_select",
+                            "action_id": "conSelect",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Select"
+                            },
+                            "options": pvt_metadata.contactsInDropDown
+                        },
+                        "label": {
+                            "type": "plain_text",
+                            "text": "Contacts",
+                        }
+                    }
+                ]
+            }
+        });
+    } 
 
     /**
      * when user clicks on submit button of Modal then this controller is called;
@@ -2390,7 +2447,7 @@ module.exports = controller => {
                             // pvt_metadata.EmailPhoneNotRequired = obj.EmailPhoneNotRequired;
 
                             if (obj.Contacts && obj.Contacts.length) {
-                                pvt_metadata.Contacts = obj.Contacts;
+                                /* pvt_metadata.Contacts = obj.Contacts;
                                 let slackCons = [];
 
                                 pvt_metadata.Contacts.forEach(con => {
@@ -2441,7 +2498,8 @@ module.exports = controller => {
                                             },
                                         ]
                                     }
-                                });
+                                }); */
+                                selectContactModal(bot, message, pvt_metadata);
                             } else {
 
                                 if (hasRBI) {
@@ -3517,53 +3575,7 @@ module.exports = controller => {
                             console.log('HAS RBI -> ', contactSearchKeyword, hasRBI);
 
                             if (obj.Contacts && obj.Contacts.length) {
-                                pvt_metadata.Contacts = obj.Contacts;
-                                let slackCons = [];
-
-                                pvt_metadata.Contacts.forEach(con => {
-
-                                    let entry = {
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": con.Name
-                                        },
-                                        "value": con.id
-                                    }
-                                    slackCons.push(entry);
-                                });
-                                pvt_metadata.contactsInDropDown = slackCons;
-
-                                await bot.api.views.push({
-                                    trigger_id: message.trigger_id,
-                                    view: {
-                                        "title": {
-                                            "type": "plain_text",
-                                            "text": "Select Contact",
-                                        },
-                                        "type": "modal",
-                                        "private_metadata": JSON.stringify(pvt_metadata),
-                                        "blocks": [
-                                            {
-                                                "type": "input",
-                                                "block_id": "conSelectBlock",
-                                                "dispatch_action": true,
-                                                "element": {
-                                                    "type": "static_select",
-                                                    "action_id": "conSelect",
-                                                    "placeholder": {
-                                                        "type": "plain_text",
-                                                        "text": "Select"
-                                                    },
-                                                    "options": pvt_metadata.contactsInDropDown
-                                                },
-                                                "label": {
-                                                    "type": "plain_text",
-                                                    "text": "Contacts",
-                                                }
-                                            }
-                                        ]
-                                    }
-                                });
+                                selectContactModal(bot, message, pvt_metadata);
                             } else {
 
                                 if (hasRBI) {
