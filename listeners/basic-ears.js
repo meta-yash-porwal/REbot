@@ -60,6 +60,7 @@ module.exports = controller => {
      */
     controller.on('post-message', reqBody => {
         console.log('posting message for org----', reqBody.orgId);
+        console.log('REQUEST BODY -> ', reqBody);
 
         reqBody.messages.forEach(async msg => {
             console.log('Message EARS LINE 63', msg);
