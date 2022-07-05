@@ -1949,8 +1949,10 @@ module.exports = controller => {
         });
         pvt_metadata.contactsInDropDown = slackCons;
 
-        await bot.api.views.push({
-            trigger_id: message.trigger_id,
+        // await bot.api.views.push({
+        //     trigger_id: message.trigger_id,
+        bot.httpBody({
+            response_action: 'push',
             view: {
                 "title": {
                     "type": "plain_text",
