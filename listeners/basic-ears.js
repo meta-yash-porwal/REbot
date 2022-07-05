@@ -3056,6 +3056,7 @@ module.exports = controller => {
                                  * this is to display already selected option of to Update Contact by User
                                  * so we pass initial value of that checkbox
                                  */
+                                console.log('CONTACS :-> ', JSON.stringify(pvt_metadata));
                                 await bot.api.views.push({
                                     trigger_id: message.trigger_id,
                                     view: {
