@@ -3395,7 +3395,7 @@ module.exports = controller => {
                                                 "text": {
                                                     "type": "mrkdwn",
                                                     "text": "The requested Account, " + pvt_metadata["Account Name"] + ", does not have any associated Contacts."
-                                                        + "\nTo approve this request, please \n"
+                                                        + "\nTo approve this request, please "
                                                         + "<" + pvt_metadata.ContactURL + "|add a contact to this Account in Salesforce>."
                                                 }
                                             }
