@@ -1436,7 +1436,7 @@ module.exports = controller => {
                                 }
                             ]
                         },
-                        /* {
+                        {
                             "type": "actions",
                             "block_id": "additionalBlock",
                             "elements": [
@@ -1598,13 +1598,12 @@ module.exports = controller => {
                                 "type": "plain_text_input",
                                 "multiline": true,
                                 "action_id": "contactNotes",
-                                "initial_value": pvt_metadata.Notes
                             },
                             "label": {
                                 "type": "plain_text",
                                 "text": "Add a Note",
                             }
-                        } */
+                        }
                     ]
                 }
             });
@@ -1811,8 +1810,7 @@ module.exports = controller => {
                             "element": {
                                 "type": "plain_text_input",
                                 "multiline": true,
-                                "action_id": "contactNotes",
-                                "initial_value": pvt_metadata.Notes
+                                "action_id": "contactNotes"
                             },
                             "label": {
                                 "type": "plain_text",
@@ -2383,8 +2381,6 @@ module.exports = controller => {
                     } else if (message.view.callback_id == 'approveDeclinePopup') {
                         //this is the final popup to confirm that user want to Decline the Request
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
-                        let notes = message.view.state.values.contactNotesBlock.contactNotes.value;
-                        pvt_metadata.Notes = notes;
                         let contactSearchKeyword, hasRBI = false;
                         console.log('CON1', message.view.state.values.blkCon1, message.view.state.values.blkCon2);
 
@@ -2414,6 +2410,8 @@ module.exports = controller => {
                             if (pvt_metadata.requestStatus == "Decline" || pvt_metadata.EmailPhoneNotRequired || 
                                (!pvt_metadata.EmailPhoneNotRequired && pvt_metadata.Email && pvt_metadata.Phone) ||
                                (pvt_metadata.requestStatus == "Approve" && pvt_metadata.ApproveWithoutContact)) {
+                                let notes = message.view.state.values.contactNotesBlock.contactNotes.value;
+                                pvt_metadata.Notes = notes;
                                 bot.httpBody({
                                     response_action: 'update',
                                     view: {
