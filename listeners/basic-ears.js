@@ -1931,7 +1931,7 @@ module.exports = controller => {
         });
     }
 
-    async function selectContactModal(bot, message, pvt_metadata, obj) {
+    async function selectContactModal(bot, message, pvt_metadata, obj, fromSubmitButton) {
 
         pvt_metadata.Contacts = obj.Contacts;
         let slackCons = [];
@@ -1948,40 +1948,46 @@ module.exports = controller => {
             slackCons.push(entry);
         });
         pvt_metadata.contactsInDropDown = slackCons;
-
-        // await bot.api.views.push({
-        //     trigger_id: message.trigger_id,
-        bot.httpBody({
-            response_action: 'push',
-            view: {
-                "title": {
-                    "type": "plain_text",
-                    "text": "Select Contact",
-                },
-                "type": "modal",
-                "private_metadata": JSON.stringify(pvt_metadata),
-                "blocks": [
-                    {
-                        "type": "input",
-                        "block_id": "conSelectBlock",
-                        "dispatch_action": true,
-                        "element": {
-                            "type": "static_select",
-                            "action_id": "conSelect",
-                            "placeholder": {
-                                "type": "plain_text",
-                                "text": "Select"
-                            },
-                            "options": pvt_metadata.contactsInDropDown
-                        },
-                        "label": {
+        let display = {
+            "title": {
+                "type": "plain_text",
+                "text": "Select Contact",
+            },
+            "type": "modal",
+            "private_metadata": JSON.stringify(pvt_metadata),
+            "blocks": [
+                {
+                    "type": "input",
+                    "block_id": "conSelectBlock",
+                    "dispatch_action": true,
+                    "element": {
+                        "type": "static_select",
+                        "action_id": "conSelect",
+                        "placeholder": {
                             "type": "plain_text",
-                            "text": "Contacts",
-                        }
+                            "text": "Select"
+                        },
+                        "options": pvt_metadata.contactsInDropDown
+                    },
+                    "label": {
+                        "type": "plain_text",
+                        "text": "Contacts",
                     }
-                ]
-            }
-        });
+                }
+            ]
+        };
+
+        if (fromSubmitButton) {
+            bot.httpBody({
+                response_action: 'push',
+                view: display
+            });
+        } else {
+            await bot.api.views.push({
+                trigger_id: message.trigger_id,
+                view: display
+            });
+        }
     } 
 
     /**
@@ -2501,7 +2507,7 @@ module.exports = controller => {
                                         ]
                                     }
                                 }); */
-                                selectContactModal(bot, message, pvt_metadata, obj);
+                                selectContactModal(bot, message, pvt_metadata, obj, true);
                             } else {
 
                                 if (hasRBI) {
@@ -3577,7 +3583,7 @@ module.exports = controller => {
                             console.log('HAS RBI -> ', contactSearchKeyword, hasRBI);
 
                             if (obj.Contacts && obj.Contacts.length) {
-                                selectContactModal(bot, message, pvt_metadata, obj);
+                                selectContactModal(bot, message, pvt_metadata, obj, false);
                             } else {
 
                                 if (hasRBI) {
