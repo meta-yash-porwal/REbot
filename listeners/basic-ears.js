@@ -3567,6 +3567,11 @@ module.exports = controller => {
                                 }
                             } */
                         } else if (message.actions[0].block_id == 'conSelectBlock' && message.actions[0].action_id == 'conSelect') {
+
+                            bot.httpBody({
+                                "response_action": "clear"
+                            });
+
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
                             pvt_metadata.Id = message.view.state.values.conSelectBlock.conSelect.selected_option.value;
                             console.log('ContactID', pvt_metadata.Id);
@@ -3575,8 +3580,10 @@ module.exports = controller => {
 
                             // await bot.api.views.push({
                             //     trigger_id: message.trigger_id,
-                            await bot.api.views.update({
-                                view_id: message.view.id,
+                            // await bot.api.views.update({
+                            //     view_id: message.view.id,
+                            await bot.api.views.open({
+                                trigger_id: message.trigger_id,
                                 view: {
                                     "title": {
                                         "type": "plain_text",
