@@ -3463,7 +3463,8 @@ module.exports = controller => {
                                                     "element": {
                                                         "type": "plain_text_input",
                                                         "multiline": true,
-                                                        "action_id": "contactNotes"
+                                                        "action_id": "contactNotes",
+                                                        "focus_on_load": true
                                                     },
                                                     "label": {
                                                         "type": "plain_text",
@@ -3637,7 +3638,8 @@ module.exports = controller => {
                                                     "element": {
                                                         "type": "plain_text_input",
                                                         "multiline": true,
-                                                        "action_id": "contactNotes"
+                                                        "action_id": "contactNotes",
+                                                        "focus_on_load": true
                                                     },
                                                     "label": {
                                                         "type": "plain_text",
