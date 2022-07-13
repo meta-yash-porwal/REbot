@@ -1596,7 +1596,7 @@ module.exports = controller => {
                             "block_id": "contactNotesBlock",
                             "element": {
                                 "type": "plain_text_input",
-                                // "multiline": true,
+                                "multiline": true,
                                 "action_id": "contactNotes",
                                 "focus_on_load": true
                             },
@@ -1849,7 +1849,7 @@ module.exports = controller => {
                             "block_id": "contactNotesBlock",
                             "element": {
                                 "type": "plain_text_input",
-                                // "multiline": true,
+                                "multiline": true,
                                 "action_id": "contactNotes",
                                 "focus_on_load": true
                             },
@@ -3304,9 +3304,8 @@ module.exports = controller => {
                                                 "optional": true,
                                                 "element": {
                                                     "type": "plain_text_input",
-                                                    // "multiline": true,
-                                                    "action_id": "contactNotes",
-                                                    "focus_on_load": true
+                                                    "multiline": true,
+                                                    "action_id": "contactNotes"
                                                 },
                                                 "label": {
                                                     "type": "plain_text",
