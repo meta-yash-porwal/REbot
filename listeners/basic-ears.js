@@ -3304,7 +3304,7 @@ module.exports = controller => {
                                                 "optional": true,
                                                 "element": {
                                                     "type": "plain_text_input",
-                                                    "multiline": true,
+                                                    // "multiline": true,
                                                     "action_id": "contactNotes",
                                                     "focus_on_load": true
                                                 },
