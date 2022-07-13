@@ -1598,7 +1598,7 @@ module.exports = controller => {
                                 "type": "plain_text_input",
                                 "multiline": true,
                                 "action_id": "contactNotes",
-                                // "focus_on_load": true
+                                "focus_on_load": true
                             },
                             "label": {
                                 "type": "plain_text",
@@ -1609,7 +1609,7 @@ module.exports = controller => {
 
 
 
-                        {
+                        /* {
                             "type": "section",
                             "text": {
                                 "type": "plain_text",
@@ -1643,7 +1643,7 @@ module.exports = controller => {
                                 ],
                                 "focus_on_load": true
                             }
-                        }
+                        } */
                     ]
                 }
             });
