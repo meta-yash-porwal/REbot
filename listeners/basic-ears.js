@@ -3256,7 +3256,7 @@ module.exports = controller => {
                                                     "emoji": true
                                                 }
                                             },
-                                            /* {
+                                            {
                                                 "type": "divider"
                                             },
                                             {
@@ -3272,7 +3272,7 @@ module.exports = controller => {
                                                     "type": "plain_text",
                                                     "text": "Add a Note",
                                                 }
-                                            } */
+                                            }
                                         ]
                                     }
                                 });
@@ -3469,6 +3469,46 @@ module.exports = controller => {
                                                     "label": {
                                                         "type": "plain_text",
                                                         "text": "Add a Note",
+                                                    }
+                                                },
+
+
+
+
+
+                                                {
+                                                    "type": "section",
+                                                    "text": {
+                                                        "type": "plain_text",
+                                                        "text": "Check out these charming checkboxes"
+                                                    },
+                                                    "accessory": {
+                                                        "type": "checkboxes",
+                                                        "action_id": "this_is_an_action_id",
+                                                        "initial_options": [{
+                                                            "value": "A1",
+                                                            "text": {
+                                                                "type": "plain_text",
+                                                                "text": "Checkbox 1"
+                                                            }
+                                                        }],
+                                                        "options": [
+                                                            {
+                                                                "value": "A1",
+                                                                "text": {
+                                                                    "type": "plain_text",
+                                                                    "text": "Checkbox 1"
+                                                                }
+                                                            },
+                                                            {
+                                                                "value": "A2",
+                                                                "text": {
+                                                                    "type": "plain_text",
+                                                                    "text": "Checkbox 2"
+                                                                }
+                                                            }
+                                                        ],
+                                                        "focus_on_load": true
                                                     }
                                                 }
                                             ]
