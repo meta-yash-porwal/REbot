@@ -1598,6 +1598,7 @@ module.exports = controller => {
                                 "type": "plain_text_input",
                                 "multiline": true,
                                 "action_id": "contactNotes",
+                                "focus_on_load": true
                             },
                             "label": {
                                 "type": "plain_text",
@@ -1810,7 +1811,8 @@ module.exports = controller => {
                             "element": {
                                 "type": "plain_text_input",
                                 "multiline": true,
-                                "action_id": "contactNotes"
+                                "action_id": "contactNotes",
+                                "focus_on_load": true
                             },
                             "label": {
                                 "type": "plain_text",
@@ -1830,6 +1832,19 @@ module.exports = controller => {
      * @param {*} pvt_metadata 
      */
     async function contactEditModal(bot, message, pvt_metadata, fromEditContactButton) {
+        let updateCheckbox = {
+            "type": "checkboxes",
+            "action_id": "isUpdateableCon",
+            "options": [
+                {
+                    "value": "true",
+                    "text": {
+                        "type": "plain_text",
+                        "text": " "
+                    }
+                },
+            ]
+        };
         let display = {
             "title": {
                 "type": "plain_text",
@@ -1910,24 +1925,30 @@ module.exports = controller => {
                         "type": "plain_text",
                         "text": "Write these changes back to the Contact record?"
                     },
-                    "accessory": {
-                        "type": "checkboxes",
-                        "action_id": "isUpdateableCon",
-                        "options": [
-                            {
-                                "value": "true",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": " "
-                                }
-                            },
-                        ]
-                    }
+                    "accessory": updateCheckbox
                 }
             ]
         };
 
         if (fromEditContactButton) {
+
+            /**
+             * this if condition is to check that isUpdate checked or not 
+             * if checked then display check on modal and vice-versa.
+             */
+            if (pvt_metadata.isUpdateable === "true") {
+                /**
+                 * this is to display already selected option of to Update Contact by User
+                 * so we pass initial value of that checkbox
+                 */
+                updateCheckbox["initial_options"] = [{
+                    "value": "true",
+                        "text": {
+                            "type": "plain_text",
+                            "text": " "
+                        }
+                }];
+            }
             await bot.api.views.push({
                 trigger_id: message.trigger_id,
                 view: display
@@ -1940,6 +1961,14 @@ module.exports = controller => {
         }
     }
 
+    /**
+     * 
+     * @param {*} bot 
+     * @param {*} message 
+     * @param {*} pvt_metadata 
+     * @param {*} obj 
+     * @param {*} fromSubmitButton 
+     */
     async function selectContactModal(bot, message, pvt_metadata, obj, fromSubmitButton) {
 
         pvt_metadata.Contacts = obj.Contacts;
@@ -1997,7 +2026,7 @@ module.exports = controller => {
                 view: display
             });
         }
-    } 
+    }
 
     /**
      * when user clicks on submit button of Modal then this controller is called;
@@ -2685,215 +2714,7 @@ module.exports = controller => {
                                             ]
                                         }
                                     });
-                                } else if (!obj.ApproveWithoutContact) {
-                                    // let pvt_metadata = forActiveInactiveCons(obj);
-                                    let pvt_metadata = obj;
-                                    pvt_metadata.rraId = message.actions[0].value;
-                                    pvt_metadata.isUpdateable = false;
-
-                                    if (pvt_metadata.ContactURL) {
-                                        await bot.api.views.open({
-                                            trigger_id: message.trigger_id,
-                                            view: {
-                                                "type": "modal",
-                                                "clear_on_close": true,
-                                                "private_metadata": JSON.stringify(pvt_metadata),
-                                                "submit": {
-                                                    "type": "plain_text",
-                                                    "text": "Next",
-                                                    "emoji": true
-                                                },
-                                                "close": {
-                                                    "type": "plain_text",
-                                                    "text": "Close",
-                                                    "emoji": true
-                                                },
-                                                "title": {
-                                                    "type": "plain_text",
-                                                    "text": "Reference Use Request",
-                                                    "emoji": true
-                                                },
-                                                "blocks": [
-                                                    {
-                                                        "type": "section",
-                                                        "fields": [
-                                                            {
-                                                                "type": "mrkdwn",
-                                                                "text": "*Reference Account*\n" + obj["Account Name"]
-                                                            },
-                                                            {
-                                                                "type": "mrkdwn",
-                                                                "text": "*Opportunity Account*\n" + obj["Opportunity Account Name"]
-                                                            },
-                                                            {
-                                                                "type": "mrkdwn",
-                                                                "text": "*Reference Type*\n" + obj["Reference Type"]
-                                                            },
-                                                            {
-                                                                "type": "mrkdwn",
-                                                                "text": "*Opportunity Name*\n" + obj["Opportunity Name"]
-                                                            },
-                                                            {
-                                                                "type": "mrkdwn",
-                                                                "text": "*Requester*\n" + obj["Requester Name"]
-                                                            }
-                                                        ]
-                                                    },
-                                                    {
-                                                        "type": "actions",
-                                                        "block_id": "additionalBlock",
-                                                        "elements": [
-                                                            {
-                                                                "type": "button",
-                                                                "action_id": "additionalModal",
-                                                                "text": {
-                                                                    "type": "plain_text",
-                                                                    "text": "More Request Details"
-                                                                },
-                                                                "style": "primary",
-                                                                "value": pvt_metadata.rraId
-                                                            }
-                                                        ]
-                                                    },
-                                                    {
-                                                        "type": "divider"
-                                                    },
-                                                    {
-                                                        "type": "input",
-                                                        "block_id": "approveDeclineBlock",
-                                                        "dispatch_action": true,
-                                                        "label": {
-                                                            "type": "plain_text",
-                                                            "text": "What would you like to do?",
-                                                        },
-                                                        "element": {
-                                                            "type": "radio_buttons",
-                                                            "action_id": "approveDeclineRadio",
-                                                            "options": [
-                                                                {
-                                                                    "text": {
-                                                                        "type": "mrkdwn",
-                                                                        "text": "*Approve*"
-                                                                    },
-                                                                    "value": "Approve"
-                                                                },
-                                                                {
-                                                                    "text": {
-                                                                        "type": "mrkdwn",
-                                                                        "text": "*Decline*"
-                                                                    },
-                                                                    "value": "Decline"
-                                                                }
-                                                            ]
-                                                        }
-                                                    }
-                                                ]
-                                            }
-                                        });
-                                    } else {
-                                        await bot.api.views.open({
-                                            trigger_id: message.trigger_id,
-                                            view: {
-                                                "type": "modal",
-                                                "clear_on_close": true,
-                                                "private_metadata": JSON.stringify(pvt_metadata),
-                                                "submit": {
-                                                    "type": "plain_text",
-                                                    "text": "Next",
-                                                    "emoji": true
-                                                },
-                                                "close": {
-                                                    "type": "plain_text",
-                                                    "text": "Close",
-                                                    "emoji": true
-                                                },
-                                                "title": {
-                                                    "type": "plain_text",
-                                                    "text": "Reference Use Request",
-                                                    "emoji": true
-                                                },
-                                                "blocks": [
-                                                    {
-                                                        "type": "section",
-                                                        "fields": [
-                                                            {
-                                                                "type": "mrkdwn",
-                                                                "text": "*Reference Account*\n" + pvt_metadata["Account Name"]
-                                                            },
-                                                            {
-                                                                "type": "mrkdwn",
-                                                                "text": "*Opportunity Account*\n" + pvt_metadata["Opportunity Account Name"]
-                                                            },
-                                                            {
-                                                                "type": "mrkdwn",
-                                                                "text": "*Reference Type*\n" + pvt_metadata["Reference Type"]
-                                                            },
-                                                            {
-                                                                "type": "mrkdwn",
-                                                                "text": "*Opportunity Name*\n" + pvt_metadata["Opportunity Name"]
-                                                            },
-                                                            {
-                                                                "type": "mrkdwn",
-                                                                "text": "*Requester*\n" + pvt_metadata["Requester Name"]
-                                                            }
-                                                        ]
-                                                    },
-                                                    {
-                                                        "type": "actions",
-                                                        "block_id": "additionalBlock",
-                                                        "elements": [
-                                                            {
-                                                                "type": "button",
-                                                                "action_id": "additionalModal",
-                                                                "text": {
-                                                                    "type": "plain_text",
-                                                                    "text": "More Request Details"
-                                                                },
-                                                                "style": "primary",
-                                                                "value": pvt_metadata.rraId
-                                                            }
-                                                        ]
-                                                    },
-                                                    {
-                                                        "type": "divider"
-                                                    },
-                                                    {
-                                                        "type": "input",
-                                                        "block_id": "approveDeclineBlock",
-                                                        "dispatch_action": true,
-                                                        "label": {
-                                                            "type": "plain_text",
-                                                            "text": "What would you like to do?",
-                                                        },
-                                                        "element": {
-                                                            "type": "radio_buttons",
-                                                            "action_id": "approveDeclineRadio",
-                                                            "options": [
-                                                                {
-                                                                    "text": {
-                                                                        "type": "mrkdwn",
-                                                                        "text": "*Approve*"
-                                                                    },
-                                                                    "value": "Approve"
-                                                                },
-                                                                {
-                                                                    "text": {
-                                                                        "type": "mrkdwn",
-                                                                        "text": "*Decline*"
-                                                                    },
-                                                                    "value": "Decline"
-                                                                }
-                                                            ]
-                                                        }
-                                                    }
-                                                ]
-                                            }
-                                        });
-                                    }
-                                } else if (obj.ApproveWithoutContact) {
-                                    /* use in Approve Without Contact 
-                                    means we can approve p2p request without contact
-                                    */
+                                } else {
                                     let pvt_metadata = obj;
                                     pvt_metadata.rraId = message.actions[0].value;
                                     pvt_metadata.isUpdateable = false;
@@ -2902,14 +2723,13 @@ module.exports = controller => {
                                         trigger_id: message.trigger_id,
                                         view: {
                                             "type": "modal",
-                                            "callback_id": "approveDeclinePopup",
                                             "clear_on_close": true,
                                             "private_metadata": JSON.stringify(pvt_metadata),
-                                            "submit": {
-                                                "type": "plain_text",
-                                                "text": "Next",
-                                                "emoji": true
-                                            },
+                                            // "submit": {
+                                            //     "type": "plain_text",
+                                            //     "text": "Next",
+                                            //     "emoji": true
+                                            // },
                                             "close": {
                                                 "type": "plain_text",
                                                 "text": "Close",
@@ -2942,7 +2762,7 @@ module.exports = controller => {
                                                         },
                                                         {
                                                             "type": "mrkdwn",
-                                                            "text": "*Requester*\n" + obj["Requester Name"]
+                                                            "text": "*Requester*\n" + pvt_metadata["Requester Name"]
                                                         }
                                                     ]
                                                 },
@@ -3002,23 +2822,26 @@ module.exports = controller => {
                         } else if (message.actions[0].action_id == "additionalModal" && message.actions[0].block_id == 'additionalBlock') {
                             console.log('In Additional Modal EARS 1688');
                             let obj = await getAdditionalModal(existingConn, message.actions[0].value);
+
                             if (obj && Object.keys(obj).length > 0) {
                                 let jsonArray = [];
                                 obj["Requester Notes"] = obj["Requester Notes"] ? obj["Requester Notes"] : '';
-                                jsonArray.push({
-                                    "type": "section",
-                                    "text": {
-                                        "type": "mrkdwn",
-                                        "text": "*Requester Notes*\n" + obj["Requester Notes"]
-                                    }
-                                },
+                                jsonArray.push(
+                                    {
+                                        "type": "section",
+                                        "text": {
+                                            "type": "mrkdwn",
+                                            "text": "*Requester Notes*\n" + obj["Requester Notes"]
+                                        }
+                                    },
                                     {
                                         "type": "section",
                                         "text": {
                                             "type": "mrkdwn",
                                             "text": " "
                                         }
-                                    });
+                                    }
+                                );
 
                                 Object.keys(obj).forEach(con => {
 
@@ -3033,7 +2856,7 @@ module.exports = controller => {
                                         jsonArray.push(entry);
                                     }
                                 });
-                                // console.log('JSON ARRAY 1519 EARS', jsonArray);
+
                                 await bot.api.views.push({
                                     trigger_id: message.trigger_id,
                                     view: {
@@ -3051,132 +2874,11 @@ module.exports = controller => {
                                         "blocks": jsonArray
                                     }
                                 });
-                            }
+                            } 
                         } else if (message.actions[0].action_id == "editContactModal" && message.actions[0].block_id == 'editContactBlock') {
                             console.log('In editContactModal & editContactBlock EARS 2232');
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
-                            console.log('CONTACS :-> ', JSON.stringify(pvt_metadata));
-
-                            /**
-                             * this if condition is to check that isUpdate checked or not 
-                             * if checked then display check on modal and vice-versa.
-                             */
-                            if (pvt_metadata.isUpdateable === "true") {
-                                /**
-                                 * this is to display already selected option of to Update Contact by User
-                                 * so we pass initial value of that checkbox
-                                 */
-                                await bot.api.views.push({
-                                    trigger_id: message.trigger_id,
-                                    view: {
-                                        "title": {
-                                            "type": "plain_text",
-                                            "text": "Edit Contact",
-                                            "emoji": true
-                                        },
-                                        "submit": {
-                                            "type": "plain_text",
-                                            "text": "Save",
-                                            "emoji": true
-                                        },
-                                        "type": "modal",
-                                        "callback_id": "refUseReqMainBlockWithContacts",
-                                        "private_metadata": JSON.stringify(pvt_metadata),
-                                        "blocks": [
-                                            {
-                                                "type": "section",
-                                                "text": {
-                                                    "type": "mrkdwn",
-                                                    "text": "*Selected Contact Info*"
-                                                },
-                                            },
-                                            {
-                                                "type": "section",
-                                                "text": {
-                                                    "type": "mrkdwn",
-                                                    "text": "*Name*\n" + pvt_metadata.Name
-                                                },
-                                            },
-                                            {
-                                                "type": "input",
-                                                "block_id": "conEmailBlock",
-                                                "label": {
-                                                    "type": "plain_text",
-                                                    "text": "Email",
-                                                    "emoji": true
-                                                },
-                                                "element": {
-                                                    "type": "plain_text_input",
-                                                    "action_id": "conEmail",
-                                                    "initial_value": pvt_metadata.Email
-                                                }
-                                            },
-                                            {
-                                                "type": "input",
-                                                "block_id": "conPhoneBlock",
-                                                "label": {
-                                                    "type": "plain_text",
-                                                    "text": "Phone",
-                                                    "emoji": true
-                                                },
-                                                "element": {
-                                                    "type": "plain_text_input",
-                                                    "action_id": "conPhone",
-                                                    "initial_value": pvt_metadata.Phone
-                                                }
-                                            },
-                                            {
-                                                "type": "input",
-                                                "block_id": "conTitleBlock",
-                                                "optional": true,
-                                                "label": {
-                                                    "type": "plain_text",
-                                                    "text": "Title",
-                                                    "emoji": true
-                                                },
-                                                "element": {
-                                                    "type": "plain_text_input",
-                                                    "action_id": "conTitle",
-                                                    "initial_value": pvt_metadata.Title
-                                                }
-
-                                            },
-                                            {
-                                                "type": "section",
-                                                "block_id": "isUpdateableConBlock",
-                                                "text": {
-                                                    "type": "plain_text",
-                                                    "text": "Write these changes back to the Contact record?"
-                                                },
-                                                "accessory": {
-                                                    "type": "checkboxes",
-                                                    "action_id": "isUpdateableCon",
-                                                    "options": [
-                                                        {
-                                                            "value": "true",
-                                                            "text": {
-                                                                "type": "plain_text",
-                                                                "text": " "
-                                                            }
-                                                        },
-                                                    ],
-                                                    "initial_options": [{
-                                                        "value": "true",
-                                                        "text": {
-                                                            "type": "plain_text",
-                                                            "text": " "
-                                                        }
-                                                    }],
-                                                }
-                                            }
-                                        ]
-                                    }
-                                });
-                            } else {
-                                // this is for not selected checkbox
-                                contactEditModal(bot, message, pvt_metadata, true);
-                            }
-                        
+                            contactEditModal(bot, message, pvt_metadata, true);
                         } else if (message.actions[0].block_id == 'approveDeclineBlock' && message.actions[0].action_id == 'approveDeclineRadio') {
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
                             requestStatus = message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value;
@@ -3581,6 +3283,7 @@ module.exports = controller => {
 
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
                             let contactSearchKeyword, hasRBI, obj;
+
                             if (message.view.state.values.blkCon1 && message.view.state.values.blkCon1.con_select1 && message.view.state.values.blkCon1.con_select1.value) {
                                 contactSearchKeyword = message.view.state.values.blkCon1.con_select1.value;
                                 hasRBI = true;
@@ -3948,10 +3651,9 @@ module.exports = controller => {
                             }
                         } else if (message.actions[0].block_id == 'conSelectBlock' && message.actions[0].action_id == 'conSelect') {
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
+                            pvt_metadata.isUpdateable = false;
                             pvt_metadata.Id = message.view.state.values.conSelectBlock.conSelect.selected_option.value;
-                            console.log('ContactID', pvt_metadata.Id);
                             pvt_metadata = setSelectedContactInfo(pvt_metadata, pvt_metadata.Id);
-                            console.log('PVTDATA -> ', JSON.stringify(pvt_metadata));
                             contactEditModal(bot, message, pvt_metadata, false);
 
                             /* await bot.api.views.push({
@@ -4091,6 +3793,7 @@ module.exports = controller => {
                 //     await bot.replyEphemeral(message, `click this link to connect\n<${authUrl}|Connect to Salesforce>`);
                 // }
             } catch (err) {
+                console.log('Error in interactive_message_callback, block_actions');
                 logger.log(err);
             }
         }
