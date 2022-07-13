@@ -3469,7 +3469,8 @@ module.exports = controller => {
                                                     "label": {
                                                         "type": "plain_text",
                                                         "text": "Add a Note",
-                                                    }
+                                                    },
+                                                    "focus_on_load": true
                                                 }
                                             ]
                                         }
@@ -3644,7 +3645,8 @@ module.exports = controller => {
                                                     "label": {
                                                         "type": "plain_text",
                                                         "text": "Add a Note",
-                                                    }
+                                                    },
+                                                    "focus_on_load": true
                                                 }
                                             ]
                                         }
