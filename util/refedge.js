@@ -53,7 +53,7 @@ module.exports = {
                         } else if(response.hasOwnProperty('pkg_version')) {
                             contentTypes = JSON.parse(response.content_search);
                         }
-                        contentTypes = new Map([...contentTypes].sort((a, b) => b[1] - a[1]));
+                        contentTypes = new Map([...contentTypes.entries()].sort((a, b) => b[1] - a[1]));
                         Object.keys(contentTypes).forEach(function(k){
                             var entry = {
                                 "text": {
