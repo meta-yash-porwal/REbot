@@ -53,6 +53,9 @@ module.exports = {
                         } else if(response.hasOwnProperty('pkg_version')) {
                             contentTypes = JSON.parse(response.content_search);
                         }
+                        contentTypes[Symbol.iterator] = function* () {
+                            yield* [...this.entries()].sort((a, b) => b[1] - a[1]);
+                        }
 
                         Object.keys(contentTypes).forEach(function(k){
                             var entry = {
