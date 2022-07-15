@@ -2860,6 +2860,7 @@ module.exports = controller => {
                                 await bot.api.views.push({
                                     trigger_id: message.trigger_id,
                                     view: {
+                                        "clear_on_close": true,
                                         "title": {
                                             "type": "plain_text",
                                             "text": "More Request Details",
@@ -2869,6 +2870,11 @@ module.exports = controller => {
                                         "close": {
                                             "type": "plain_text",
                                             "text": "Close",
+                                            "emoji": true
+                                        },
+                                        "submit": {
+                                            "type": "plain_text",
+                                            "text": "Next",
                                             "emoji": true
                                         },
                                         "blocks": jsonArray
