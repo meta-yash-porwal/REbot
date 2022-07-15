@@ -2874,7 +2874,7 @@ module.exports = controller => {
                                         },
                                         "submit": {
                                             "type": "plain_text",
-                                            "text": "Next",
+                                            "text": "Back",
                                             "emoji": true
                                         },
                                         "blocks": jsonArray
