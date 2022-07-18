@@ -2963,8 +2963,8 @@ module.exports = controller => {
 
                                         },
                                         {
-                                            "type": "section",
-                                            "accessory": {
+                                            "type": "actions",
+                                            "elements": {
                                                 "type": "checkboxes",
                                                 "action_id": "isUpdateableCon",
                                                 "options": [
@@ -2972,7 +2972,7 @@ module.exports = controller => {
                                                         "value": "true",
                                                         "text": {
                                                             "type": "plain_text",
-                                                            "text": " "
+                                                            "text": "Write these changes back to the Contact record?"
                                                         }
                                                     },
                                                 ],
@@ -2980,14 +2980,9 @@ module.exports = controller => {
                                                     "value": "true",
                                                     "text": {
                                                         "type": "plain_text",
-                                                        "text": " "
+                                                        "text": "Write these changes back to the Contact record?"
                                                     }
                                                 }],
-                                            },
-                                            "block_id": "isUpdateableConBlock",
-                                            "text": {
-                                                "type": "plain_text",
-                                                "text": "Write these changes back to the Contact record?"
                                             }
                                         }
                                     ]
