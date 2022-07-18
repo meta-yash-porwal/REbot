@@ -2983,7 +2983,8 @@ module.exports = controller => {
                                                         "text": "Write these changes back to the Contact record?"
                                                     }
                                                 }],
-                                            }
+                                            },
+                                            "block_id": "isUpdateableConBlock"
                                         }
                                     ]
                                 }
