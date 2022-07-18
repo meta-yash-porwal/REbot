@@ -2964,11 +2964,6 @@ module.exports = controller => {
                                         },
                                         {
                                             "type": "section",
-                                            "block_id": "isUpdateableConBlock",
-                                            "text": {
-                                                "type": "plain_text",
-                                                "text": "Write these changes back to the Contact record?"
-                                            },
                                             "accessory": {
                                                 "type": "checkboxes",
                                                 "action_id": "isUpdateableCon",
@@ -2988,6 +2983,11 @@ module.exports = controller => {
                                                         "text": " "
                                                     }
                                                 }],
+                                            },
+                                            "block_id": "isUpdateableConBlock",
+                                            "text": {
+                                                "type": "plain_text",
+                                                "text": "Write these changes back to the Contact record?"
                                             }
                                         }
                                     ]
