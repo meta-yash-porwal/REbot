@@ -68,6 +68,7 @@ module.exports = controller => {
             try {
                 let teamIdsArray = reqBody.teamId.split(',');
                 const teams = await controller.plugins.database.teams.find({ id: { $in: teamIdsArray } });
+                console.log("TEAMS", teams);
 
                 if (!teams) {
                     return logger.log('team not found for id:', reqBody.teamId);
