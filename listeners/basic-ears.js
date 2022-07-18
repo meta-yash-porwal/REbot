@@ -2964,26 +2964,28 @@ module.exports = controller => {
                                         },
                                         {
                                             "type": "actions",
-                                            "elements": {
-                                                "type": "checkboxes",
-                                                "action_id": "isUpdateableCon",
-                                                "options": [
-                                                    {
+                                            "elements": [
+                                                {
+                                                    "type": "checkboxes",
+                                                    "action_id": "isUpdateableCon",
+                                                    "options": [
+                                                        {
+                                                            "value": "true",
+                                                            "text": {
+                                                                "type": "plain_text",
+                                                                "text": "Write these changes back to the Contact record?"
+                                                            }
+                                                        },
+                                                    ],
+                                                    "initial_options": [{
                                                         "value": "true",
                                                         "text": {
                                                             "type": "plain_text",
                                                             "text": "Write these changes back to the Contact record?"
                                                         }
-                                                    },
-                                                ],
-                                                "initial_options": [{
-                                                    "value": "true",
-                                                    "text": {
-                                                        "type": "plain_text",
-                                                        "text": "Write these changes back to the Contact record?"
-                                                    }
-                                                }],
-                                            },
+                                                    }],
+                                                },
+                                            ],
                                             "block_id": "isUpdateableConBlock"
                                         }
                                     ]
