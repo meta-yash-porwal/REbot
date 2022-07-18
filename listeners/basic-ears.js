@@ -2885,7 +2885,119 @@ module.exports = controller => {
                         } else if (message.actions[0].action_id == "editContactModal" && message.actions[0].block_id == 'editContactBlock') {
                             console.log('In editContactModal & editContactBlock EARS 2232');
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
-                            contactEditModal(bot, message, pvt_metadata, true);
+
+
+                            await bot.api.views.push({
+                                trigger_id: message.trigger_id,
+                                view: {
+                                    "title": {
+                                        "type": "plain_text",
+                                        "text": "Edit Contact",
+                                        "emoji": true
+                                    },
+                                    "submit": {
+                                        "type": "plain_text",
+                                        "text": "Save",
+                                        "emoji": true
+                                    },
+                                    "type": "modal",
+                                    "callback_id": "refUseReqMainBlockWithContacts",
+                                    "private_metadata": JSON.stringify(pvt_metadata),
+                                    "blocks": [
+                                        {
+                                            "type": "section",
+                                            "text": {
+                                                "type": "mrkdwn",
+                                                "text": "*Selected Contact Info*"
+                                            },
+                                        },
+                                        {
+                                            "type": "section",
+                                            "text": {
+                                                "type": "mrkdwn",
+                                                "text": "*Name*\n" + pvt_metadata.Name
+                                            },
+                                        },
+                                        {
+                                            "type": "input",
+                                            "block_id": "conEmailBlock",
+                                            "label": {
+                                                "type": "plain_text",
+                                                "text": "Email",
+                                                "emoji": true
+                                            },
+                                            "element": {
+                                                "type": "plain_text_input",
+                                                "action_id": "conEmail",
+                                                "initial_value": pvt_metadata.Email
+                                            }
+                                        },
+                                        {
+                                            "type": "input",
+                                            "block_id": "conPhoneBlock",
+                                            "label": {
+                                                "type": "plain_text",
+                                                "text": "Phone",
+                                                "emoji": true
+                                            },
+                                            "element": {
+                                                "type": "plain_text_input",
+                                                "action_id": "conPhone",
+                                                "initial_value": pvt_metadata.Phone
+                                            }
+                                        },
+                                        {
+                                            "type": "input",
+                                            "block_id": "conTitleBlock",
+                                            "optional": true,
+                                            "label": {
+                                                "type": "plain_text",
+                                                "text": "Title",
+                                                "emoji": true
+                                            },
+                                            "element": {
+                                                "type": "plain_text_input",
+                                                "action_id": "conTitle",
+                                                "initial_value": pvt_metadata.Title
+                                            }
+
+                                        },
+                                        {
+                                            "type": "section",
+                                            "block_id": "isUpdateableConBlock",
+                                            "text": {
+                                                "type": "plain_text",
+                                                "text": "Write these changes back to the Contact record?"
+                                            },
+                                            "accessory": {
+                                                "type": "checkboxes",
+                                                "action_id": "isUpdateableCon",
+                                                "options": [
+                                                    {
+                                                        "value": "true",
+                                                        "text": {
+                                                            "type": "plain_text",
+                                                            "text": " "
+                                                        }
+                                                    },
+                                                ],
+                                                "initial_options": [{
+                                                    "value": "true",
+                                                    "text": {
+                                                        "type": "plain_text",
+                                                        "text": " "
+                                                    }
+                                                }],
+                                            }
+                                        }
+                                    ]
+                                }
+                            });
+
+
+
+
+                            // contactEditModal(bot, message, pvt_metadata, true);
                         } else if (message.actions[0].block_id == 'approveDeclineBlock' && message.actions[0].action_id == 'approveDeclineRadio') {
                             let pvt_metadata = JSON.parse(message.view.private_metadata);
                             requestStatus = message.view.state.values.approveDeclineBlock.approveDeclineRadio.selected_option.value;
