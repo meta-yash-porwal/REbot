@@ -2075,7 +2075,6 @@ module.exports = controller => {
                             // this is for to check that this RR Account has both Active & Inactive Contacts 
                             // as we display them in different select box.
                             if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(pvt_metadata.Email))) {
-                                console.log('in Email Error');
                                 bot.httpBody({
                                     "response_action": "errors",
                                     "errors": {
@@ -2083,15 +2082,15 @@ module.exports = controller => {
                                     }
                                 });
                             } else if (isNaN(pvt_metadata.Phone)) {
-                                console.log('in Phone Error');
                                 bot.httpBody({
                                     "response_action": "errors",
                                     "errors": {
                                         "conPhoneBlock": "Invalid Phone number."
                                     }
                                 });
+                            } else {
+                                mainModalRefUseReqWith_editContact_selectedContact(bot, message, pvt_metadata);
                             }
-                            mainModalRefUseReqWith_editContact_selectedContact(bot, message, pvt_metadata);
                         }
                         
                     }
