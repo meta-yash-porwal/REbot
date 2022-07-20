@@ -2060,6 +2060,7 @@ module.exports = controller => {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
 
                         if (message.view.state.values.conEmailBlock && message.view.state.values.conPhoneBlock) {
+                            console.log('in ConEMail');
                             pvt_metadata.Title = message.view.state.values.conTitleBlock && message.view.state.values.conTitleBlock.conTitle
                                 ? message.view.state.values.conTitleBlock.conTitle.value : pvt_metadata.Title;
                             // as title is showing null on Modal.
@@ -2090,6 +2091,7 @@ module.exports = controller => {
                                 });
                             }
                         } else if (message.view.state.values.conSelectBlock) {
+                            console.log('In select block');
                             pvt_metadata.Id = message.view.state.values.conSelectBlock.conSelect.selected_option.value;
                             pvt_metadata = setSelectedContactInfo(pvt_metadata, pvt_metadata.Id);
                         }
