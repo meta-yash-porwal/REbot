@@ -239,11 +239,8 @@ module.exports = {
                 console.log('ERROR in getRefUseReqModal REFEDGE.js');
                 logger.log(err);
             } else if (response) {
-
-                if (response != 'false') {
-                    console.log('RESPOSNE getRefUseReqModal refedge.js 243 ', response);
-                    val = JSON.parse(response);
-                }
+                console.log('RESPOSNE getRefUseReqModal refedge.js 243 ', response);
+                val = JSON.parse(response);
             }
         });
         return val;
@@ -258,10 +255,8 @@ module.exports = {
                 logger.log(err);
             } else if (response) {
 
-                if (response != 'false') {
-                    console.log('RESPOSNE getAdditionalModal refedge.js 252 ', response);
-                    val = JSON.parse(response);
-                }
+                console.log('RESPOSNE getAdditionalModal refedge.js 252 ', response);
+                val = JSON.parse(response);
             }
         });
         return val;
@@ -275,11 +270,8 @@ module.exports = {
                 console.log('ERROR in getSearchedContact REFEDGE.js');
                 logger.log(err);
             } else if (response) {
-
-                if (response != 'false') {
-                    console.log('RESPOSNE getSearchedContact refedge.js ', response);
-                    val = JSON.parse(response);
-                }
+                console.log('RESPOSNE getSearchedContact refedge.js ', response);
+                val = JSON.parse(response);
             }
         });
         return val;
