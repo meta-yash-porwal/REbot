@@ -2060,7 +2060,6 @@ module.exports = controller => {
                         let pvt_metadata = JSON.parse(message.view.private_metadata);
 
                         if (message.view.state.values.conEmailBlock && message.view.state.values.conPhoneBlock) {
-                            console.log('in ConEMail');
                             pvt_metadata.Title = message.view.state.values.conTitleBlock && message.view.state.values.conTitleBlock.conTitle
                                 ? message.view.state.values.conTitleBlock.conTitle.value : pvt_metadata.Title;
                             // as title is showing null on Modal.
@@ -2076,6 +2075,7 @@ module.exports = controller => {
                             // this is for to check that this RR Account has both Active & Inactive Contacts 
                             // as we display them in different select box.
                             if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(pvt_metadata.Email))) {
+                                console.log('in Email Error');
                                 bot.httpBody({
                                     "response_action": "errors",
                                     "errors": {
@@ -2083,6 +2083,7 @@ module.exports = controller => {
                                     }
                                 });
                             } else if (isNaN(pvt_metadata.Phone)) {
+                                console.log('in Phone Error');
                                 bot.httpBody({
                                     "response_action": "errors",
                                     "errors": {
@@ -2090,12 +2091,9 @@ module.exports = controller => {
                                     }
                                 });
                             }
-                        } else if (message.view.state.values.conSelectBlock) {
-                            console.log('In select block');
-                            pvt_metadata.Id = message.view.state.values.conSelectBlock.conSelect.selected_option.value;
-                            pvt_metadata = setSelectedContactInfo(pvt_metadata, pvt_metadata.Id);
+                            mainModalRefUseReqWith_editContact_selectedContact(bot, message, pvt_metadata);
                         }
-                        mainModalRefUseReqWith_editContact_selectedContact(bot, message, pvt_metadata);
+                        
                     }
                 }
             } catch (err) {
