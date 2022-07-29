@@ -2081,13 +2081,13 @@ module.exports = controller => {
                                         "conEmailBlock": "Invalid Email."
                                     }
                                 });
-                            } else if (!(/(?:\(?\+\d{2}\)?\s*)?\d+(?:[ -]*\d+)*$/.test(pvt_metadata.Phone))) {
+                            /* } else if (!(/(?:\(?\+\d{2}\)?\s*)?\d+(?:[ -]*\d+)*$/.test(pvt_metadata.Phone))) {
                                 bot.httpBody({
                                     "response_action": "errors",
                                     "errors": {
                                         "conPhoneBlock": "Invalid Phone number."
                                     }
-                                });
+                                }); */
                             } else {
                                 mainModalRefUseReqWith_editContact_selectedContact(bot, message, pvt_metadata);
                             }
