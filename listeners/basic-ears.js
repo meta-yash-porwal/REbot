@@ -2081,7 +2081,7 @@ module.exports = controller => {
                                         "conEmailBlock": "Invalid Email."
                                     }
                                 });
-                            } else if (isNaN(pvt_metadata.Phone)) {
+                            } else if (isNaN(Number(pvt_metadata.Phone))) {
                                 bot.httpBody({
                                     "response_action": "errors",
                                     "errors": {
